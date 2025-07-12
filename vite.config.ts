@@ -1,7 +1,77 @@
-import { defineConfig } from 'vite'
-import preact from '@preact/preset-vite'
+import { defineConfig } from 'vite';
+import preact from '@preact/preset-vite';
+import { visualizer } from 'rollup-plugin-visualizer';
+import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [preact()],
-})
+  plugins: [
+    preact(),
+    visualizer(),
+    VitePWA({
+      registerType: 'autoUpdate',
+      manifest: {
+        name: 'Every Day Carry Tracker',
+        short_name: 'EDCTracker',
+        description:
+          'A web app that helps you visualize, track, and analyze your every day carry',
+        // background_color: '#141414',
+        // theme_color: '#242424',
+        // icons: [
+        //   {
+        //     src: 'pwa-64x64.png',
+        //     sizes: '64x64',
+        //     type: 'image/png',
+        //   },
+        //   {
+        //     src: 'pwa-192x192.png',
+        //     sizes: '192x192',
+        //     type: 'image/png',
+        //   },
+        //   {
+        //     src: 'pwa-512x512.png',
+        //     sizes: '512x512',
+        //     type: 'image/png',
+        //   },
+        //   {
+        //     src: 'maskable-icon-512x512.png',
+        //     sizes: '512x512',
+        //     type: 'image/png',
+        //     purpose: 'maskable',
+        //   },
+        // ],
+        // screenshots: [
+        //   {
+        //     src: 'desktop.png',
+        //     sizes: '944x900',
+        //     type: 'image/png',
+        //     form_factor: 'wide',
+        //     label: 'Desktop Days Since',
+        //   },
+        //   {
+        //     src: 'mobile.png',
+        //     sizes: '1170x2532',
+        //     type: 'image/png',
+        //     form_factor: 'narrow',
+        //     label: 'Mobile Days Since',
+        //   },
+        // ],
+      },
+    }),
+  ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          const vendorPrefix = 'vendor';
+          if (id.indexOf('node_modules') > -1) {
+            if (id.indexOf('recharts') > -1) return vendorPrefix + '_recharts';
+            if (id.indexOf('mantine') > -1) return vendorPrefix + '_mantine';
+
+            return vendorPrefix;
+          }
+        },
+      },
+    },
+  },
+});
