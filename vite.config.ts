@@ -67,6 +67,7 @@ export default defineConfig({
           if (id.indexOf('node_modules') > -1) {
             if (id.indexOf('recharts') > -1) return vendorPrefix + '_recharts';
             if (id.indexOf('mantine') > -1) return vendorPrefix + '_mantine';
+            if (id.indexOf('dexie') > -1) return vendorPrefix + '_dexie';
 
             return vendorPrefix;
           }

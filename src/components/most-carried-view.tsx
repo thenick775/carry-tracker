@@ -27,8 +27,10 @@ const adjustLightness = (lightness: number, index: number) =>
 const hslToCss = (h: number, s: number, l: number) => `hsl(${h}, ${s}%, ${l}%)`;
 
 const reorderForMaxHueDifference = <T extends { id: string; baseHue: number }>(
-  items: T[]
-): T[] => {
+  items?: T[]
+): T[] | null => {
+  if (!items) return null;
+
   const sorted = [...items].sort((a, b) => a.baseHue - b.baseHue);
   const reordered: T[] = [];
   let left = 0;
@@ -43,16 +45,16 @@ const reorderForMaxHueDifference = <T extends { id: string; baseHue: number }>(
 };
 
 export const MostCarriedView = () => {
-  const [carryItems] = useCarryItems();
+  const { carryItems } = useCarryItems();
 
-  const itemsWithHue = carryItems.map((item) => ({
+  const itemsWithHue = carryItems?.map((item) => ({
     ...item,
     baseHue: hashStringToInt(item.id) % 360,
   }));
 
   const reorderedItems = reorderForMaxHueDifference(itemsWithHue);
 
-  const chartData = reorderedItems.map(({ id, name, carryCount }, index) => {
+  const chartData = reorderedItems?.map(({ id, name, carryCount }, index) => {
     const { hue, saturation, lightness } = idToBaseHSL(id);
     const adjustedLightness = adjustLightness(lightness, index);
     const color = hslToCss(hue, saturation, adjustedLightness);
@@ -75,8 +77,12 @@ export const MostCarriedView = () => {
           maxWidth: '100%',
         }}
       >
-        <PieChart data={chartData} />
-        <StatsTable data={chartData} />
+        {!!chartData && (
+          <>
+            <PieChart data={chartData} />
+            <StatsTable data={chartData} />
+          </>
+        )}
       </Box>
     </>
   );
