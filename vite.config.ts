@@ -1,9 +1,10 @@
-import { defineConfig } from 'vite';
-import preact from '@preact/preset-vite';
+import { preact } from '@preact/preset-vite';
 import { visualizer } from 'rollup-plugin-visualizer';
+import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vite.dev/config/
+// eslint-disable-next-line import/no-default-export
 export default defineConfig({
   plugins: [
     preact(),
@@ -15,31 +16,31 @@ export default defineConfig({
         short_name: 'EDCTracker',
         description:
           'A web app that helps you visualize, track, and analyze your every day carry',
-        // background_color: '#141414',
-        // theme_color: '#242424',
-        // icons: [
-        //   {
-        //     src: 'pwa-64x64.png',
-        //     sizes: '64x64',
-        //     type: 'image/png',
-        //   },
-        //   {
-        //     src: 'pwa-192x192.png',
-        //     sizes: '192x192',
-        //     type: 'image/png',
-        //   },
-        //   {
-        //     src: 'pwa-512x512.png',
-        //     sizes: '512x512',
-        //     type: 'image/png',
-        //   },
-        //   {
-        //     src: 'maskable-icon-512x512.png',
-        //     sizes: '512x512',
-        //     type: 'image/png',
-        //     purpose: 'maskable',
-        //   },
-        // ],
+        background_color: '#141414',
+        theme_color: '#242424',
+        icons: [
+          {
+            src: 'pwa-64x64.png',
+            sizes: '64x64',
+            type: 'image/png',
+          },
+          {
+            src: 'pwa-192x192.png',
+            sizes: '192x192',
+            type: 'image/png',
+          },
+          {
+            src: 'pwa-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+          },
+          {
+            src: 'maskable-icon-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable',
+          },
+        ],
         // screenshots: [
         //   {
         //     src: 'desktop.png',
