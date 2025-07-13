@@ -19,8 +19,7 @@ const viewComponents: Record<string, React.ReactNode> = {
 const menuItems = Object.keys(viewComponents);
 
 export const CarryTrackerAppShell = () => {
-  const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
-  const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+  const [navbarOpened, { toggle: toggleNavBar }] = useDisclosure(false);
   const [activeLink, setActiveLink] = useState('Items');
 
   const navBarItems = menuItems.map((menuItem) => (
@@ -30,8 +29,7 @@ export const CarryTrackerAppShell = () => {
       onClick={(event) => {
         event.preventDefault();
         setActiveLink(menuItem);
-        if (mobileOpened) toggleMobile();
-        if (desktopOpened) toggleDesktop();
+        toggleNavBar();
       }}
       key={menuItem}
     >
@@ -45,25 +43,14 @@ export const CarryTrackerAppShell = () => {
       navbar={{
         width: 300,
         breakpoint: 'sm',
-        collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
+        collapsed: { mobile: !navbarOpened, desktop: !navbarOpened },
       }}
       padding="md"
     >
       <AppShell.Header p="sm">
         <Grid align="center">
           <Grid.Col span={1.5}>
-            <Burger
-              opened={mobileOpened}
-              onClick={toggleMobile}
-              hiddenFrom="sm"
-              size="sm"
-            />
-            <Burger
-              opened={desktopOpened}
-              onClick={toggleDesktop}
-              visibleFrom="sm"
-              size="sm"
-            />
+            <Burger opened={navbarOpened} onClick={toggleNavBar} size="sm" />
           </Grid.Col>
 
           <Grid.Col span="auto">

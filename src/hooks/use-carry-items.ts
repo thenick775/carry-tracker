@@ -52,8 +52,12 @@ const convertFromStorage = (item: CarryItemStorage): CarryItem => {
 
 export const useCarryItems = () => {
   const carryItems = useLiveQuery(async () => {
-    const items = await carryDb.carryItems.orderBy('createdAt').toArray();
-    return items.reverse().map(convertFromStorage);
+    const items = await carryDb.carryItems
+      .orderBy('createdAt')
+      .reverse()
+      .toArray();
+
+    return items.map(convertFromStorage);
   }, []);
 
   const createCarryItem = async (input: CreateCarryItem) => {
