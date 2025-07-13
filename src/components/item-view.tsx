@@ -94,7 +94,7 @@ export const ItemsView = () => {
       <Grid gutter="lg" pt="sm">
         <AnimatePresence mode="popLayout" initial={false}>
           {carryItems?.map((item) => (
-            <Grid.Col key={item.id} span={{ base: 12, sm: 6, md: 4 }}>
+            <Grid.Col key={item.id} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
               <motion.div
                 layout
                 initial={{ opacity: 0, y: -50, height: 0 }}
