@@ -89,6 +89,7 @@ const CarryItemForm = ({
         />
         <NumberInput
           label="Carry Count"
+          size="md"
           {...form.getInputProps('carryCount')}
         />
         <ColorInput
