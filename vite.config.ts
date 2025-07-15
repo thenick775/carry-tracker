@@ -17,7 +17,7 @@ export default defineConfig({
         short_name: 'EDCTracker',
         description:
           'A web app that helps you visualize, track, and analyze your every day carry',
-        background_color: '#141414',
+        background_color: '#242424',
         theme_color: '#242424',
         icons: [
           {
