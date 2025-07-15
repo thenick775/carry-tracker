@@ -1,0 +1,9 @@
+.masonry-grid {
+  display: flex;
+  margin-left: -20px;
+}
+
+.masonry-grid_column {
+  border-left: 20px solid transparent;
+  background-clip: padding-box;
+}
