@@ -49,14 +49,21 @@ export const PieChart = ({ data }: RadialBarChartProps) => {
 
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <ReChartsPieChart>
+      <ReChartsPieChart
+        margin={{
+          top: 32,
+          right: 48,
+          bottom: 32,
+          left: 48,
+        }}
+      >
         <Pie
           data={chartData}
           innerRadius={0}
           dataKey="value"
           animationBegin={200}
           animationDuration={1200}
-          outerRadius="70%"
+          outerRadius="100%"
           label={renderLabel}
           labelLine={{
             stroke: 'var(--chart-label-color, var(--mantine-color-dimmed))',
