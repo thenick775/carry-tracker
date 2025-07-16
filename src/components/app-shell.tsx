@@ -3,6 +3,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { useState } from 'preact/hooks';
 
 import classes from './app-shell.module.css';
+import { ImportExportView } from './import-export-view.tsx';
 import { ItemsView } from './item-view.tsx';
 import { MostCarriedView } from './most-carried-view.tsx';
 
@@ -14,6 +15,7 @@ const viewComponents: Record<string, React.ReactNode> = {
   Calendar: <CalendarView />,
   Rotations: <RotationsView />,
   'Most Carried': <MostCarriedView />,
+  'Import/Export': <ImportExportView />,
 };
 
 const menuItems = Object.keys(viewComponents);
@@ -24,7 +26,7 @@ export const CarryTrackerAppShell = () => {
 
   const navBarItems = menuItems.map((menuItem) => (
     <button
-      className={classes.link}
+      className={classes.navButton}
       data-active={activeLink === menuItem || undefined}
       onClick={(event) => {
         event.preventDefault();
