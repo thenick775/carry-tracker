@@ -1,12 +1,13 @@
 import { ActionIcon, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { useState } from 'preact/hooks';
+import { useMemo, useState } from 'preact/hooks';
 import { TbPlus } from 'react-icons/tb';
 
 import { CarryItemModal } from './carry-item-modal.tsx';
 import { ItemCard } from './item-card.tsx';
 import { Masonry } from './masonry.tsx';
 import { useCarryItems } from '../hooks/use-carry-items.ts';
+import { useObjectUrls } from '../hooks/use-object-urls.ts';
 
 import type { CarryItem } from '../hooks/use-carry-items.ts';
 
@@ -14,6 +15,11 @@ export const ItemsView = () => {
   const { carryItems, createCarryItem, updateCarryItem, deleteCarryItem } =
     useCarryItems();
   const [editCarryItem, setEditCarryItem] = useState<CarryItem>();
+  const images = useMemo(() =>
+    carryItems?.map(carryItem => carryItem.imageData).filter(c => !!c),
+    [carryItems]
+  )
+  const imageUrls = useObjectUrls(images);
   const [opened, { open, close }] = useDisclosure(false, {
     onClose: () => setEditCarryItem(undefined),
   });
@@ -25,10 +31,11 @@ export const ItemsView = () => {
     <>
       <Text mb="sm">Carry Items:</Text>
       <Masonry>
-        {carryItems?.map((item) => (
+        {imageUrls && carryItems?.map((item, idx) => (
           <ItemCard
             key={item.id}
             item={item}
+            imageUrl={imageUrls[idx]}
             onDelete={() => deleteCarryItem(item.id)}
             onRequestEdit={() => {
               setEditCarryItem(item);
