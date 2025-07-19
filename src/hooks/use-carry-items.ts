@@ -30,7 +30,7 @@ const buildImage = async (
   return {
     name: file.name,
     mimeType: file.type,
-    data,
+    data
   };
 };
 
@@ -46,7 +46,7 @@ const convertFromStorage = (item: CarryItemStorage): CarryItem => {
     ...rest,
     imageData: image
       ? uint8ArrayToFile(image.name, image.mimeType, image.data)
-      : undefined,
+      : undefined
   };
 };
 
@@ -82,6 +82,6 @@ export const useCarryItems = () => {
     carryItems,
     createCarryItem,
     updateCarryItem,
-    deleteCarryItem,
+    deleteCarryItem
   };
 };

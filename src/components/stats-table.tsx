@@ -3,7 +3,7 @@ import { Table, Badge } from '@mantine/core';
 import type { PieChartData } from './pie-chart';
 
 export const StatsTable = ({
-  data,
+  data
 }: {
   data: (PieChartData & { id: string })[];
 }) => {

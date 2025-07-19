@@ -12,7 +12,7 @@ export const Masonry = ({ children: items }: { children: ReactNode }) => {
     default: 4,
     [px(theme.breakpoints.lg)]: 3,
     [px(theme.breakpoints.md)]: 2,
-    [px(theme.breakpoints.sm)]: 1,
+    [px(theme.breakpoints.sm)]: 1
   };
 
   return (

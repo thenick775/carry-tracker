@@ -12,7 +12,7 @@ export const shadcnCssVariableResolver: CSSVariablesResolver = () => ({
     '--mantine-primary-color-light-hover':
       'var(--mantine-color-zinc-light-hover)',
     '--mantine-primary-color-light-color':
-      'var(--mantine-color-zinc-light-color)',
+      'var(--mantine-color-zinc-light-color)'
   },
   light: {
     // all variables that depend on light color scheme
@@ -435,7 +435,7 @@ export const shadcnCssVariableResolver: CSSVariablesResolver = () => ({
     '--mantine-color-violet-contrast': 'var(--mantine-color-gray-0)',
     '--mantine-color-purple-contrast': 'var(--mantine-color-purple-0)',
     '--mantine-color-fuchsia-contrast': 'var(--mantine-color-fuchsia-0)',
-    '--mantine-color-pink-contrast': 'var(--mantine-color-pink-0)',
+    '--mantine-color-pink-contrast': 'var(--mantine-color-pink-0)'
   },
   dark: {
     // all variables that depend on dark color scheme
@@ -875,6 +875,6 @@ export const shadcnCssVariableResolver: CSSVariablesResolver = () => ({
     '--mantine-color-violet-contrast': 'var(--mantine-color-gray-0)',
     '--mantine-color-purple-contrast': 'var(--mantine-color-gray-0)',
     '--mantine-color-fuchsia-contrast': 'var(--mantine-color-gray-0)',
-    '--mantine-color-pink-contrast': 'var(--mantine-color-gray-0)',
-  },
+    '--mantine-color-pink-contrast': 'var(--mantine-color-gray-0)'
+  }
 });

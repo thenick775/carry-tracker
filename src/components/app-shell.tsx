@@ -15,7 +15,7 @@ const viewComponents: Record<string, React.ReactNode> = {
   Calendar: <CalendarView />,
   Rotations: <RotationsView />,
   'Most Carried': <MostCarriedView />,
-  'Import/Export': <ImportExportView />,
+  'Import/Export': <ImportExportView />
 };
 
 const menuItems = Object.keys(viewComponents);
@@ -45,7 +45,7 @@ export const CarryTrackerAppShell = () => {
       navbar={{
         width: 300,
         breakpoint: 'sm',
-        collapsed: { mobile: !navbarOpened, desktop: !navbarOpened },
+        collapsed: { mobile: !navbarOpened, desktop: !navbarOpened }
       }}
       padding="md"
     >
@@ -68,7 +68,7 @@ export const CarryTrackerAppShell = () => {
       <AppShell.Main>
         <ScrollArea
           style={{
-            height: 'calc(100dvh - var(--mantine-header-height, 0px) - 60px)',
+            height: 'calc(100dvh - var(--mantine-header-height, 0px) - 60px)'
           }}
           px="md"
           pb="lg"

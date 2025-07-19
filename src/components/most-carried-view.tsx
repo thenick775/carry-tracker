@@ -1,22 +1,19 @@
-import { Box, Text, useMantineTheme } from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
+import { Box, Text } from '@mantine/core';
 
 import { PieChart } from './pie-chart.tsx';
 import { StatsTable } from './stats-table.tsx';
 import { useCarryItems } from '../hooks/use-carry-items.ts';
+import { useIsLargerThanPhone } from '../hooks/use-is-larger-than-phone.ts';
 
 export const MostCarriedView = () => {
-  const theme = useMantineTheme();
-  const isLargerThanPhone = useMediaQuery(
-    `(min-width: ${theme.breakpoints.sm})`
-  );
+  const isLargerThanPhone = useIsLargerThanPhone();
   const { carryItems } = useCarryItems();
 
   const chartData = carryItems?.map(({ id, name, carryCount, color }) => ({
     id,
     name,
     color,
-    value: carryCount,
+    value: carryCount
   }));
 
   return (
@@ -28,7 +25,7 @@ export const MostCarriedView = () => {
         style={{
           aspectRatio: '1 / 1',
           maxWidth: '100%',
-          maxHeight: isLargerThanPhone ? '50dvh' : undefined,
+          maxHeight: isLargerThanPhone ? '50dvh' : undefined
         }}
       >
         {!!chartData && (

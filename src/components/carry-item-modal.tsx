@@ -6,7 +6,7 @@ import {
   Group,
   Modal,
   NumberInput,
-  TextInput,
+  TextInput
 } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import { useForm } from '@mantine/form';
@@ -31,7 +31,7 @@ type CarryItemFormProps = {
 const CarryItemForm = ({
   onSubmit,
   close,
-  defaultValues,
+  defaultValues
 }: CarryItemFormProps) => {
   const form = useForm<CreateCarryItem>({
     mode: 'uncontrolled',
@@ -40,19 +40,19 @@ const CarryItemForm = ({
       carryCount: 0,
       createdAt: dayjs().toISOString(),
       color: randomColor(),
-      ...defaultValues,
+      ...defaultValues
     },
     transformValues: (values) => ({
       ...values,
-      createdAt: dayjs(values.createdAt).toISOString(),
+      createdAt: dayjs(values.createdAt).toISOString()
     }),
     validate: {
       name: (value) => (value ? null : 'Invalid name'),
       createdAt: (value) =>
         dayjs(value).isValid() ? null : 'Invalid added date time',
       color: (value) => (value ? null : 'Invalid color'),
-      imageData: (value) => (value ? null : 'Invalid image'),
-    },
+      imageData: (value) => (value ? null : 'Invalid image')
+    }
   });
 
   return (
@@ -110,7 +110,7 @@ export const CarryItemModal = ({
   carryItem,
   opened,
   close,
-  onSubmit,
+  onSubmit
 }: CreateCarryItemModalProps) => (
   <Modal
     opened={opened}

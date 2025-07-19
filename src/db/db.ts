@@ -23,5 +23,5 @@ export const exportDb = async () => await exportDB(carryDb);
 export const importDb = async (blob: Blob) => await Dexie.import(blob);
 
 carryDb.version(1).stores({
-  carryItems: 'id, createdAt, name',
+  carryItems: 'id, createdAt, name'
 });

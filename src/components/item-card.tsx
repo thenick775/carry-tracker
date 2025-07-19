@@ -5,7 +5,7 @@ import {
   Button,
   Text,
   Image,
-  Badge,
+  Badge
 } from '@mantine/core';
 import dayjs from 'dayjs';
 import { TbX } from 'react-icons/tb';
@@ -17,7 +17,7 @@ type ItemCardProps = {
   onDelete: () => void;
   onRequestEdit: () => void;
   onIncreaseCount: () => void;
-  imageUrl: string
+  imageUrl: string;
 };
 
 export const ItemCard = ({
@@ -65,4 +65,4 @@ export const ItemCard = ({
       Increase Count
     </Button>
   </Card>
-)
+);
