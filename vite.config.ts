@@ -1,4 +1,4 @@
-import { preact } from '@preact/preset-vite';
+import prefresh from '@prefresh/vite';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
@@ -8,7 +8,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 export default defineConfig({
   base: './',
   plugins: [
-    preact(),
+    prefresh(),
     visualizer(),
     VitePWA({
       registerType: 'autoUpdate',
@@ -23,25 +23,25 @@ export default defineConfig({
           {
             src: 'pwa-64x64.png',
             sizes: '64x64',
-            type: 'image/png',
+            type: 'image/png'
           },
           {
             src: 'pwa-192x192.png',
             sizes: '192x192',
-            type: 'image/png',
+            type: 'image/png'
           },
           {
             src: 'pwa-512x512.png',
             sizes: '512x512',
-            type: 'image/png',
+            type: 'image/png'
           },
           {
             src: 'maskable-icon-512x512.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'maskable',
-          },
-        ],
+            purpose: 'maskable'
+          }
+        ]
         // screenshots: [
         //   {
         //     src: 'desktop.png',
@@ -58,9 +58,22 @@ export default defineConfig({
         //     label: 'Mobile Days Since',
         //   },
         // ],
-      },
-    }),
+      }
+    })
   ],
+  esbuild: {
+    jsxFactory: 'h',
+    jsxFragment: 'Fragment',
+    jsxInject: `import { h } from 'preact'`
+  },
+  resolve: {
+    alias: {
+      react: 'preact/compat',
+      'react-dom/test-utils': 'preact/test-utils',
+      'react-dom': 'preact/compat',
+      'react/jsx-runtime': 'preact/jsx-runtime'
+    }
+  },
   build: {
     rollupOptions: {
       output: {
@@ -73,8 +86,8 @@ export default defineConfig({
 
             return vendorPrefix;
           }
-        },
-      },
-    },
-  },
+        }
+      }
+    }
+  }
 });
