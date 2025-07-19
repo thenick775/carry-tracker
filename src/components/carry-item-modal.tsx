@@ -13,7 +13,9 @@ import { useForm } from '@mantine/form';
 import dayjs from 'dayjs';
 import randomColor from 'randomcolor';
 
-import type { CarryItem, CreateCarryItem } from '../hooks/use-carry-items';
+import { useIsLargerThanPhone } from '../hooks/use-is-larger-than-phone.ts';
+
+import type { CarryItem, CreateCarryItem } from '../hooks/use-carry-items.ts';
 
 type CreateCarryItemModalProps = {
   carryItem?: CarryItem;
@@ -111,18 +113,22 @@ export const CarryItemModal = ({
   opened,
   close,
   onSubmit
-}: CreateCarryItemModalProps) => (
-  <Modal
-    opened={opened}
-    onClose={close}
-    title="Create Carry Item"
-    keepMounted={false}
-    fullScreen
-  >
-    <CarryItemForm
-      defaultValues={carryItem}
-      onSubmit={onSubmit}
-      close={close}
-    />
-  </Modal>
-);
+}: CreateCarryItemModalProps) => {
+  const isLargerThanPhone = useIsLargerThanPhone();
+
+  return (
+    <Modal
+      opened={opened}
+      onClose={close}
+      title="Create Carry Item"
+      keepMounted={false}
+      fullScreen={!isLargerThanPhone}
+    >
+      <CarryItemForm
+        defaultValues={carryItem}
+        onSubmit={onSubmit}
+        close={close}
+      />
+    </Modal>
+  );
+};
