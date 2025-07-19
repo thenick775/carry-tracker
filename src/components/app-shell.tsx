@@ -6,8 +6,8 @@ import classes from './app-shell.module.css';
 import { ImportExportView } from './import-export-view.tsx';
 import { ItemsView } from './item-view.tsx';
 import { MostCarriedView } from './most-carried-view.tsx';
+import { RotationsView } from './rotations-view.tsx';
 
-const RotationsView = () => <div>Rotations content</div>;
 const CalendarView = () => <div>Calendar Stats content</div>;
 
 const viewComponents: Record<string, React.ReactNode> = {

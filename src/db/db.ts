@@ -14,8 +14,18 @@ export type CarryItemStorage = {
   };
 };
 
+export type RotationStorage = {
+  id: string;
+  name: string;
+  createdAt: string;
+  active: boolean;
+  activeAt?: string;
+  orderedCarryItemIds: string[];
+};
+
 export const carryDb = new Dexie('carry-db') as Dexie & {
   carryItems: Table<CarryItemStorage, string>;
+  rotations: Table<RotationStorage, string>;
 };
 
 export const exportDb = async () => await exportDB(carryDb);
@@ -23,5 +33,6 @@ export const exportDb = async () => await exportDB(carryDb);
 export const importDb = async (blob: Blob) => await Dexie.import(blob);
 
 carryDb.version(1).stores({
-  carryItems: 'id, createdAt, name'
+  carryItems: 'id, createdAt, name',
+  rotations: 'id, createdAt, name, active'
 });
