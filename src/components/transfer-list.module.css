@@ -42,6 +42,10 @@
 
 .control {
   color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-1));
+}
+
+.controlWithRadius {
+  color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-1));
 
   [data-type='backward'] & {
     border-top-left-radius: var(--mantine-radius-sm);

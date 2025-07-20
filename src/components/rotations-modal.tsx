@@ -66,7 +66,7 @@ const RotationForm = ({
   };
 
   const pickedCarryItems = {
-    label: 'Rotation Items',
+    label: 'Rotation',
     values:
       carryItemIdentifiers
         ?.filter((item) => defaultValues?.orderedCarryItemIds.includes(item.id))
@@ -90,13 +90,11 @@ const RotationForm = ({
         <TransferList
           left={unPickedCarryItems}
           right={pickedCarryItems}
-          onChange={(leftValues, rightValues) => {
-            console.log('vancise submitted values', leftValues, rightValues);
-
+          onChange={(_, rightValues) =>
             form.setValues({
               orderedCarryItemIds: rightValues.map((v) => v.value)
-            });
-          }}
+            })
+          }
         />
         <Switch
           w="100%"

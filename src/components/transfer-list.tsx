@@ -8,7 +8,12 @@ import {
   useCombobox
 } from '@mantine/core';
 import { useState } from 'preact/hooks';
-import { TbChevronLeft, TbChevronRight } from 'react-icons/tb';
+import {
+  TbChevronLeft,
+  TbChevronRight,
+  TbChevronsLeft,
+  TbChevronsRight
+} from 'react-icons/tb';
 
 import classes from './transfer-list.module.css';
 
@@ -17,11 +22,18 @@ type Option = { name: string; value: string };
 type RenderListProps = {
   options: Option[];
   onTransfer: (options: string[]) => void;
+  onTransferAll: () => void;
   type: 'forward' | 'backward';
   label: string;
 };
 
-const RenderList = ({ options, onTransfer, type, label }: RenderListProps) => {
+const RenderList = ({
+  options,
+  onTransfer,
+  onTransferAll,
+  type,
+  label
+}: RenderListProps) => {
   const combobox = useCombobox();
   const [value, setValue] = useState<string[]>([]);
   const [search, setSearch] = useState('');
@@ -84,6 +96,15 @@ const RenderList = ({ options, onTransfer, type, label }: RenderListProps) => {
             >
               {type === 'forward' ? <TbChevronRight /> : <TbChevronLeft />}
             </ActionIcon>
+            <ActionIcon
+              radius={0}
+              variant="default"
+              size={36}
+              className={classes.controlWithRadius}
+              onClick={onTransferAll}
+            >
+              {type === 'forward' ? <TbChevronsRight /> : <TbChevronsLeft />}
+            </ActionIcon>
           </Group>
         </Combobox.EventsTarget>
 
@@ -145,12 +166,24 @@ export function TransferList({
         label={left.label}
         options={data[0]}
         onTransfer={(options) => handleTransfer(0, options)}
+        onTransferAll={() =>
+          handleTransfer(
+            0,
+            data[0].map((o) => o.value)
+          )
+        }
       />
       <RenderList
         type="backward"
         label={right.label}
         options={data[1]}
         onTransfer={(options) => handleTransfer(1, options)}
+        onTransferAll={() =>
+          handleTransfer(
+            1,
+            data[1].map((o) => o.value)
+          )
+        }
       />
     </div>
   );
