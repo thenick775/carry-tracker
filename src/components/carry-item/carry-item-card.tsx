@@ -10,7 +10,7 @@ import {
 import dayjs from 'dayjs';
 import { TbX } from 'react-icons/tb';
 
-import type { CarryItem } from '../hooks/use-carry-items.ts';
+import type { CarryItem } from '../../hooks/use-carry-items.ts';
 
 type ItemCardProps = {
   item: CarryItem;
@@ -20,7 +20,7 @@ type ItemCardProps = {
   imageUrl: string;
 };
 
-export const ItemCard = ({
+export const CarryItemCard = ({
   item,
   onDelete,
   onRequestEdit,

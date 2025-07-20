@@ -1,7 +1,7 @@
 import { Box, Text } from '@mantine/core';
 
-import { PieChart } from './pie-chart.tsx';
-import { StatsTable } from './stats-table.tsx';
+import { PieChart } from './most-carried/pie-chart.tsx';
+import { StatsTable } from './most-carried/stats-table.tsx';
 import { useCarryItems } from '../hooks/use-carry-items.ts';
 import { useIsLargerThanPhone } from '../hooks/use-is-larger-than-phone.ts';
 

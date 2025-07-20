@@ -9,7 +9,7 @@ import {
 } from '@mantine/core';
 import { TbX } from 'react-icons/tb';
 
-import type { Rotation } from '../hooks/use-rotations';
+import type { Rotation } from '../../hooks/use-rotations';
 
 type RotationCardProps = {
   rotation: Rotation;

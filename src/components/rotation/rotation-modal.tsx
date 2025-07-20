@@ -3,10 +3,10 @@ import { useForm } from '@mantine/form';
 import dayjs from 'dayjs';
 
 import { TransferList } from './transfer-list.tsx';
-import { useCarryItems } from '../hooks/use-carry-items.ts';
-import { useIsLargerThanPhone } from '../hooks/use-is-larger-than-phone.ts';
+import { useCarryItems } from '../../hooks/use-carry-items.ts';
+import { useIsLargerThanPhone } from '../../hooks/use-is-larger-than-phone.ts';
 
-import type { Rotation, CreateRotation } from '../hooks/use-rotations.ts';
+import type { Rotation, CreateRotation } from '../../hooks/use-rotations.ts';
 
 type CreateRotationItemModalProps = {
   rotation?: Rotation;
@@ -111,7 +111,7 @@ const RotationForm = ({
   );
 };
 
-export const RotationsModal = ({
+export const RotationModal = ({
   rotation,
   opened,
   close,

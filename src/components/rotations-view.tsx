@@ -3,8 +3,8 @@ import { useDisclosure } from '@mantine/hooks';
 import { useState } from 'preact/hooks';
 import { TbPlus } from 'react-icons/tb';
 
-import { RotationCard } from './rotation-card.tsx';
-import { RotationsModal } from './rotations-modal.tsx';
+import { RotationCard } from './rotation/rotation-card.tsx';
+import { RotationModal } from './rotation/rotation-modal.tsx';
 import { useRotations, type Rotation } from '../hooks/use-rotations.ts';
 
 export const RotationsView = () => {
@@ -48,7 +48,7 @@ export const RotationsView = () => {
         <TbPlus size={25} />
       </ActionIcon>
 
-      <RotationsModal
+      <RotationModal
         rotation={editRotation}
         opened={opened}
         close={close}
