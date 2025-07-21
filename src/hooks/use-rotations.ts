@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 
-import { carryDb } from '../db/db.ts';
+import { carryDb, type TimeUnit } from '../db/db.ts';
 
 export type Rotation = {
   id: string;
@@ -9,6 +9,10 @@ export type Rotation = {
   active: boolean;
   activeAt?: string;
   orderedCarryItemIds: string[];
+  stepDuration: {
+    duration: number;
+    unit: TimeUnit;
+  };
 };
 
 export type CreateRotation = Omit<Rotation, 'id'>;

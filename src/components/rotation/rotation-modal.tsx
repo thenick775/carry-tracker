@@ -1,4 +1,13 @@
-import { Button, Flex, Group, Modal, Switch, TextInput } from '@mantine/core';
+import {
+  Button,
+  Flex,
+  Group,
+  Modal,
+  NumberInput,
+  Select,
+  Switch,
+  TextInput
+} from '@mantine/core';
 import { useForm } from '@mantine/form';
 import dayjs from 'dayjs';
 
@@ -47,6 +56,10 @@ const RotationForm = ({
       name: '',
       createdAt: dayjs().toISOString(),
       orderedCarryItemIds: [],
+      stepDuration: {
+        duration: 1,
+        unit: 'day'
+      },
       ...defaultValues
     },
     transformValues: ({ active, createdAt, ...rest }) => ({
@@ -106,7 +119,7 @@ const RotationForm = ({
             })
           }
         />
-        <Flex justify={'space-between'}>
+        <Flex justify={'space-between'} gap="md">
           <Switch
             w="50%"
             label="Active"
@@ -126,6 +139,24 @@ const RotationForm = ({
           >
             Shuffle
           </Button>
+        </Flex>
+        <Flex justify={'space-between'} gap="md">
+          <NumberInput
+            label="Step Duration"
+            size="md"
+            {...form.getInputProps('stepDuration.duration')}
+          />
+          <Select
+            allowDeselect={false}
+            label="Step Unit"
+            size="md"
+            data={['minute', 'hour', 'day', 'week', 'month', 'year']}
+            comboboxProps={{
+              withinPortal: false,
+              transitionProps: { transition: 'scale-y', duration: 200 }
+            }}
+            {...form.getInputProps('stepDuration.unit')}
+          />
         </Flex>
         <Group justify="flex-end" mt="md">
           <Button type="submit">Submit</Button>

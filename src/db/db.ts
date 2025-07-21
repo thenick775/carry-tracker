@@ -14,6 +14,8 @@ export type CarryItemStorage = {
   };
 };
 
+export type TimeUnit = 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
+
 export type RotationStorage = {
   id: string;
   name: string;
@@ -21,6 +23,10 @@ export type RotationStorage = {
   active: boolean;
   activeAt?: string;
   orderedCarryItemIds: string[];
+  stepDuration: {
+    duration: number;
+    unit: TimeUnit;
+  };
 };
 
 export const carryDb = new Dexie('carry-db') as Dexie & {
