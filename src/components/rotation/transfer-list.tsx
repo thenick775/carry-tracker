@@ -131,57 +131,48 @@ export function TransferList({
   right: { label: string; values: Option[] };
   onChange?: (leftValues: Option[], rightValues: Option[]) => void;
 }) {
-  const [data, setData] = useState<[Option[], Option[]]>([
-    left.values,
-    right.values
-  ]);
+  const data = [left.values, right.values];
 
-  const handleTransfer = (transferFrom: 0 | 1, options: string[]) =>
-    setData((current) => {
-      const transferTo = transferFrom === 0 ? 1 : 0;
-      const transferFromData = current[transferFrom].filter(
-        (item) => !options.includes(item.value)
-      );
+  const handleTransfer = (transferFrom: 0 | 1, options: string[]) => {
+    const transferTo = transferFrom === 0 ? 1 : 0;
+    const transferFromData = data[transferFrom].filter(
+      (item) => !options.includes(item.value)
+    );
+    const fullOptions = data[transferFrom].filter((item) =>
+      options.includes(item.value)
+    );
+    const transferToData = [...data[transferTo], ...fullOptions];
 
-      const fullOptions = current[transferFrom].filter((item) =>
-        options.includes(item.value)
-      );
+    const result = [];
+    result[transferFrom] = transferFromData;
+    result[transferTo] = transferToData;
 
-      const transferToData = [...current[transferTo], ...fullOptions];
-
-      const result = [];
-      result[transferFrom] = transferFromData;
-      result[transferTo] = transferToData;
-
-      // todo: find better way to synchronize
-      onChange?.(result[0], result[1]);
-
-      return result as [Option[], Option[]];
-    });
+    onChange?.(result[0], result[1]);
+  };
 
   return (
     <div className={classes.root}>
       <RenderList
         type="forward"
         label={left.label}
-        options={data[0]}
+        options={left.values}
         onTransfer={(options) => handleTransfer(0, options)}
         onTransferAll={() =>
           handleTransfer(
             0,
-            data[0].map((o) => o.value)
+            left.values.map((o) => o.value)
           )
         }
       />
       <RenderList
         type="backward"
         label={right.label}
-        options={data[1]}
+        options={right.values}
         onTransfer={(options) => handleTransfer(1, options)}
         onTransferAll={() =>
           handleTransfer(
             1,
-            data[1].map((o) => o.value)
+            right.values.map((o) => o.value)
           )
         }
       />

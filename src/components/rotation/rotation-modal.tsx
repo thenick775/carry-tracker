@@ -25,6 +25,15 @@ type RotationFormProps = {
   }[];
 };
 
+const shuffle = (array: string[]) => {
+  const cloned = [...array];
+  for (let i = cloned.length - 1; i >= 1; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cloned[i], cloned[j]] = [cloned[j], cloned[i]];
+  }
+  return cloned;
+};
+
 const RotationForm = ({
   onSubmit,
   close,
@@ -55,21 +64,22 @@ const RotationForm = ({
     }
   });
 
+  const orderedCarryItemIds = form.getValues().orderedCarryItemIds;
+
   const unPickedCarryItems = {
     label: 'Carry Items',
     values:
       carryItemIdentifiers
-        ?.filter(
-          (item) => !defaultValues?.orderedCarryItemIds.includes(item.id)
-        )
+        ?.filter((item) => !orderedCarryItemIds.includes(item.id))
         .map(({ id, name }) => ({ name, value: id })) ?? []
   };
 
   const pickedCarryItems = {
     label: 'Rotation',
     values:
-      carryItemIdentifiers
-        ?.filter((item) => defaultValues?.orderedCarryItemIds.includes(item.id))
+      orderedCarryItemIds
+        .map((id) => carryItemIdentifiers?.find((c) => c.id === id))
+        .filter((v) => !!v)
         .map(({ id, name }) => ({ name, value: id })) ?? []
   };
 
@@ -96,6 +106,15 @@ const RotationForm = ({
             })
           }
         />
+        <Button
+          onClick={() =>
+            form.setValues((prevState) => ({
+              orderedCarryItemIds: shuffle(prevState.orderedCarryItemIds ?? [])
+            }))
+          }
+        >
+          Shuffle
+        </Button>
         <Switch
           w="100%"
           label="Active"

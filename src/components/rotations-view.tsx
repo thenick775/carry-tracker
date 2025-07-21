@@ -18,7 +18,7 @@ export const RotationsView = () => {
   return (
     <>
       <Text mb="sm">Rotations:</Text>
-      <Grid gutter="lg" pt="sm">
+      <Grid gutter={'8px'}>
         {rotations?.map((rotation) => (
           <Grid.Col key={rotation.id} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
             <RotationCard
