@@ -7,6 +7,7 @@ import {
   Badge,
   Flex
 } from '@mantine/core';
+import dayjs from 'dayjs';
 import { TbX } from 'react-icons/tb';
 
 import type { Rotation } from '../../hooks/use-rotations';
@@ -21,28 +22,32 @@ export const RotationCard = ({
   rotation,
   onDelete,
   onRequestEdit
-}: RotationCardProps) => {
-  return (
-    <Card shadow="md" padding="lg" radius="md" withBorder mb="md">
-      <Group justify="space-between" mb="xs">
-        <Text fw={500}>{rotation.name}</Text>
-        <Flex gap="md">
-          {!!rotation.activeAt && <Badge color="blue">Active</Badge>}
-          <ActionIcon
-            size="sm"
-            variant="subtle"
-            color="red"
-            aria-label="Delete tracker"
-            onClick={onDelete}
-          >
-            <TbX size={18} />
-          </ActionIcon>
-        </Flex>
-      </Group>
+}: RotationCardProps) => (
+  <Card shadow="md" padding="lg" radius="md" withBorder mb="md">
+    <Group justify="space-between" mb="xs">
+      <Text fw={500}>{rotation.name}</Text>
+      <Flex gap="md">
+        {!!rotation.activeAt && <Badge color="blue">Active</Badge>}
+        <ActionIcon
+          size="sm"
+          variant="subtle"
+          color="red"
+          aria-label="Delete tracker"
+          onClick={onDelete}
+        >
+          <TbX size={18} />
+        </ActionIcon>
+      </Flex>
+    </Group>
 
-      <Button mt="md" fullWidth variant="light" onClick={onRequestEdit}>
-        Edit
-      </Button>
-    </Card>
-  );
-};
+    {rotation.activeAt && (
+      <Text size="sm" c="dimmed">
+        Active since: {dayjs(rotation.activeAt).format('MMM D, YYYY')}
+      </Text>
+    )}
+
+    <Button mt="md" fullWidth variant="light" onClick={onRequestEdit}>
+      Edit
+    </Button>
+  </Card>
+);
