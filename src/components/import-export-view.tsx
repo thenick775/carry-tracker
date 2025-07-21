@@ -44,7 +44,6 @@ export const ImportExportView = () => (
     Import and export your database here!
     <Dropzone
       onDrop={(files) => files.map(importWithNotifications)}
-      onReject={(files) => console.log('rejected files', files)}
       accept={['application/json']}
       multiple={false}
     >

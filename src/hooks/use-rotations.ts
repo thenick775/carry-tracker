@@ -23,7 +23,6 @@ export const useRotations = () => {
   const createRotation = async (input: CreateRotation) => {
     const id = crypto.randomUUID();
     const rotation = { ...input, id };
-    console.log('vancise creating rotation', rotation);
     await carryDb.rotations.add(rotation);
   };
 
