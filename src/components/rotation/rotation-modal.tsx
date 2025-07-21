@@ -106,22 +106,27 @@ const RotationForm = ({
             })
           }
         />
-        <Button
-          onClick={() =>
-            form.setValues((prevState) => ({
-              orderedCarryItemIds: shuffle(prevState.orderedCarryItemIds ?? [])
-            }))
-          }
-        >
-          Shuffle
-        </Button>
-        <Switch
-          w="100%"
-          label="Active"
-          placeholder="Active"
-          size="md"
-          {...form.getInputProps('active', { type: 'checkbox' })}
-        />
+        <Flex justify={'space-between'}>
+          <Switch
+            w="50%"
+            label="Active"
+            placeholder="Active"
+            size="md"
+            {...form.getInputProps('active', { type: 'checkbox' })}
+          />
+          <Button
+            w={'50%'}
+            onClick={() =>
+              form.setValues((prevState) => ({
+                orderedCarryItemIds: shuffle(
+                  prevState.orderedCarryItemIds ?? []
+                )
+              }))
+            }
+          >
+            Shuffle
+          </Button>
+        </Flex>
         <Group justify="flex-end" mt="md">
           <Button type="submit">Submit</Button>
         </Group>
