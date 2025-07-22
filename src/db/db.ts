@@ -20,7 +20,8 @@ export type RotationStorage = {
   id: string;
   name: string;
   createdAt: string;
-  active: boolean;
+  // 0/1 instead of boolean so this value can be indexed, see: https://dexie.org/docs/Indexable-Type
+  active: 0 | 1;
   activeAt?: string;
   orderedCarryItemIds: string[];
   stepDuration: {
