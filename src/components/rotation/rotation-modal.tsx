@@ -8,6 +8,7 @@ import {
   Switch,
   TextInput
 } from '@mantine/core';
+import { DateTimePicker } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 import dayjs from 'dayjs';
 
@@ -62,25 +63,30 @@ const RotationForm = ({
       },
       ...defaultValues
     },
-    transformValues: ({ active, createdAt, ...rest }) => ({
+    transformValues: ({ active, createdAt, activeAt, ...rest }) => ({
       ...rest,
       active,
       createdAt: dayjs(createdAt).toISOString(),
-      activeAt: active ? dayjs().toISOString() : undefined
+      activeAt:
+        active && !activeAt
+          ? dayjs().toISOString()
+          : active && activeAt
+          ? dayjs(activeAt).toISOString()
+          : undefined
     }),
     validate: {
       name: (value) => (value ? null : 'Invalid name'),
       createdAt: (value) =>
-        dayjs(value).isValid() ? null : 'Invalid added date time',
+        dayjs(value).isValid() ? null : 'Invalid created date time',
       activeAt: (value) =>
-        !value || dayjs(value).isValid() ? null : 'Invalid added date time'
+        !value || dayjs(value).isValid() ? null : 'Invalid active at date time'
     }
   });
 
   const orderedCarryItemIds = form.getValues().orderedCarryItemIds;
 
   const unPickedCarryItems = {
-    label: 'Carry Items',
+    label: 'Items',
     values:
       carryItemIdentifiers
         ?.filter((item) => !orderedCarryItemIds.includes(item.id))
@@ -119,36 +125,24 @@ const RotationForm = ({
             })
           }
         />
-        <Flex justify={'space-between'} gap="md">
-          <Switch
-            w="50%"
-            label="Active"
-            placeholder="Active"
-            size="md"
-            {...form.getInputProps('active', { type: 'checkbox' })}
-          />
-          <Button
-            w={'50%'}
-            onClick={() =>
-              form.setValues((prevState) => ({
-                orderedCarryItemIds: shuffle(
-                  prevState.orderedCarryItemIds ?? []
-                )
-              }))
-            }
-          >
-            Shuffle
-          </Button>
-        </Flex>
+        <Button
+          onClick={() =>
+            form.setValues((prevState) => ({
+              orderedCarryItemIds: shuffle(prevState.orderedCarryItemIds ?? [])
+            }))
+          }
+        >
+          Shuffle
+        </Button>
         <Flex justify={'space-between'} gap="md">
           <NumberInput
-            label="Step Duration"
+            label="Item Duration"
             size="md"
             {...form.getInputProps('stepDuration.duration')}
           />
           <Select
             allowDeselect={false}
-            label="Step Unit"
+            label="Unit"
             size="md"
             data={['minute', 'hour', 'day', 'week', 'month', 'year']}
             comboboxProps={{
@@ -158,6 +152,23 @@ const RotationForm = ({
             {...form.getInputProps('stepDuration.unit')}
           />
         </Flex>
+        <Switch
+          label="Active"
+          placeholder="Active"
+          size="md"
+          {...form.getInputProps('active', { type: 'checkbox' })}
+        />
+        {defaultValues?.active && form.getValues().active && (
+          <DateTimePicker
+            withSeconds
+            label="Active since"
+            valueFormat="MMM DD YYYY hh:mm:ss A"
+            size="md"
+            dropdownType="modal"
+            styles={{ input: { width: '100%' } }}
+            {...form.getInputProps('activeAt')}
+          />
+        )}
         <Group justify="flex-end" mt="md">
           <Button type="submit">Submit</Button>
         </Group>

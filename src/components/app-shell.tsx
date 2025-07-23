@@ -1,4 +1,4 @@
-import { AppShell, Burger, Grid, Title, ScrollArea } from '@mantine/core';
+import { AppShell, Burger, Grid, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { useState } from 'preact/hooks';
 
@@ -7,13 +7,12 @@ import { ImportExportView } from './import-export-view.tsx';
 import { ItemsView } from './item-view.tsx';
 import { MostCarriedView } from './most-carried-view.tsx';
 import { RotationsView } from './rotations-view.tsx';
-
-const CalendarView = () => <div>Calendar Stats content</div>;
+import { TimelineView } from './timeline-view.tsx';
 
 const viewComponents: Record<string, React.ReactNode> = {
   Items: <ItemsView />,
-  Calendar: <CalendarView />,
   Rotations: <RotationsView />,
+  'Rotation Timeline': <TimelineView />,
   'Most Carried': <MostCarriedView />,
   'Import/Export': <ImportExportView />
 };
@@ -65,19 +64,7 @@ export const CarryTrackerAppShell = () => {
         </Grid>
       </AppShell.Header>
       <AppShell.Navbar p="md">{navBarItems}</AppShell.Navbar>
-      <AppShell.Main>
-        <ScrollArea
-          style={{
-            height: 'calc(100dvh - var(--mantine-header-height, 0px) - 60px)'
-          }}
-          px="md"
-          pb="lg"
-          scrollbarSize={8}
-          scrollbars="y"
-        >
-          {viewComponents[activeLink]}
-        </ScrollArea>
-      </AppShell.Main>
+      <AppShell.Main>{viewComponents[activeLink]}</AppShell.Main>
     </AppShell>
   );
 };

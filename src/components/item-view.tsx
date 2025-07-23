@@ -5,6 +5,7 @@ import { TbPlus } from 'react-icons/tb';
 
 import { CarryItemCard } from './carry-item/carry-item-card.tsx';
 import { CarryItemModal } from './carry-item/carry-item-modal.tsx';
+import { ResponsiveScrollArea } from './common/responsive-scroll-area.tsx';
 import { Masonry } from './masonry/masonry.tsx';
 import { useCarryItems } from '../hooks/use-carry-items.ts';
 import { useObjectUrls } from '../hooks/use-object-urls.ts';
@@ -29,7 +30,7 @@ export const ItemsView = () => {
     updateCarryItem(carryItem?.id, { carryCount: carryItem.carryCount + 1 });
 
   return (
-    <>
+    <ResponsiveScrollArea>
       <Text mb="sm">Carry Items:</Text>
       <Masonry>
         {imageUrls &&
@@ -72,6 +73,6 @@ export const ItemsView = () => {
             : createCarryItem(carryItem)
         }
       />
-    </>
+    </ResponsiveScrollArea>
   );
 };

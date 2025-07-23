@@ -1,5 +1,6 @@
 import { Box, Text } from '@mantine/core';
 
+import { ResponsiveScrollArea } from './common/responsive-scroll-area.tsx';
 import { PieChart } from './most-carried/pie-chart.tsx';
 import { StatsTable } from './most-carried/stats-table.tsx';
 import { useCarryItems } from '../hooks/use-carry-items.ts';
@@ -17,7 +18,7 @@ export const MostCarriedView = () => {
   }));
 
   return (
-    <>
+    <ResponsiveScrollArea>
       <Text mb="sm">Most Carried:</Text>
       <Box
         w="100%"
@@ -35,6 +36,6 @@ export const MostCarriedView = () => {
           </>
         )}
       </Box>
-    </>
+    </ResponsiveScrollArea>
   );
 };

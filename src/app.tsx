@@ -6,10 +6,14 @@ import '@mantine/notifications/styles.css';
 
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
+import dayjs from 'dayjs';
+import isBetween from 'dayjs/plugin/isBetween';
 
 import { CarryTrackerAppShell } from './components/app-shell.tsx';
 import { shadcnCssVariableResolver } from './theme/cssVariableResolver.ts';
 import { shadcnTheme } from './theme/theme.ts';
+
+dayjs.extend(isBetween);
 
 export const App = () => (
   <MantineProvider

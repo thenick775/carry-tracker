@@ -3,6 +3,7 @@ import { Dropzone } from '@mantine/dropzone';
 import { notifications } from '@mantine/notifications';
 import { TbUpload, TbX, TbDatabase, TbCheck } from 'react-icons/tb';
 
+import { ResponsiveScrollArea } from './common/responsive-scroll-area.tsx';
 import { exportDb, importDb } from '../db/db.ts';
 
 const importWithNotifications = async (file: File) => {
@@ -40,46 +41,48 @@ const importWithNotifications = async (file: File) => {
 };
 
 export const ImportExportView = () => (
-  <Flex gap="xl" direction="column">
-    Import and export your database here!
-    <Dropzone
-      onDrop={(files) => files.map(importWithNotifications)}
-      accept={['application/json']}
-      multiple={false}
-    >
-      <Group
-        justify="center"
-        gap="xl"
-        mih={150}
-        style={{ pointerEvents: 'none', textAlign: 'center' }}
+  <ResponsiveScrollArea>
+    <Flex gap="xl" direction="column">
+      Import and export your database here!
+      <Dropzone
+        onDrop={(files) => files.map(importWithNotifications)}
+        accept={['application/json']}
+        multiple={false}
       >
-        <Dropzone.Accept>
-          <TbUpload size={52} color="var(--mantine-color-blue-6)" />
-        </Dropzone.Accept>
-        <Dropzone.Reject>
-          <TbX size={52} color="var(--mantine-color-red-6)" />
-        </Dropzone.Reject>
-        <Dropzone.Idle>
-          <TbDatabase size={52} color="var(--mantine-color-dimmed)" />
-        </Dropzone.Idle>
+        <Group
+          justify="center"
+          gap="xl"
+          mih={150}
+          style={{ pointerEvents: 'none', textAlign: 'center' }}
+        >
+          <Dropzone.Accept>
+            <TbUpload size={52} color="var(--mantine-color-blue-6)" />
+          </Dropzone.Accept>
+          <Dropzone.Reject>
+            <TbX size={52} color="var(--mantine-color-red-6)" />
+          </Dropzone.Reject>
+          <Dropzone.Idle>
+            <TbDatabase size={52} color="var(--mantine-color-dimmed)" />
+          </Dropzone.Idle>
 
-        <Text size="xl" inline>
-          Drag your carry-db.json file here to import
-        </Text>
-      </Group>
-    </Dropzone>
-    <Button
-      onClick={async () => {
-        const dbExport = await exportDb();
-        const url = URL.createObjectURL(dbExport);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = 'carry-db.json';
-        link.click();
-        setTimeout(() => URL.revokeObjectURL(url), 0);
-      }}
-    >
-      Export
-    </Button>
-  </Flex>
+          <Text size="xl" inline>
+            Drag your carry-db.json file here to import
+          </Text>
+        </Group>
+      </Dropzone>
+      <Button
+        onClick={async () => {
+          const dbExport = await exportDb();
+          const url = URL.createObjectURL(dbExport);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = 'carry-db.json';
+          link.click();
+          setTimeout(() => URL.revokeObjectURL(url), 0);
+        }}
+      >
+        Export
+      </Button>
+    </Flex>
+  </ResponsiveScrollArea>
 );

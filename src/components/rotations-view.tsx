@@ -3,6 +3,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { useState } from 'preact/hooks';
 import { TbPlus } from 'react-icons/tb';
 
+import { ResponsiveScrollArea } from './common/responsive-scroll-area.tsx';
 import { RotationCard } from './rotation/rotation-card.tsx';
 import { RotationModal } from './rotation/rotation-modal.tsx';
 import { useRotations, type Rotation } from '../hooks/use-rotations.ts';
@@ -16,7 +17,7 @@ export const RotationsView = () => {
   });
 
   return (
-    <>
+    <ResponsiveScrollArea>
       <Text mb="sm">Rotations:</Text>
       <Grid gutter={'8px'}>
         {rotations?.map((rotation) => (
@@ -58,6 +59,6 @@ export const RotationsView = () => {
             : createRotation(rotation)
         }
       />
-    </>
+    </ResponsiveScrollArea>
   );
 };
