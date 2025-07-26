@@ -10,12 +10,15 @@ export const MostCarriedView = () => {
   const isLargerThanPhone = useIsLargerThanPhone();
   const { carryItems } = useCarryItems();
 
-  const chartData = carryItems?.map(({ id, name, carryCount, color }) => ({
-    id,
-    name,
-    color,
-    value: carryCount
-  }));
+  const chartData = carryItems?.map(
+    ({ id, name, carryCount, cost, color }) => ({
+      id,
+      name,
+      color,
+      cost,
+      value: carryCount
+    })
+  );
 
   return (
     <ResponsiveScrollArea>

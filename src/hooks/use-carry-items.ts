@@ -9,6 +9,7 @@ export type CarryItem = {
   createdAt: string;
   color: string;
   imageData?: File;
+  cost?: number;
 };
 
 export type CreateCarryItem = Omit<CarryItem, 'id'>;

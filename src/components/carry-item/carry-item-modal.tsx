@@ -95,7 +95,19 @@ const CarryItemForm = ({
         <NumberInput
           label="Carry Count"
           size="md"
+          thousandSeparator=","
           {...form.getInputProps('carryCount')}
+        />
+        <NumberInput
+          label="Cost"
+          size="md"
+          min={0}
+          decimalScale={2}
+          prefix="$"
+          thousandSeparator=","
+          clampBehavior="strict"
+          allowNegative={false}
+          {...form.getInputProps('cost')}
         />
         <ColorInput
           label="Color"

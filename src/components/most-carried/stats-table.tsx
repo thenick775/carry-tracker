@@ -2,10 +2,17 @@ import { Table, Badge } from '@mantine/core';
 
 import type { PieChartData } from './pie-chart';
 
+const currencyFormatterUSD = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0
+});
+
 export const StatsTable = ({
   data
 }: {
-  data: (PieChartData & { id: string })[];
+  data: (PieChartData & { id: string; cost?: number })[];
 }) => {
   const total = data.reduce((acc, { value }) => acc + value, 0);
   const rows = data
@@ -13,7 +20,10 @@ export const StatsTable = ({
     .map((chartItem) => (
       <Table.Tr key={chartItem.id}>
         <Table.Td>{chartItem.name}</Table.Td>
-        <Table.Td>{chartItem.value}</Table.Td>
+        <Table.Td>{chartItem.value.toLocaleString('en-US')}</Table.Td>
+        <Table.Td>
+          {chartItem.cost ? currencyFormatterUSD.format(chartItem.cost) : ''}
+        </Table.Td>
         <Table.Td>{((chartItem.value / total) * 100).toFixed(0)}</Table.Td>
         <Table.Td>
           <Badge size="xs" circle color={chartItem.color} />
@@ -27,6 +37,7 @@ export const StatsTable = ({
         <Table.Tr>
           <Table.Th>Name</Table.Th>
           <Table.Th>Carry Count</Table.Th>
+          <Table.Th>Cost</Table.Th>
           <Table.Th>%</Table.Th>
           <Table.Th>Color</Table.Th>
         </Table.Tr>

@@ -48,7 +48,7 @@ export const CarryItemCard = ({
     </Text>
 
     <Text size="sm" c="dimmed">
-      Carry Count: {item.carryCount}
+      Carry Count: {item.carryCount.toLocaleString('en-US')}
     </Text>
 
     <Group gap="xs">
