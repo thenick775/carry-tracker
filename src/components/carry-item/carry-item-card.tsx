@@ -28,7 +28,7 @@ export const CarryItemCard = ({
   imageUrl
 }: ItemCardProps) => (
   <Card shadow="md" padding="lg" radius="md" withBorder mb="md">
-    <Group justify="space-between" mb="xs">
+    <Group justify="space-between" mb="xs" style={{ flexWrap: 'nowrap' }}>
       <Text fw={500}>{item.name}</Text>
       <ActionIcon
         size="sm"
