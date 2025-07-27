@@ -30,24 +30,37 @@ export const ItemsView = () => {
     updateCarryItem(carryItem?.id, { carryCount: carryItem.carryCount + 1 });
 
   return (
-    <ResponsiveScrollArea>
-      <Text mb="sm">Carry Items:</Text>
-      <Masonry>
-        {imageUrls &&
-          carryItems?.map((item, idx) => (
-            <CarryItemCard
-              key={item.id}
-              item={item}
-              imageUrl={imageUrls[idx]}
-              onDelete={() => deleteCarryItem(item.id)}
-              onRequestEdit={() => {
-                setEditCarryItem(item);
-                open();
-              }}
-              onIncreaseCount={() => increaseCarryItemCount(item)}
-            />
-          ))}
-      </Masonry>
+    <>
+      <ResponsiveScrollArea>
+        <Text mb="sm">Carry Items:</Text>
+        <Masonry>
+          {imageUrls &&
+            carryItems?.map((item, idx) => (
+              <CarryItemCard
+                key={item.id}
+                item={item}
+                imageUrl={imageUrls[idx]}
+                onDelete={() => deleteCarryItem(item.id)}
+                onRequestEdit={() => {
+                  setEditCarryItem(item);
+                  open();
+                }}
+                onIncreaseCount={() => increaseCarryItemCount(item)}
+              />
+            ))}
+        </Masonry>
+
+        <CarryItemModal
+          carryItem={editCarryItem}
+          opened={opened}
+          close={close}
+          onSubmit={(carryItem) =>
+            editCarryItem
+              ? updateCarryItem(editCarryItem.id, carryItem)
+              : createCarryItem(carryItem)
+          }
+        />
+      </ResponsiveScrollArea>
 
       <ActionIcon
         aria-label="Add item"
@@ -56,23 +69,12 @@ export const ItemsView = () => {
         size="xl"
         style={{
           bottom: 24,
-          right: 8
+          right: 16
         }}
         onClick={open}
       >
         <TbPlus size={25} />
       </ActionIcon>
-
-      <CarryItemModal
-        carryItem={editCarryItem}
-        opened={opened}
-        close={close}
-        onSubmit={(carryItem) =>
-          editCarryItem
-            ? updateCarryItem(editCarryItem.id, carryItem)
-            : createCarryItem(carryItem)
-        }
-      />
-    </ResponsiveScrollArea>
+    </>
   );
 };

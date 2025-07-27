@@ -17,23 +17,39 @@ export const RotationsView = () => {
   });
 
   return (
-    <ResponsiveScrollArea>
-      <Text mb="sm">Rotations:</Text>
-      <Grid gutter={'8px'}>
-        {rotations?.map((rotation) => (
-          <Grid.Col key={rotation.id} span={{ base: 12, sm: 6, md: 4, lg: 3 }}>
-            <RotationCard
+    <>
+      <ResponsiveScrollArea>
+        <Text mb="sm">Rotations:</Text>
+        <Grid gutter={'8px'}>
+          {rotations?.map((rotation) => (
+            <Grid.Col
               key={rotation.id}
-              rotation={rotation}
-              onDelete={() => deleteRotation(rotation.id)}
-              onRequestEdit={() => {
-                setEditRotation(rotation);
-                open();
-              }}
-            />
-          </Grid.Col>
-        ))}
-      </Grid>
+              span={{ base: 12, sm: 6, md: 4, lg: 3 }}
+            >
+              <RotationCard
+                key={rotation.id}
+                rotation={rotation}
+                onDelete={() => deleteRotation(rotation.id)}
+                onRequestEdit={() => {
+                  setEditRotation(rotation);
+                  open();
+                }}
+              />
+            </Grid.Col>
+          ))}
+        </Grid>
+
+        <RotationModal
+          rotation={editRotation}
+          opened={opened}
+          close={close}
+          onSubmit={(rotation) =>
+            editRotation
+              ? updateRotation(editRotation.id, rotation)
+              : createRotation(rotation)
+          }
+        />
+      </ResponsiveScrollArea>
 
       <ActionIcon
         aria-label="Add item"
@@ -42,23 +58,12 @@ export const RotationsView = () => {
         size="xl"
         style={{
           bottom: 24,
-          right: 8
+          right: 16
         }}
         onClick={open}
       >
         <TbPlus size={25} />
       </ActionIcon>
-
-      <RotationModal
-        rotation={editRotation}
-        opened={opened}
-        close={close}
-        onSubmit={(rotation) =>
-          editRotation
-            ? updateRotation(editRotation.id, rotation)
-            : createRotation(rotation)
-        }
-      />
-    </ResponsiveScrollArea>
+    </>
   );
 };
