@@ -12,9 +12,9 @@ import { TimelineView } from './timeline-view.tsx';
 
 const viewComponents: Record<string, React.ReactNode> = {
   Items: <ItemsView />,
+  'Most Carried': <MostCarriedView />,
   Rotations: <RotationsView />,
   'Rotation Timeline': <TimelineView />,
-  'Most Carried': <MostCarriedView />,
   'Import/Export': <ImportExportView />
 };
 
