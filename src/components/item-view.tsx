@@ -9,6 +9,7 @@ import { ResponsiveScrollArea } from './common/responsive-scroll-area.tsx';
 import { Masonry } from './masonry/masonry.tsx';
 import { useCarryItems } from '../hooks/use-carry-items.ts';
 import { useObjectUrls } from '../hooks/use-object-urls.ts';
+import { NoItems } from './carry-item/no-items.tsx';
 
 import type { CarryItem } from '../hooks/use-carry-items.ts';
 
@@ -29,26 +30,33 @@ export const ItemsView = () => {
   const increaseCarryItemCount = (carryItem: CarryItem) =>
     updateCarryItem(carryItem?.id, { carryCount: carryItem.carryCount + 1 });
 
+  const shouldRenderItems = !!imageUrls && !!carryItems?.length;
+
   return (
     <>
       <ResponsiveScrollArea>
-        <Text mb="sm">Carry Items:</Text>
-        <Masonry>
-          {imageUrls &&
-            carryItems?.map((item, idx) => (
-              <CarryItemCard
-                key={item.id}
-                item={item}
-                imageUrl={imageUrls[idx]}
-                onDelete={() => deleteCarryItem(item.id)}
-                onRequestEdit={() => {
-                  setEditCarryItem(item);
-                  open();
-                }}
-                onIncreaseCount={() => increaseCarryItemCount(item)}
-              />
-            ))}
-        </Masonry>
+        {shouldRenderItems ? (
+          <>
+            <Text mb="sm">Carry Items:</Text>
+            <Masonry>
+              {carryItems.map((item, idx) => (
+                <CarryItemCard
+                  key={item.id}
+                  item={item}
+                  imageUrl={imageUrls[idx]}
+                  onDelete={() => deleteCarryItem(item.id)}
+                  onRequestEdit={() => {
+                    setEditCarryItem(item);
+                    open();
+                  }}
+                  onIncreaseCount={() => increaseCarryItemCount(item)}
+                />
+              ))}
+            </Masonry>
+          </>
+        ) : (
+          <NoItems />
+        )}
 
         <CarryItemModal
           carryItem={editCarryItem}
