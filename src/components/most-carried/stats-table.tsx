@@ -22,7 +22,7 @@ export const StatsTable = ({
         <Table.Td>{chartItem.name}</Table.Td>
         <Table.Td>{chartItem.value.toLocaleString('en-US')}</Table.Td>
         <Table.Td>
-          {chartItem.cost ? currencyFormatterUSD.format(chartItem.cost) : ''}
+          {chartItem.cost ? currencyFormatterUSD.format(chartItem.cost) : '?'}
         </Table.Td>
         <Table.Td>{((chartItem.value / total) * 100).toFixed(0)}</Table.Td>
         <Table.Td>
@@ -30,6 +30,15 @@ export const StatsTable = ({
         </Table.Td>
       </Table.Tr>
     ));
+
+  const totalCarryCount = data.reduce(
+    (acc, chartItem) => acc + chartItem.value,
+    0
+  );
+  const totalCost = data.reduce(
+    (acc, chartItem) => acc + (chartItem.cost ?? 0),
+    0
+  );
 
   return (
     <Table>
@@ -42,7 +51,17 @@ export const StatsTable = ({
           <Table.Th>Color</Table.Th>
         </Table.Tr>
       </Table.Thead>
-      <Table.Tbody>{rows}</Table.Tbody>
+      {/* Summary row */}
+      <Table.Tbody>
+        {rows}
+        <Table.Tr>
+          <Table.Td>Summary</Table.Td>
+          <Table.Td>{totalCarryCount}</Table.Td>
+          <Table.Td>{currencyFormatterUSD.format(totalCost)}</Table.Td>
+          <Table.Td />
+          <Table.Td />
+        </Table.Tr>
+      </Table.Tbody>
     </Table>
   );
 };
