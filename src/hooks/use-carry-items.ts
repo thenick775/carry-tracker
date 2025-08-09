@@ -21,7 +21,7 @@ const uint8ArrayToFile = (
   name: string,
   mimeType: string,
   data: Uint8Array
-): File => new File([data], name, { type: mimeType });
+): File => new File([data.slice()], name, { type: mimeType });
 
 const buildImage = async (
   file?: File
