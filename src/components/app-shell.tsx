@@ -52,7 +52,12 @@ export const CarryTrackerAppShell = () => {
       <AppShell.Header p="sm">
         <Grid align="center">
           <Grid.Col span={1.5}>
-            <Burger opened={navbarOpened} onClick={toggleNavBar} size="sm" />
+            <Burger
+              aria-label={navbarOpened ? 'Close menu' : 'Open menu'}
+              opened={navbarOpened}
+              onClick={toggleNavBar}
+              size="sm"
+            />
           </Grid.Col>
 
           <Grid.Col span="auto">
