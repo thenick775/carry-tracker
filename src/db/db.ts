@@ -35,7 +35,8 @@ export const carryDb = new Dexie('carry-db') as Dexie & {
   rotations: Table<RotationStorage, string>;
 };
 
-export const exportDb = async () => await exportDB(carryDb);
+export const exportDb = async () =>
+  await exportDB(carryDb, { numRowsPerChunk: 2 });
 
 export const importDb = async (blob: Blob) => await importInto(carryDb, blob);
 
