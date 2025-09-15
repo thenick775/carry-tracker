@@ -4,7 +4,8 @@ import {
   Pie,
   ResponsiveContainer,
   PieChart as ReChartsPieChart,
-  type PieLabelRenderProps
+  type PieLabelRenderProps,
+  type LabelProps
 } from 'recharts';
 
 export type PieChartData = { name: string; value: number; color: string };
@@ -64,7 +65,7 @@ export const PieChart = ({ data }: RadialBarChartProps) => {
           animationBegin={200}
           animationDuration={1200}
           outerRadius="100%"
-          label={renderLabel}
+          label={renderLabel as LabelProps['content']}
           labelLine={{
             stroke: 'var(--chart-label-color, var(--mantine-color-dimmed))',
             strokeWidth: 1
