@@ -1,4 +1,4 @@
-import { ActionIcon, Text } from '@mantine/core';
+import { ActionIcon, Text, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMemo, useState } from 'preact/hooks';
@@ -15,8 +15,9 @@ import { NoItems } from './carry-item/no-items.tsx';
 import type { CarryItem } from '../hooks/use-carry-items.ts';
 
 export const ItemsView = () => {
+  const [nameFilter, setNameFilter] = useState<string>();
   const { carryItems, createCarryItem, updateCarryItem, deleteCarryItem } =
-    useCarryItems();
+    useCarryItems(nameFilter);
   const [editCarryItem, setEditCarryItem] = useState<CarryItem>();
   const images = useMemo(
     () =>
@@ -39,6 +40,12 @@ export const ItemsView = () => {
     <>
       <ResponsiveScrollArea>
         <AnimatePresence>
+          <TextInput
+            placeholder="Search by name"
+            size="md"
+            mb="sm"
+            onChange={(event) => setNameFilter(event.currentTarget.value)}
+          />
           {hasNoItems && <NoItems />}
           {shouldRenderMasonry && (
             <motion.div

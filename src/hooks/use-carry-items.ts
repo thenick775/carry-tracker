@@ -51,15 +51,20 @@ const convertFromStorage = (item: CarryItemStorage): CarryItem => {
   };
 };
 
-export const useCarryItems = () => {
+export const useCarryItems = (textFilter?: string) => {
   const carryItems = useLiveQuery(async () => {
     const items = await carryDb.carryItems
       .orderBy('createdAt')
       .reverse()
+      .filter((carryItem) =>
+        textFilter
+          ? carryItem.name.toLowerCase().includes(textFilter.toLowerCase())
+          : true
+      )
       .toArray();
 
     return items.map(convertFromStorage);
-  }, []);
+  }, [textFilter]);
 
   const createCarryItem = async (input: CreateCarryItem) => {
     const id = crypto.randomUUID();
