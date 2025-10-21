@@ -2,7 +2,7 @@ import { ActionIcon, Text, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useMemo, useState } from 'preact/hooks';
-import { TbPlus } from 'react-icons/tb';
+import { TbPlus, TbX } from 'react-icons/tb';
 
 import { CarryItemCard } from './carry-item/carry-item-card.tsx';
 import { CarryItemModal } from './carry-item/carry-item-modal.tsx';
@@ -44,7 +44,31 @@ export const ItemsView = () => {
             placeholder="Search by name"
             size="md"
             mb="sm"
+            value={nameFilter ?? ''}
             onChange={(event) => setNameFilter(event.currentTarget.value)}
+            rightSection={
+              <AnimatePresence>
+                {nameFilter && (
+                  <motion.div
+                    key="clear"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.15 }}
+                  >
+                    <ActionIcon
+                      variant="subtle"
+                      color="gray"
+                      size="sm"
+                      onClick={() => setNameFilter('')}
+                      aria-label="Clear search"
+                    >
+                      <TbX size={16} />
+                    </ActionIcon>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            }
           />
           {hasNoItems && <NoItems />}
           {shouldRenderMasonry && (
