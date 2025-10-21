@@ -13,25 +13,27 @@ export default tseslint.config(
       js.configs.recommended,
       importPlugin.flatConfigs.recommended,
       jsxA11Y.flatConfigs.recommended,
-      ...tseslint.configs.recommended,
+      ...tseslint.configs.recommended
     ],
     files: ['**/*.{ts,tsx}'],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser,
+      globals: globals.browser
     },
     plugins: {
       'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
+      'react-refresh': reactRefresh
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
       'react-refresh/only-export-components': [
         'warn',
-        { allowConstantExport: true },
+        { allowConstantExport: true }
       ],
       '@typescript-eslint/consistent-type-imports': 'error',
       'import/no-default-export': 'error',
+      // were not using the react compiler, yet
+      'react-hooks/incompatible-library': 'off',
 
       'import/order': [
         'error',
@@ -44,17 +46,17 @@ export default tseslint.config(
             'index',
             'object',
             'type',
-            'unknown',
+            'unknown'
           ],
 
           'newlines-between': 'always',
 
           alphabetize: {
             order: 'asc',
-            caseInsensitive: true,
-          },
-        },
-      ],
-    },
+            caseInsensitive: true
+          }
+        }
+      ]
+    }
   }
 );

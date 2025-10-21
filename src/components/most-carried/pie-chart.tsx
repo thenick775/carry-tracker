@@ -4,8 +4,7 @@ import {
   Pie,
   ResponsiveContainer,
   PieChart as ReChartsPieChart,
-  type PieLabelRenderProps,
-  type LabelProps
+  type PieLabelRenderProps
 } from 'recharts';
 
 export type PieChartData = { name: string; value: number; color: string };
@@ -25,6 +24,7 @@ const renderLabel = ({ x, y, cx, cy, percent = 0 }: PieLabelRenderProps) => (
     fontFamily="var(--mantine-font-family)"
     fontSize={12}
   >
+    {/* @ts-expect-error type unknown https://github.com/recharts/recharts/issues/6380 */}
     <tspan x={x}>{(percent * 100).toFixed(0)}%</tspan>
   </text>
 );
@@ -65,7 +65,7 @@ export const PieChart = ({ data }: RadialBarChartProps) => {
           animationBegin={200}
           animationDuration={1200}
           outerRadius="100%"
-          label={renderLabel as LabelProps['content']}
+          label={renderLabel}
           labelLine={{
             stroke: 'var(--chart-label-color, var(--mantine-color-dimmed))',
             strokeWidth: 1
