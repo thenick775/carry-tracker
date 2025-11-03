@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 
-import { carryDb, type CarryItemStorage } from '../db/db.ts';
+import { carryDb, type CarryItemStorage, type CustomFields } from '../db/db.ts';
 
 export type CarryItem = {
   id: string;
@@ -10,6 +10,7 @@ export type CarryItem = {
   color: string;
   imageData?: File;
   cost?: number;
+  customFields?: CustomFields;
 };
 
 export type CreateCarryItem = Omit<CarryItem, 'id'>;

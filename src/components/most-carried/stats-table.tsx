@@ -10,9 +10,11 @@ const currencyFormatterUSD = new Intl.NumberFormat('en-US', {
 });
 
 export const StatsTable = ({
-  data
+  data,
+  countColumnName = 'Carry Count'
 }: {
   data: (PieChartData & { id: string; cost?: number })[];
+  countColumnName?: string;
 }) => {
   const total = data.reduce((acc, { value }) => acc + value, 0);
   const rows = data
@@ -45,15 +47,15 @@ export const StatsTable = ({
       <Table.Thead>
         <Table.Tr>
           <Table.Th>Name</Table.Th>
-          <Table.Th>Carry Count</Table.Th>
+          <Table.Th>{countColumnName}</Table.Th>
           <Table.Th>Cost</Table.Th>
           <Table.Th>%</Table.Th>
           <Table.Th>Color</Table.Th>
         </Table.Tr>
       </Table.Thead>
-      {/* Summary row */}
       <Table.Tbody>
         {rows}
+        {/* Summary row */}
         <Table.Tr>
           <Table.Td>Summary</Table.Td>
           <Table.Td>{totalCarryCount}</Table.Td>
