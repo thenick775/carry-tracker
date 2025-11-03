@@ -4,15 +4,15 @@ import { useState } from 'preact/hooks';
 import { FaGithub } from 'react-icons/fa';
 
 import classes from './app-shell.module.css';
+import { CarryStatsView } from './carry-stats-view.tsx';
 import { ImportExportView } from './import-export-view.tsx';
 import { ItemsView } from './item-view.tsx';
-import { MostCarriedView } from './most-carried-view.tsx';
 import { RotationsView } from './rotations-view.tsx';
 import { TimelineView } from './timeline-view.tsx';
 
 const viewComponents: Record<string, React.ReactNode> = {
   Items: <ItemsView />,
-  'Most Carried': <MostCarriedView />,
+  'Carry Stats': <CarryStatsView />,
   Rotations: <RotationsView />,
   'Rotation Timeline': <TimelineView />,
   'Import/Export': <ImportExportView />

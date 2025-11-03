@@ -1,17 +1,20 @@
 import {
+  ActionIcon,
   Button,
   ColorInput,
+  Divider,
   FileInput,
-  Flex,
   Group,
   Modal,
   NumberInput,
+  Stack,
   TextInput
 } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
-import { useForm } from '@mantine/form';
+import { useForm, type UseFormReturnType } from '@mantine/form';
 import dayjs from 'dayjs';
 import randomColor from 'randomcolor';
+import { TbPlus, TbTrash } from 'react-icons/tb';
 
 import { useIsLargerThanPhone } from '../../hooks/use-is-larger-than-phone.ts';
 
@@ -33,6 +36,83 @@ type CarryItemFormProps = {
   defaultValues?: CreateCarryItem;
 };
 
+export const CustomFieldsInput = ({
+  form
+}: {
+  form: UseFormReturnType<CreateCarryItem>;
+}) => {
+  const fields = form.getValues().customFields ?? [];
+
+  const addField = () =>
+    form.setFieldValue('customFields', [...fields, { name: '', value: '' }]);
+
+  const removeField = (i: number) =>
+    form.setFieldValue(
+      'customFields',
+      fields.filter((_, idx) => idx !== i)
+    );
+
+  return (
+    <Stack gap="xs">
+      <Group justify="space-between" gap="xs">
+        <span style={{ fontWeight: 600 }}>Custom fields</span>
+        <ActionIcon
+          size="sm"
+          variant="subtle"
+          aria-label="Add field"
+          onClick={() => addField()}
+        >
+          <TbPlus />
+        </ActionIcon>
+      </Group>
+
+      {fields.length === 0 ? (
+        <TextInput
+          size="xs"
+          placeholder="Add custom fields (e.g. Brand, Model, Steel...)"
+          readOnly
+          onClick={() => addField()}
+        />
+      ) : (
+        <Stack gap={4}>
+          {fields.map((_, i) => (
+            <Stack key={i} gap={4}>
+              <Group align="end" gap={6} wrap="nowrap">
+                <TextInput
+                  aria-label="Custom field name"
+                  placeholder="Name"
+                  size="xs"
+                  flex={1}
+                  autoComplete="off"
+                  {...form.getInputProps(`customFields.${i}.name`)}
+                />
+                <TextInput
+                  aria-label="Custom field value"
+                  placeholder="Value"
+                  size="xs"
+                  flex={2}
+                  autoComplete="off"
+                  {...form.getInputProps(`customFields.${i}.value`)}
+                />
+                <ActionIcon
+                  size="md"
+                  variant="subtle"
+                  color="red"
+                  aria-label="Remove field"
+                  onClick={() => removeField(i)}
+                >
+                  <TbTrash />
+                </ActionIcon>
+              </Group>
+              {i < fields.length - 1 && <Divider my={2} />}
+            </Stack>
+          ))}
+        </Stack>
+      )}
+    </Stack>
+  );
+};
+
 const CarryItemForm = ({
   onSubmit,
   close,
@@ -45,18 +125,40 @@ const CarryItemForm = ({
       carryCount: 0,
       createdAt: dayjs().toISOString(),
       color: randomColor(),
+      imageData: undefined,
+      cost: undefined,
+      customFields: [],
       ...defaultValues
     },
     transformValues: (values) => ({
       ...values,
-      createdAt: dayjs(values.createdAt).toISOString()
+      createdAt: dayjs(values.createdAt).toISOString(),
+      customFields: values.customFields?.map(({ name, value }) => ({
+        name: name?.trim(),
+        value: value?.trim()
+      }))
     }),
     validate: {
       name: (value) => (value ? null : 'Invalid name'),
       createdAt: (value) =>
         dayjs(value).isValid() ? null : 'Invalid added date time',
       color: (value) => (value ? null : 'Invalid color'),
-      imageData: (value) => (value ? null : 'Invalid image')
+      imageData: (value) => (value ? null : 'Invalid image'),
+      customFields: (fields) => {
+        if (!fields || fields.length === 0) return null;
+
+        for (const f of fields) {
+          if ((f.value?.length ?? 0) > 0 && !(f.name?.trim().length > 0)) {
+            return 'Each value must have a name';
+          }
+        }
+
+        const names = fields
+          .map((f) => f.name?.trim().toLowerCase())
+          .filter(Boolean);
+        const hasDuplicate = new Set(names).size !== names.length;
+        return hasDuplicate ? 'Custom field names must be unique' : null;
+      }
     }
   });
 
@@ -67,7 +169,7 @@ const CarryItemForm = ({
         close();
       })}
     >
-      <Flex direction="column" gap="md">
+      <Stack gap="md">
         <TextInput
           label="Name"
           placeholder="Name"
@@ -115,10 +217,11 @@ const CarryItemForm = ({
           size="md"
           {...form.getInputProps('color')}
         />
+        <CustomFieldsInput form={form} />
         <Group justify="flex-end" mt="md">
           <Button type="submit">Submit</Button>
         </Group>
-      </Flex>
+      </Stack>
     </form>
   );
 };
@@ -135,7 +238,7 @@ export const CarryItemModal = ({
     <Modal
       opened={opened}
       onClose={close}
-      title="Create Carry Item"
+      title={carryItem ? 'Update Carry Item' : 'Create Carry Item'}
       keepMounted={false}
       fullScreen={!isLargerThanPhone}
     >
