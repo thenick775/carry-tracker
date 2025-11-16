@@ -1,5 +1,6 @@
 import {
   ActionIcon,
+  Autocomplete,
   Button,
   ColorInput,
   Divider,
@@ -25,6 +26,7 @@ import type {
 
 type CreateCarryItemModalProps = {
   carryItem?: CarryItem;
+  customFieldNames: string[];
   opened: boolean;
   close: () => void;
   onSubmit: (formValues: CreateCarryItem) => void;
@@ -34,12 +36,15 @@ type CarryItemFormProps = {
   close: () => void;
   onSubmit: (formValues: CreateCarryItem) => void;
   defaultValues?: CreateCarryItem;
+  customFieldNames: string[];
 };
 
 export const CustomFieldsInput = ({
-  form
+  form,
+  customFieldNames
 }: {
   form: UseFormReturnType<CreateCarryItem>;
+  customFieldNames: string[];
 }) => {
   const fields = form.getValues().customFields ?? [];
 
@@ -78,12 +83,11 @@ export const CustomFieldsInput = ({
           {fields.map((_, i) => (
             <Stack key={i} gap={4}>
               <Group align="end" gap={6} wrap="nowrap">
-                <TextInput
-                  aria-label="Custom field name"
-                  placeholder="Name"
+                <Autocomplete
+                  placeholder="e.g. Brand"
                   size="xs"
                   flex={1}
-                  autoComplete="off"
+                  data={customFieldNames}
                   {...form.getInputProps(`customFields.${i}.name`)}
                 />
                 <TextInput
@@ -116,7 +120,8 @@ export const CustomFieldsInput = ({
 const CarryItemForm = ({
   onSubmit,
   close,
-  defaultValues
+  defaultValues,
+  customFieldNames
 }: CarryItemFormProps) => {
   const form = useForm<CreateCarryItem>({
     mode: 'uncontrolled',
@@ -217,7 +222,7 @@ const CarryItemForm = ({
           size="md"
           {...form.getInputProps('color')}
         />
-        <CustomFieldsInput form={form} />
+        <CustomFieldsInput form={form} customFieldNames={customFieldNames} />
         <Group justify="flex-end" mt="md">
           <Button type="submit">Submit</Button>
         </Group>
@@ -228,6 +233,7 @@ const CarryItemForm = ({
 
 export const CarryItemModal = ({
   carryItem,
+  customFieldNames,
   opened,
   close,
   onSubmit
@@ -244,6 +250,7 @@ export const CarryItemModal = ({
     >
       <CarryItemForm
         defaultValues={carryItem}
+        customFieldNames={customFieldNames}
         onSubmit={onSubmit}
         close={close}
       />
