@@ -44,11 +44,11 @@ export const ItemsView = () => {
         (obj, index, self) =>
           index === self.findIndex((t) => t?.value === obj?.value)
       )
-      .filter((cf): cf is CustomField => cf !== undefined) ?? [];
+      .filter((cf): cf is CustomField => !!cf) ?? [];
 
   const customFieldsValueMap = Object.groupBy(
     uniqueCustomFields,
-    (obj) => obj.name
+    ({ name }) => name
   );
 
   return (
