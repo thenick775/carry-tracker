@@ -24,7 +24,6 @@ const renderLabel = ({ x, y, cx, cy, percent = 0 }: PieLabelRenderProps) => (
     fontFamily="var(--mantine-font-family)"
     fontSize={12}
   >
-    {/* @ts-expect-error type unknown https://github.com/recharts/recharts/issues/6380 */}
     <tspan x={x}>{(percent * 100).toFixed(0)}%</tspan>
   </text>
 );
