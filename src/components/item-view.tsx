@@ -12,6 +12,7 @@ import { useCarryItems } from '../hooks/use-carry-items.ts';
 import { useObjectUrls } from '../hooks/use-object-urls.ts';
 import { NoItems } from './carry-item/no-items.tsx';
 
+import type { CustomField } from '../db/db.ts';
 import type { CarryItem } from '../hooks/use-carry-items.ts';
 
 export const ItemsView = () => {
@@ -36,12 +37,19 @@ export const ItemsView = () => {
   const shouldRenderMasonry = !isLoading && carryItems.length > 0;
   const hasNoItems = !isLoading && carryItems?.length === 0;
 
-  const allCustomFieldNames = carryItems
-    ?.flatMap((c) => c.customFields?.map((f) => f.name))
-    .filter((n): n is string => Boolean(n))
-    .reduce((acc, fieldName) => {
-      return acc.add(fieldName);
-    }, new Set<string>());
+  const uniqueCustomFields =
+    carryItems
+      ?.flatMap((carryItem) => carryItem.customFields)
+      .filter(
+        (obj, index, self) =>
+          index === self.findIndex((t) => t?.value === obj?.value)
+      )
+      .filter((cf): cf is CustomField => cf !== undefined) ?? [];
+
+  const customFieldsValueMap = Object.groupBy(
+    uniqueCustomFields,
+    (obj) => obj.name
+  );
 
   return (
     <>
@@ -108,7 +116,7 @@ export const ItemsView = () => {
 
         <CarryItemModal
           carryItem={editCarryItem}
-          customFieldNames={[...(allCustomFieldNames ?? [])]}
+          customFieldsValueMap={customFieldsValueMap}
           opened={opened}
           close={close}
           onSubmit={(carryItem) =>

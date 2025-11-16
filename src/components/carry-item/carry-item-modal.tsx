@@ -19,14 +19,17 @@ import { TbPlus, TbTrash } from 'react-icons/tb';
 
 import { useIsLargerThanPhone } from '../../hooks/use-is-larger-than-phone.ts';
 
+import type { CustomFields } from '../../db/db.ts';
 import type {
   CarryItem,
   CreateCarryItem
 } from '../../hooks/use-carry-items.ts';
 
+type CustomFieldsValueMap = Partial<Record<string, CustomFields>>;
+
 type CreateCarryItemModalProps = {
   carryItem?: CarryItem;
-  customFieldNames: string[];
+  customFieldsValueMap: CustomFieldsValueMap;
   opened: boolean;
   close: () => void;
   onSubmit: (formValues: CreateCarryItem) => void;
@@ -36,15 +39,15 @@ type CarryItemFormProps = {
   close: () => void;
   onSubmit: (formValues: CreateCarryItem) => void;
   defaultValues?: CreateCarryItem;
-  customFieldNames: string[];
+  customFieldsValueMap: CustomFieldsValueMap;
 };
 
 export const CustomFieldsInput = ({
   form,
-  customFieldNames
+  customFieldsValueMap
 }: {
   form: UseFormReturnType<CreateCarryItem>;
-  customFieldNames: string[];
+  customFieldsValueMap: CustomFieldsValueMap;
 }) => {
   const fields = form.getValues().customFields ?? [];
 
@@ -80,22 +83,21 @@ export const CustomFieldsInput = ({
         />
       ) : (
         <Stack gap={4}>
-          {fields.map((_, i) => (
+          {fields.map((customField, i) => (
             <Stack key={i} gap={4}>
               <Group align="end" gap={6} wrap="nowrap">
                 <Autocomplete
                   placeholder="e.g. Brand"
                   size="xs"
                   flex={1}
-                  data={customFieldNames}
+                  data={Object.keys(customFieldsValueMap)}
                   {...form.getInputProps(`customFields.${i}.name`)}
                 />
-                <TextInput
-                  aria-label="Custom field value"
-                  placeholder="Value"
+                <Autocomplete
+                  placeholder="e.g. your brand"
                   size="xs"
-                  flex={2}
-                  autoComplete="off"
+                  flex={1}
+                  data={customFieldsValueMap[customField.name]}
                   {...form.getInputProps(`customFields.${i}.value`)}
                 />
                 <ActionIcon
@@ -121,7 +123,7 @@ const CarryItemForm = ({
   onSubmit,
   close,
   defaultValues,
-  customFieldNames
+  customFieldsValueMap
 }: CarryItemFormProps) => {
   const form = useForm<CreateCarryItem>({
     mode: 'uncontrolled',
@@ -222,7 +224,10 @@ const CarryItemForm = ({
           size="md"
           {...form.getInputProps('color')}
         />
-        <CustomFieldsInput form={form} customFieldNames={customFieldNames} />
+        <CustomFieldsInput
+          form={form}
+          customFieldsValueMap={customFieldsValueMap}
+        />
         <Group justify="flex-end" mt="md">
           <Button type="submit">Submit</Button>
         </Group>
@@ -233,7 +238,7 @@ const CarryItemForm = ({
 
 export const CarryItemModal = ({
   carryItem,
-  customFieldNames,
+  customFieldsValueMap,
   opened,
   close,
   onSubmit
@@ -250,7 +255,7 @@ export const CarryItemModal = ({
     >
       <CarryItemForm
         defaultValues={carryItem}
-        customFieldNames={customFieldNames}
+        customFieldsValueMap={customFieldsValueMap}
         onSubmit={onSubmit}
         close={close}
       />

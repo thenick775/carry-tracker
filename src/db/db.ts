@@ -1,10 +1,12 @@
 import { Dexie, type Table } from 'dexie';
 import { exportDB, importInto } from 'dexie-export-import';
 
-export type CustomFields = {
+export type CustomField = {
   name: string;
   value: string;
-}[];
+};
+
+export type CustomFields = CustomField[];
 
 export type CarryItemStorage = {
   id: string;
