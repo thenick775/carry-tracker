@@ -36,6 +36,13 @@ export const ItemsView = () => {
   const shouldRenderMasonry = !isLoading && carryItems.length > 0;
   const hasNoItems = !isLoading && carryItems?.length === 0;
 
+  const allCustomFieldNames = carryItems
+    ?.flatMap((c) => c.customFields?.map((f) => f.name))
+    .filter((n): n is string => Boolean(n))
+    .reduce((acc, fieldName) => {
+      return acc.add(fieldName);
+    }, new Set<string>());
+
   return (
     <>
       <ResponsiveScrollArea>
@@ -101,6 +108,7 @@ export const ItemsView = () => {
 
         <CarryItemModal
           carryItem={editCarryItem}
+          customFieldNames={[...(allCustomFieldNames ?? [])]}
           opened={opened}
           close={close}
           onSubmit={(carryItem) =>
