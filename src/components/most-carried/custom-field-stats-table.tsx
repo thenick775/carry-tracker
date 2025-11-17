@@ -18,8 +18,8 @@ export const CustomFieldStatsTable = ({
     carryCount: number;
   })[];
 }) => {
-  const totalCarryCount = data.reduce(
-    (acc, chartItem) => acc + chartItem.carryCount,
+  const totalCount = data.reduce(
+    (acc, chartItem) => acc + (chartItem?.value ?? 0),
     0
   );
   const rows = data
@@ -32,17 +32,15 @@ export const CustomFieldStatsTable = ({
         <Table.Td>
           {chartItem.cost ? currencyFormatterUSD.format(chartItem.cost) : '?'}
         </Table.Td>
-        <Table.Td>
-          {((chartItem.value / totalCarryCount) * 100).toFixed(0)}
-        </Table.Td>
+        <Table.Td>{((chartItem.value / totalCount) * 100).toFixed(0)}</Table.Td>
         <Table.Td>
           <Badge size="xs" circle color={chartItem.color} />
         </Table.Td>
       </Table.Tr>
     ));
 
-  const totalCount = data.reduce(
-    (acc, chartItem) => acc + (chartItem?.value ?? 0),
+  const totalCarryCount = data.reduce(
+    (acc, chartItem) => acc + chartItem.carryCount,
     0
   );
   const totalCost = data.reduce(
