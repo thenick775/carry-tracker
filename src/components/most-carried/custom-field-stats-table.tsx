@@ -15,12 +15,11 @@ export const CustomFieldStatsTable = ({
   data: (PieChartData & {
     id: string;
     cost?: number;
-    count?: number;
     carryCount: number;
   })[];
 }) => {
   const totalCarryCount = data.reduce(
-    (acc, chartItem) => acc + chartItem.value,
+    (acc, chartItem) => acc + chartItem.carryCount,
     0
   );
   const rows = data
@@ -43,7 +42,7 @@ export const CustomFieldStatsTable = ({
     ));
 
   const totalCount = data.reduce(
-    (acc, chartItem) => acc + (chartItem?.count ?? 0),
+    (acc, chartItem) => acc + (chartItem?.value ?? 0),
     0
   );
   const totalCost = data.reduce(
