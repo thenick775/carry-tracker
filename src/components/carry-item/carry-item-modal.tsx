@@ -76,7 +76,7 @@ export const CustomFieldsInput = ({
 
       {fields.length === 0 ? (
         <TextInput
-          size="xs"
+          size="md"
           placeholder="Add custom fields (e.g. Brand, Model, Steel...)"
           readOnly
           onClick={() => addField()}
@@ -88,14 +88,14 @@ export const CustomFieldsInput = ({
               <Group align="end" gap={6} wrap="nowrap">
                 <Autocomplete
                   placeholder="e.g. Brand"
-                  size="xs"
+                  size="md"
                   flex={1}
                   data={Object.keys(customFieldsValueMap)}
                   {...form.getInputProps(`customFields.${i}.name`)}
                 />
                 <Autocomplete
                   placeholder="e.g. your brand"
-                  size="xs"
+                  size="md"
                   flex={1}
                   data={customFieldsValueMap[customField.name]}
                   {...form.getInputProps(`customFields.${i}.value`)}
