@@ -1,6 +1,13 @@
 import { Dexie, type Table } from 'dexie';
 import { exportDB, importInto } from 'dexie-export-import';
 
+export type CustomField = {
+  name: string;
+  value: string;
+};
+
+export type CustomFields = CustomField[];
+
 export type CarryItemStorage = {
   id: string;
   name: string;
@@ -12,6 +19,7 @@ export type CarryItemStorage = {
     mimeType: string;
     data: Uint8Array;
   };
+  customFields?: CustomFields;
 };
 
 export type TimeUnit = 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
@@ -38,9 +46,14 @@ export const carryDb = new Dexie('carry-db') as Dexie & {
 export const exportDb = async () =>
   await exportDB(carryDb, { numRowsPerChunk: 2 });
 
-export const importDb = async (blob: Blob) => await importInto(carryDb, blob);
+export const importDb = async (blob: Blob) =>
+  await importInto(carryDb, blob, { acceptVersionDiff: true });
 
 carryDb.version(1).stores({
   carryItems: 'id, createdAt, name',
   rotations: 'id, createdAt, name, active'
+});
+
+carryDb.version(2).stores({
+  carryItems: 'id, createdAt, name, *customFields.name, *customFields.value'
 });

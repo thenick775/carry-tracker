@@ -12,6 +12,7 @@ import { useCarryItems } from '../hooks/use-carry-items.ts';
 import { useObjectUrls } from '../hooks/use-object-urls.ts';
 import { NoItems } from './carry-item/no-items.tsx';
 
+import type { CustomField } from '../db/db.ts';
 import type { CarryItem } from '../hooks/use-carry-items.ts';
 
 export const ItemsView = () => {
@@ -35,6 +36,20 @@ export const ItemsView = () => {
   const isLoading = carryItems === undefined;
   const shouldRenderMasonry = !isLoading && carryItems.length > 0;
   const hasNoItems = !isLoading && carryItems?.length === 0;
+
+  const uniqueCustomFields =
+    carryItems
+      ?.flatMap((carryItem) => carryItem.customFields)
+      .filter(
+        (obj, index, self) =>
+          index === self.findIndex((t) => t?.value === obj?.value)
+      )
+      .filter((cf): cf is CustomField => !!cf) ?? [];
+
+  const customFieldsValueMap = Object.groupBy(
+    uniqueCustomFields,
+    ({ name }) => name
+  );
 
   return (
     <>
@@ -101,6 +116,7 @@ export const ItemsView = () => {
 
         <CarryItemModal
           carryItem={editCarryItem}
+          customFieldsValueMap={customFieldsValueMap}
           opened={opened}
           close={close}
           onSubmit={(carryItem) =>
