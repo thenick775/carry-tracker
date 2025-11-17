@@ -12,7 +12,7 @@ import {
   TextInput
 } from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
-import { useForm, type UseFormReturnType } from '@mantine/form';
+import { isNotEmpty, useForm, type UseFormReturnType } from '@mantine/form';
 import dayjs from 'dayjs';
 import randomColor from 'randomcolor';
 import { TbPlus, TbTrash } from 'react-icons/tb';
@@ -146,25 +146,14 @@ const CarryItemForm = ({
       }))
     }),
     validate: {
-      name: (value) => (value ? null : 'Invalid name'),
+      name: isNotEmpty('Invalid name'),
       createdAt: (value) =>
         dayjs(value).isValid() ? null : 'Invalid added date time',
-      color: (value) => (value ? null : 'Invalid color'),
-      imageData: (value) => (value ? null : 'Invalid image'),
-      customFields: (fields) => {
-        if (!fields || fields.length === 0) return null;
-
-        for (const f of fields) {
-          if ((f.value?.length ?? 0) > 0 && !(f.name?.trim().length > 0)) {
-            return 'Each value must have a name';
-          }
-        }
-
-        const names = fields
-          .map((f) => f.name?.trim().toLowerCase())
-          .filter(Boolean);
-        const hasDuplicate = new Set(names).size !== names.length;
-        return hasDuplicate ? 'Custom field names must be unique' : null;
+      color: isNotEmpty('Invalid color'),
+      imageData: isNotEmpty('Invalid image'),
+      customFields: {
+        name: isNotEmpty('Name is required'),
+        value: isNotEmpty('Value is required')
       }
     }
   });

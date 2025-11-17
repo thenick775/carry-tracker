@@ -19,10 +19,6 @@ export const CustomFieldStatsTable = ({
     carryCount: number;
   })[];
 }) => {
-  const totalCount = data.reduce(
-    (acc, chartItem) => acc + (chartItem?.count ?? 0),
-    0
-  );
   const totalCarryCount = data.reduce(
     (acc, chartItem) => acc + chartItem.value,
     0
@@ -46,6 +42,10 @@ export const CustomFieldStatsTable = ({
       </Table.Tr>
     ));
 
+  const totalCount = data.reduce(
+    (acc, chartItem) => acc + (chartItem?.count ?? 0),
+    0
+  );
   const totalCost = data.reduce(
     (acc, chartItem) => acc + (chartItem.cost ?? 0),
     0
