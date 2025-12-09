@@ -8,6 +8,8 @@ import { PieChart } from './most-carried/pie-chart.tsx';
 import { useCarryItems } from '../hooks/use-carry-items.ts';
 import { useIsLargerThanPhone } from '../hooks/use-is-larger-than-phone.ts';
 import { CustomFieldStatsTable } from './most-carried/custom-field-stats-table.tsx';
+import { LINE_CHART_TEST_DATA } from './most-carried/line-chart-test-data.ts';
+import { MultiItemLineChart } from './most-carried/line-chart.tsx';
 
 export const CarryStatsView = () => {
   const isLargerThanPhone = useIsLargerThanPhone();
@@ -69,7 +71,7 @@ export const CarryStatsView = () => {
           WebkitOverflowScrolling: 'touch'
         }}
       >
-        <Group gap="xs" wrap="nowrap">
+        <Group gap="xs" wrap="nowrap" mb="xs">
           <Chip
             size="xs"
             checked={viewKey === 'items'}
@@ -91,6 +93,16 @@ export const CarryStatsView = () => {
             </Chip>
           ))}
         </Group>
+        <Group gap="xs" wrap="nowrap">
+          <Chip
+            size="xs"
+            checked={viewKey === 'items-over-time'}
+            onChange={() => setViewKey('items-over-time')}
+            variant="light"
+          >
+            Items over time
+          </Chip>
+        </Group>
       </Box>
 
       <Box
@@ -102,15 +114,22 @@ export const CarryStatsView = () => {
           maxHeight: isLargerThanPhone ? '50dvh' : undefined
         }}
       >
-        {!!chartData && (
+        {viewKey === 'items-over-time' ? (
           <>
-            <PieChart data={chartData} />
-            {isViewingItems ? (
-              <CarryItemStatsTable data={itemData} />
-            ) : (
-              <CustomFieldStatsTable data={customFieldsData} />
-            )}
+            <MultiItemLineChart points={LINE_CHART_TEST_DATA} />
+            <CarryItemStatsTable data={itemData} />
           </>
+        ) : (
+          !!chartData && (
+            <>
+              <PieChart data={chartData} />
+              {isViewingItems ? (
+                <CarryItemStatsTable data={itemData} />
+              ) : (
+                <CustomFieldStatsTable data={customFieldsData} />
+              )}
+            </>
+          )
         )}
       </Box>
     </ResponsiveScrollArea>
