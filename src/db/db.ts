@@ -8,6 +8,13 @@ export type CustomField = {
 
 export type CustomFields = CustomField[];
 
+export type CarryOverTimeStorage = {
+  id: string;
+  carryItemId: string;
+  currentCarryCount: number;
+  createdAt: string;
+};
+
 export type CarryItemStorage = {
   id: string;
   name: string;
@@ -41,6 +48,7 @@ export type RotationStorage = {
 export const carryDb = new Dexie('carry-db') as Dexie & {
   carryItems: Table<CarryItemStorage, string>;
   rotations: Table<RotationStorage, string>;
+  carriesOverTime: Table<CarryOverTimeStorage, string>;
 };
 
 export const exportDb = async () =>
@@ -56,4 +64,9 @@ carryDb.version(1).stores({
 
 carryDb.version(2).stores({
   carryItems: 'id, createdAt, name, *customFields.name, *customFields.value'
+});
+
+carryDb.version(3).stores({
+  carriesOverTime:
+    'id, carryItemId, createdAt, currentCarryCount, [carryItemId+createdAt]'
 });

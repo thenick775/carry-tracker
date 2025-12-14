@@ -2,7 +2,7 @@ import { Group, ActionIcon, Text, SegmentedControl } from '@mantine/core';
 import dayjs from 'dayjs';
 import { useState } from 'preact/hooks';
 import {
-  LineChart,
+  LineChart as ReLineChart,
   Line,
   XAxis,
   YAxis,
@@ -10,16 +10,21 @@ import {
   Tooltip
 } from 'recharts';
 
-export type CarryDayPoint = {
+import { useCarriesOverTime } from '../../hooks/use-carries-over-time.ts';
+
+type ItemData = {
   id: string;
   name: string;
-  date: Date;
-  carryCountForDay: number;
   color: string;
 };
 
 type MultiItemLineChartProps = {
-  points: CarryDayPoint[];
+  data: ItemData[];
+};
+
+type carryDataPoint = ItemData & {
+  date: Date;
+  count: number;
 };
 
 type ChartMode = 'week' | 'month' | 'year';
@@ -47,7 +52,7 @@ const getBucketInfo = (date: Date, mode: ChartMode) => {
   return { key, startMs: d.valueOf() };
 };
 
-const bucketAll = (points: CarryDayPoint[], mode: ChartMode) => {
+const bucketAll = (points: carryDataPoint[], mode: ChartMode) => {
   if (!points.length) return [];
 
   const buckets = new Map<string, Record<string, number>>();
@@ -60,13 +65,14 @@ const bucketAll = (points: CarryDayPoint[], mode: ChartMode) => {
     }
 
     const row = buckets.get(key)!;
-    row[p.name] = (row[p.name] ?? 0) + p.carryCountForDay;
+    // could also use p.count and do some math if we want to sum counts instead of occurrences later
+    row[p.name] = (row[p.name] ?? 0) + 1;
   }
 
   return Array.from(buckets.values()).sort((a, b) => a.date - b.date);
 };
 
-const extractItemColors = (points: CarryDayPoint[]) => {
+const extractItemColors = (points: carryDataPoint[]) => {
   const map = new Map<string, string>();
   for (const p of points) {
     if (!map.has(p.name)) map.set(p.name, p.color);
@@ -102,9 +108,24 @@ const formatTooltipLabel = (value: number, mode: ChartMode) => {
   return d.format('YYYY');
 };
 
-export const MultiItemLineChart = ({ points }: MultiItemLineChartProps) => {
+export const LineChart = ({ data }: MultiItemLineChartProps) => {
   const [mode, setMode] = useState<ChartMode>('week');
+  const carriesOverTime = useCarriesOverTime(mode);
   const [page, setPage] = useState(0);
+
+  const points: carryDataPoint[] | undefined = carriesOverTime?.map((cot) => {
+    const item = data.find((d) => d.id === cot.carryItemId);
+    return {
+      id: cot.carryItemId,
+      name: item ? item.name : 'Unknown Item',
+      date: dayjs(cot.createdAt).toDate(),
+      count: cot.currentCarryCount,
+      color: item ? item.color : '#888888'
+    };
+  });
+
+  if (!points) return;
+
   const allBuckets = bucketAll(points, mode);
   const itemColors = extractItemColors(points);
   const itemNames = Array.from(itemColors.keys());
@@ -115,15 +136,13 @@ export const MultiItemLineChart = ({ points }: MultiItemLineChartProps) => {
 
   const start = Math.max(0, allBuckets.length - windowSize * (clampedPage + 1));
   const end = allBuckets.length - windowSize * clampedPage;
-  const data = allBuckets.slice(start, end);
+  const buckets = allBuckets.slice(start, end);
 
-  const ticks = data.map((row) => row.date);
+  const ticks = buckets.map((row) => row.date);
 
-  const maxValue = points.length
-    ? Math.max(...points.map((p) => p.carryCountForDay))
-    : 0;
+  const maxValue = points.length ? Math.max(...points.map((p) => p.count)) : 0;
   const digitCount = String(maxValue || 0).length;
-  const yAxisWidth = Math.max(26, digitCount * 10);
+  const yAxisWidth = Math.max(26, digitCount * 15);
 
   const canGoOlder = clampedPage < totalPages - 1;
   const canGoNewer = clampedPage > 0;
@@ -138,10 +157,10 @@ export const MultiItemLineChart = ({ points }: MultiItemLineChartProps) => {
     setPage((p) => Math.max(p - 1, 0));
   };
 
-  const rangeLabel = data.length
-    ? `${dayjs(data[0].date).format(
+  const rangeLabel = buckets.length
+    ? `${dayjs(buckets[0].date).format(
         mode === 'year' ? 'MMM D, YYYY' : 'MMM D'
-      )} - ${dayjs(data[data.length - 1].date).format(
+      )} - ${dayjs(buckets[buckets.length - 1].date).format(
         mode === 'year' ? 'MMM D, YYYY' : 'MMM D'
       )}`
     : '';
@@ -181,9 +200,9 @@ export const MultiItemLineChart = ({ points }: MultiItemLineChartProps) => {
         </ActionIcon>
       </Group>
 
-      <LineChart
+      <ReLineChart
         responsive
-        data={data}
+        data={buckets}
         style={{
           width: '100%',
           height: '100%',
@@ -226,7 +245,7 @@ export const MultiItemLineChart = ({ points }: MultiItemLineChartProps) => {
             activeDot={{ r: 5 }}
           />
         ))}
-      </LineChart>
+      </ReLineChart>
       <Group justify="center" mb="sm">
         <SegmentedControl
           value={mode}
