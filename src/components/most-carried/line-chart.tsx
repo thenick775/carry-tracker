@@ -10,7 +10,10 @@ import {
   Tooltip
 } from 'recharts';
 
-import { useCarriesOverTime } from '../../hooks/use-carries-over-time.ts';
+import {
+  useCarriesOverTime,
+  type ChartMode
+} from '../../hooks/use-carries-over-time.ts';
 
 type ItemData = {
   id: string;
@@ -27,17 +30,15 @@ type carryDataPoint = ItemData & {
   count: number;
 };
 
-type ChartMode = 'week' | 'month' | 'year';
+const PERIOD_LOOK_BACK = 7;
 
 const getBucketInfo = (date: Date, mode: ChartMode) => {
   let d = dayjs(date).startOf('day');
 
   switch (mode) {
-    case 'week': {
-      const day = d.day();
-      d = d.subtract(day, 'day');
+    case 'week':
+      d = d.startOf('week');
       break;
-    }
 
     case 'month':
       d = d.startOf('month');
@@ -83,7 +84,7 @@ const extractItemColors = (points: carryDataPoint[]) => {
 const formatXAxisTick = (value: number, mode: ChartMode) => {
   const d = dayjs(value);
 
-  if (mode === 'week') {
+  if (mode === 'day' || mode === 'week') {
     return d.format('MMM D');
   }
 
@@ -96,6 +97,10 @@ const formatXAxisTick = (value: number, mode: ChartMode) => {
 
 const formatTooltipLabel = (value: number, mode: ChartMode) => {
   const d = dayjs(value);
+
+  if (mode === 'day') {
+    return d.format('MMM D');
+  }
 
   if (mode === 'week') {
     return `Week of ${d.format('MMM D, YYYY')}`;
@@ -110,7 +115,7 @@ const formatTooltipLabel = (value: number, mode: ChartMode) => {
 
 export const LineChart = ({ data }: MultiItemLineChartProps) => {
   const [mode, setMode] = useState<ChartMode>('week');
-  const carriesOverTime = useCarriesOverTime(mode);
+  const carriesOverTime = useCarriesOverTime(mode, PERIOD_LOOK_BACK);
   const [page, setPage] = useState(0);
 
   const points: carryDataPoint[] | undefined = carriesOverTime?.map((cot) => {
@@ -126,17 +131,30 @@ export const LineChart = ({ data }: MultiItemLineChartProps) => {
 
   if (!points) return;
 
-  const allBuckets = bucketAll(points, mode);
   const itemColors = extractItemColors(points);
   const itemNames = Array.from(itemColors.keys());
+  const allBuckets = bucketAll(points, mode).map((row) => {
+    const next = { ...row };
+    for (const name of itemNames) {
+      next[name] ??= 0;
+    }
+    return next;
+  });
 
-  const windowSize = 7;
-  const totalPages = Math.max(1, Math.ceil(allBuckets.length / windowSize));
+  const totalPages = Math.max(
+    1,
+    Math.ceil(allBuckets.length / PERIOD_LOOK_BACK)
+  );
   const clampedPage = Math.min(page, totalPages - 1);
 
-  const start = Math.max(0, allBuckets.length - windowSize * (clampedPage + 1));
-  const end = allBuckets.length - windowSize * clampedPage;
+  const start = Math.max(
+    0,
+    allBuckets.length - PERIOD_LOOK_BACK * (clampedPage + 1)
+  );
+  const end = allBuckets.length - PERIOD_LOOK_BACK * clampedPage;
   const buckets = allBuckets.slice(start, end);
+
+  console.log('vancise buckets', buckets);
 
   const ticks = buckets.map((row) => row.date);
 
@@ -230,11 +248,18 @@ export const LineChart = ({ data }: MultiItemLineChartProps) => {
         <Tooltip
           isAnimationActive={false}
           labelFormatter={(v) => formatTooltipLabel(v, mode)}
+          itemSorter={({ value }) => -(value ?? 0)}
           labelStyle={{ color: 'var(--mantine-color-dimmed)' }}
+          wrapperStyle={{ zIndex: 10000 }}
+          formatter={(value, name) => {
+            if (value === 0) return null;
+            return [value, name];
+          }}
         />
 
         {itemNames.map((name) => (
           <Line
+            connectNulls
             key={name}
             type="monotone"
             dataKey={name}
@@ -251,6 +276,7 @@ export const LineChart = ({ data }: MultiItemLineChartProps) => {
           value={mode}
           onChange={(value) => setMode(value as ChartMode)}
           data={[
+            { label: 'Day', value: 'day' },
             { label: 'Week', value: 'week' },
             { label: 'Month', value: 'month' },
             { label: 'Year', value: 'year' }

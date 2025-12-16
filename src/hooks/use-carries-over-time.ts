@@ -3,23 +3,35 @@ import { useLiveQuery } from 'dexie-react-hooks';
 
 import { carryDb } from '../db/db.ts';
 
-export type ChartMode = 'week' | 'month' | 'year';
+export type ChartMode = 'day' | 'week' | 'month' | 'year';
 
-const getUtcRangeForMode = (mode: ChartMode) => {
-  const now = dayjs();
-  const start =
-    mode === 'week'
-      ? now.startOf('week')
+const getUtcRangeForMode = (mode: ChartMode, periodLookBack: number) => {
+  const now = dayjs.utc();
+
+  const unit =
+    mode === 'day'
+      ? 'day'
+      : mode === 'week'
+      ? 'week'
       : mode === 'month'
-      ? now.startOf('month')
-      : now.startOf('year');
+      ? 'month'
+      : 'year';
 
-  return { min: start.toISOString(), max: now.toISOString() };
+  const end = now.startOf(unit);
+  const start = end.subtract(periodLookBack - 1, unit);
+
+  return {
+    min: start.toISOString(),
+    max: now.toISOString()
+  };
 };
 
-export const useCarriesOverTime = (mode: ChartMode = 'week') =>
+export const useCarriesOverTime = (
+  mode: ChartMode = 'week',
+  periodLookBack = 7
+) =>
   useLiveQuery(() => {
-    const { min, max } = getUtcRangeForMode(mode);
+    const { min, max } = getUtcRangeForMode(mode, periodLookBack);
 
     return carryDb.carriesOverTime
       .where('createdAt')
