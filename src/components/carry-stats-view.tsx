@@ -8,6 +8,7 @@ import { PieChart } from './most-carried/pie-chart.tsx';
 import { useCarryItems } from '../hooks/use-carry-items.ts';
 import { useIsLargerThanPhone } from '../hooks/use-is-larger-than-phone.ts';
 import { CustomFieldStatsTable } from './most-carried/custom-field-stats-table.tsx';
+import { LineChart } from './most-carried/line-chart.tsx';
 
 export const CarryStatsView = () => {
   const isLargerThanPhone = useIsLargerThanPhone();
@@ -56,6 +57,7 @@ export const CarryStatsView = () => {
   }));
 
   const isViewingItems = viewKey === 'items';
+  const isViewingItemsOverTime = viewKey === 'items-over-time';
   const chartData = isViewingItems ? itemData : customFieldsData;
 
   return (
@@ -69,16 +71,25 @@ export const CarryStatsView = () => {
           WebkitOverflowScrolling: 'touch'
         }}
       >
-        <Group gap="xs" wrap="nowrap">
+        <Group gap="xs" wrap="nowrap" mb="xs">
           <Chip
             size="xs"
-            checked={viewKey === 'items'}
+            checked={isViewingItems}
             onChange={() => setViewKey('items')}
             variant="light"
           >
             Items
           </Chip>
-
+          <Chip
+            size="xs"
+            checked={isViewingItemsOverTime}
+            onChange={() => setViewKey('items-over-time')}
+            variant="light"
+          >
+            Items over time
+          </Chip>
+        </Group>
+        <Group gap="xs" wrap="nowrap">
           {customFieldNames.map((name) => (
             <Chip
               key={name}
@@ -102,7 +113,12 @@ export const CarryStatsView = () => {
           maxHeight: isLargerThanPhone ? '50dvh' : undefined
         }}
       >
-        {!!chartData && (
+        {isViewingItemsOverTime ? (
+          <>
+            <LineChart data={itemData} />
+            <CarryItemStatsTable data={itemData} />
+          </>
+        ) : (
           <>
             <PieChart data={chartData} />
             {isViewingItems ? (

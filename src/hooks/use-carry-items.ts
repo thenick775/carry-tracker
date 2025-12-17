@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 import { useLiveQuery } from 'dexie-react-hooks';
 
 import { carryDb, type CarryItemStorage, type CustomFields } from '../db/db.ts';
@@ -79,7 +80,25 @@ export const useCarryItems = (textFilter?: string) => {
 
     if (imageData) partialUpdate.image = await buildImage(imageData);
 
+    const nextCarryCount = partialUpdate.carryCount;
+    if (typeof nextCarryCount !== 'number') {
+      await carryDb.carryItems.update(id, partialUpdate);
+      return;
+    }
+
+    const before = await carryDb.carryItems.get(id);
+    if (!before) return;
+
     await carryDb.carryItems.update(id, partialUpdate);
+
+    if (before.carryCount === nextCarryCount) return;
+
+    void carryDb.carriesOverTime.add({
+      id: crypto.randomUUID(),
+      carryItemId: id,
+      createdAt: dayjs().toISOString(),
+      currentCarryCount: nextCarryCount
+    });
   };
 
   const deleteCarryItem = async (id: string) =>
