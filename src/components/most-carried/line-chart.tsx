@@ -156,8 +156,13 @@ export const LineChart = ({ data }: MultiItemLineChartProps) => {
 
   const ticks = buckets.map((row) => row.date);
 
-  const maxValue = points.length ? Math.max(...points.map((p) => p.count)) : 0;
-  const digitCount = String(maxValue || 0).length;
+  const maxYValue = buckets.reduce((max, bucket) => {
+    for (const name of itemNames) {
+      max = Math.max(max, bucket[name] ?? 0);
+    }
+    return max;
+  }, 0);
+  const digitCount = String(maxYValue || 0).length;
   const yAxisWidth = Math.max(26, digitCount * 15);
 
   const canGoOlder = clampedPage < totalPages - 1;
@@ -241,7 +246,12 @@ export const LineChart = ({ data }: MultiItemLineChartProps) => {
           tickFormatter={(v) => formatXAxisTick(v, mode)}
         />
 
-        <YAxis width={yAxisWidth} axisLine={false} />
+        <YAxis
+          width={yAxisWidth}
+          axisLine={false}
+          allowDecimals={false}
+          domain={[0, maxYValue]}
+        />
 
         <Tooltip
           isAnimationActive={false}
