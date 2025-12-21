@@ -1,4 +1,4 @@
-import prefresh from '@prefresh/vite';
+import react from '@vitejs/plugin-react';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
@@ -7,7 +7,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 export default defineConfig({
   base: './',
   plugins: [
-    prefresh(),
+    react(),
     visualizer(),
     VitePWA({
       registerType: 'autoUpdate',
@@ -93,31 +93,48 @@ export default defineConfig({
       }
     })
   ],
-  esbuild: {
-    jsxFactory: 'h',
-    jsxFragment: 'Fragment',
-    jsxInject: `import { h } from 'preact'`
-  },
-  resolve: {
-    alias: {
-      react: 'preact/compat',
-      'react-dom/test-utils': 'preact/test-utils',
-      'react-dom': 'preact/compat',
-      'react/jsx-runtime': 'preact/jsx-runtime'
-    }
-  },
   build: {
+    sourcemap: true,
     rollupOptions: {
       output: {
-        manualChunks: (id) => {
-          const vendorPrefix = 'vendor';
-          if (id.indexOf('node_modules') > -1) {
-            if (id.indexOf('recharts') > -1) return vendorPrefix + '_recharts';
-            if (id.indexOf('mantine') > -1) return vendorPrefix + '_mantine';
-            if (id.indexOf('dexie') > -1) return vendorPrefix + '_dexie';
-
-            return vendorPrefix;
-          }
+        manualChunks: {
+          react: [
+            'react',
+            'react-dom',
+            'react-dom/client',
+            'react/jsx-runtime',
+            'react/jsx-dev-runtime',
+            'scheduler'
+          ],
+          recharts: [
+            'recharts',
+            'd3-array',
+            'd3-scale',
+            'd3-shape',
+            'd3-format'
+          ],
+          mantine: [
+            '@mantine/core',
+            '@mantine/hooks',
+            '@mantine/notifications',
+            '@mantine/dropzone',
+            '@mantine/dates',
+            '@mantine/form'
+          ],
+          dexie: ['dexie', 'dexie-export-import', 'dexie-react-hooks'],
+          motion: ['motion', 'motion/react'],
+          ui: [
+            'react-icons',
+            'react-icons/tb',
+            'react-icons/fa',
+            '@tanstack/react-virtual',
+            'dayjs',
+            'dayjs/plugin/utc',
+            'dayjs/plugin/timezone',
+            'dayjs/plugin/isBetween',
+            'react-masonry-css',
+            'randomcolor'
+          ]
         }
       },
       onwarn: (warning, defaultHandler) => {

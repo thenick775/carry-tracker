@@ -1,9 +1,9 @@
 import {
   Badge,
-  Box,
   getThemeColor,
   useMantineTheme,
-  Text
+  Text,
+  Flex
 } from '@mantine/core';
 import {
   Cell,
@@ -32,7 +32,6 @@ const renderLabel = ({ x, y, cx, cy, percent = 0 }: PieLabelRenderProps) => (
     fontFamily="var(--mantine-font-family)"
     fontSize={12}
   >
-    {/* @ts-expect-error type unknown https://github.com/recharts/recharts/issues/6380 */}
     <tspan x={x}>{(percent * 100).toFixed(0)}%</tspan>
   </text>
 );
@@ -46,10 +45,12 @@ export const RenderTooltip = ({
   const p: PieChartData = payload[0].payload;
 
   return (
-    <Box
+    <Flex
       p="xs"
       bg="white"
       c="black"
+      gap={5}
+      align="center"
       style={{
         border: '1px solid var(--mantine-color-gray-4)',
         maxWidth: 'min(260px, 50dvw)'
@@ -57,18 +58,9 @@ export const RenderTooltip = ({
     >
       <Text size="sm">
         {p.name}: {p.value}{' '}
-        <Badge
-          size="xs"
-          circle
-          color={p.color}
-          style={{
-            display: 'inline-block',
-            verticalAlign: 'middle',
-            transform: 'translateY(-1px)'
-          }}
-        />
       </Text>
-    </Box>
+      <Badge size="xs" circle color={p.color} />
+    </Flex>
   );
 };
 

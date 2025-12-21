@@ -7,7 +7,7 @@ import {
   TextInput,
   useCombobox
 } from '@mantine/core';
-import { useState } from 'preact/hooks';
+import { useState } from 'react';
 import {
   TbChevronLeft,
   TbChevronRight,

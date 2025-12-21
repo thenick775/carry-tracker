@@ -1,7 +1,7 @@
 import { ActionIcon, Text, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useMemo, useState } from 'preact/hooks';
+import { useMemo, useState } from 'react';
 import { TbPlus, TbX } from 'react-icons/tb';
 
 import { CarryItemCard } from './carry-item/carry-item-card.tsx';

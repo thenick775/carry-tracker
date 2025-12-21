@@ -1,6 +1,6 @@
 import { ScrollArea, type ScrollAreaProps } from '@mantine/core';
 
-import type { ReactNode } from 'preact/compat';
+import type { ReactNode } from 'react';
 
 export const ResponsiveScrollArea = ({
   children,

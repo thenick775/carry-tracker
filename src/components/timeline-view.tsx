@@ -2,7 +2,7 @@ import { Timeline, Text } from '@mantine/core';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import dayjs from 'dayjs';
 import { AnimatePresence, motion } from 'motion/react';
-import { useEffect, useMemo, useRef } from 'preact/hooks';
+import { useEffect, useMemo, useRef } from 'react';
 
 import { ResponsiveScrollArea } from './common/responsive-scroll-area.tsx';
 import { useCarryItems } from '../hooks/use-carry-items.ts';

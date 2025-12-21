@@ -8,7 +8,7 @@ Privacy first, no ads, free forever 🚀
 
 [Try it live!](https://edc-tracker.com)
 
-## 🧭 Why I Made This
+## Why I Made This
 
 I built this every day **Carry Tracker** because I wanted something to log what I carry each day, showing me what's in my pocket regularly and what's not.
 
@@ -16,7 +16,7 @@ Like a lot of people, I got into collecting and rotating items like knives, pens
 
 This app helps solve that: it logs your carry history, visualizes rotations over time, and keeps your pockets organized!
 
-## ✨ What It Does
+## What It Does
 
 - **Inventory Management**  
   Add items to your collection with images, timestamps, purchase info, and more.
@@ -30,7 +30,7 @@ This app helps solve that: it logs your carry history, visualizes rotations over
 - **PWA Support**  
   Works offline, installable to your phone or desktop.
 
-## 🚀 Getting Started
+## Getting Started
 
 Clone the repo and then run the following from the project root:
 
@@ -39,7 +39,7 @@ npm install && \
 npm run dev
 ```
 
-## 📱 Installing as a PWA
+## Installing as a PWA
 
 I recommend installing this app to your home screen as if it were native.
 
@@ -51,18 +51,17 @@ To install:
 - Choose “Add to Home Screen”
 - Open the app using the icon tile
 
-## 🔮 Roadmap
+## Features
 
-- [ ] Reports
+- [x] Reports
   - [x] Top items
   - [x] Most carried
   - [x] Cost breakdown
-  - [ ] Usage over time
+  - [x] Usage over time
 - [x] Export/import backup
-- [ ] Tags and categories
-- [ ] Shareable loadouts
+- [x] Tags and categories (custom fields)
 
-## 🧩 Inspired By
+## Inspired By
 
 While building this app, I came across http://www.edctracker.com, which described many of the features I wanted.
 
