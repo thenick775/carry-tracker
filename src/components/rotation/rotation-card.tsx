@@ -41,7 +41,7 @@ export const RotationCard = ({
     </Group>
 
     {rotation.activeAt && (
-      <Text size="sm" c="dimmed">
+      <Text size="sm" c="dimmed" ta="left">
         Active since: {dayjs(rotation.activeAt).format('MMM D, YYYY')}
       </Text>
     )}
