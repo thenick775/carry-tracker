@@ -1,6 +1,6 @@
 import { Box, Chip, Group, Text } from '@mantine/core';
-import { useState } from 'preact/hooks';
 import randomColor from 'randomcolor';
+import { useState } from 'react';
 
 import { ResponsiveScrollArea } from './common/responsive-scroll-area.tsx';
 import { CarryItemStatsTable } from './most-carried/carry-item-stats-table.tsx';

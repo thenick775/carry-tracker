@@ -3,7 +3,7 @@ import ReactMasonry from 'react-masonry-css';
 
 import classes from './masonry.module.css';
 
-import type { ReactNode } from 'preact/compat';
+import type { ReactNode } from 'react';
 
 export const Masonry = ({ children: items }: { children: ReactNode }) => {
   const theme = useMantineTheme();

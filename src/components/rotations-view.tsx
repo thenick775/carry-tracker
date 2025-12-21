@@ -1,6 +1,6 @@
 import { ActionIcon, Grid, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { useState } from 'preact/hooks';
+import { useState } from 'react';
 import { TbPlus } from 'react-icons/tb';
 
 import { ResponsiveScrollArea } from './common/responsive-scroll-area.tsx';

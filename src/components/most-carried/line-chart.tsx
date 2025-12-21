@@ -1,6 +1,6 @@
 import { Group, ActionIcon, Text, SegmentedControl } from '@mantine/core';
 import dayjs from 'dayjs';
-import { useState } from 'preact/hooks';
+import { useState } from 'react';
 import {
   LineChart as ReLineChart,
   Line,

@@ -1,6 +1,6 @@
 import { AppShell, Box, Burger, Grid, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { useState } from 'preact/hooks';
+import { useState } from 'react';
 import { FaGithub } from 'react-icons/fa';
 
 import classes from './app-shell.module.css';
@@ -82,7 +82,9 @@ export const CarryTrackerAppShell = () => {
           </Grid.Col>
         </Grid>
       </AppShell.Header>
-      <AppShell.Navbar p="md">{navBarItems}</AppShell.Navbar>
+      <AppShell.Navbar p="md" ta="left">
+        {navBarItems}
+      </AppShell.Navbar>
       <AppShell.Main>{viewComponents[activeLink]}</AppShell.Main>
     </AppShell>
   );

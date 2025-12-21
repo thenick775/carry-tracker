@@ -1,4 +1,4 @@
-import prefresh from '@prefresh/vite';
+import react from '@vitejs/plugin-react';
 import { visualizer } from 'rollup-plugin-visualizer';
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
@@ -7,7 +7,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 export default defineConfig({
   base: './',
   plugins: [
-    prefresh(),
+    react(),
     visualizer(),
     VitePWA({
       registerType: 'autoUpdate',
@@ -93,28 +93,17 @@ export default defineConfig({
       }
     })
   ],
-  esbuild: {
-    jsxFactory: 'h',
-    jsxFragment: 'Fragment',
-    jsxInject: `import { h } from 'preact'`
-  },
-  resolve: {
-    alias: {
-      react: 'preact/compat',
-      'react-dom/test-utils': 'preact/test-utils',
-      'react-dom': 'preact/compat',
-      'react/jsx-runtime': 'preact/jsx-runtime'
-    }
-  },
   build: {
     rollupOptions: {
       output: {
         manualChunks: (id) => {
           const vendorPrefix = 'vendor';
-          if (id.indexOf('node_modules') > -1) {
-            if (id.indexOf('recharts') > -1) return vendorPrefix + '_recharts';
-            if (id.indexOf('mantine') > -1) return vendorPrefix + '_mantine';
-            if (id.indexOf('dexie') > -1) return vendorPrefix + '_dexie';
+          if (id.includes('node_modules')) {
+            if (id.includes('react')) return vendorPrefix + '_react';
+            if (id.includes('recharts')) return vendorPrefix + '_recharts';
+            if (id.includes('mantine')) return vendorPrefix + '_mantine';
+            if (id.includes('dexie')) return vendorPrefix + '_dexie';
+            if (id.includes('motion')) return vendorPrefix + '_motion';
 
             return vendorPrefix;
           }
