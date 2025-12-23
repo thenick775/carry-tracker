@@ -43,11 +43,11 @@ export const CarryItemCard = ({
 
     <Image radius="md" src={imageUrl} mb="xs" w="auto" fit="contain" />
 
-    <Text size="sm" c="dimmed" ta="left">
+    <Text size="sm" c="dimmed">
       Added: {dayjs(item.createdAt).format('MMM D, YYYY')}
     </Text>
 
-    <Text size="sm" c="dimmed" ta="left">
+    <Text size="sm" c="dimmed">
       Carry Count: {item.carryCount.toLocaleString('en-US')}
     </Text>
 

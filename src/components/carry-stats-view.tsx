@@ -62,9 +62,7 @@ export const CarryStatsView = () => {
 
   return (
     <ResponsiveScrollArea>
-      <Text mb="sm" ta="left">
-        Carry Stats:
-      </Text>
+      <Text mb="sm">Carry Stats:</Text>
 
       <Box
         mb="sm"
