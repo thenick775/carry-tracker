@@ -47,7 +47,6 @@ export const CarryTrackerAppShell = () => {
         breakpoint: 'sm',
         collapsed: { mobile: !navbarOpened, desktop: !navbarOpened }
       }}
-      padding="md"
     >
       <AppShell.Header>
         <Grid align="center" p="sm">
@@ -83,7 +82,7 @@ export const CarryTrackerAppShell = () => {
         </Grid>
       </AppShell.Header>
       <AppShell.Navbar p="md">{navBarItems}</AppShell.Navbar>
-      <AppShell.Main>{viewComponents[activeLink]}</AppShell.Main>
+      <AppShell.Main px="md">{viewComponents[activeLink]}</AppShell.Main>
     </AppShell>
   );
 };

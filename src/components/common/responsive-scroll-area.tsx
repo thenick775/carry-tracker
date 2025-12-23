@@ -10,8 +10,12 @@ export const ResponsiveScrollArea = ({
     style={{
       height: 'calc(100dvh - var(--mantine-header-height, 0px) - 60px)'
     }}
+    viewportProps={{
+      style: {
+        paddingTop: 'var(--mantine-spacing-md)'
+      }
+    }}
     px="md"
-    pb="lg"
     scrollbarSize={8}
     scrollbars="y"
     {...rest}
