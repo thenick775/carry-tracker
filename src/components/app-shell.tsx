@@ -49,8 +49,8 @@ export const CarryTrackerAppShell = () => {
       }}
       padding="md"
     >
-      <AppShell.Header p="sm">
-        <Grid align="center">
+      <AppShell.Header>
+        <Grid align="center" p="sm">
           <Grid.Col span={1.5}>
             <Burger
               aria-label={navbarOpened ? 'Close menu' : 'Open menu'}
@@ -82,9 +82,7 @@ export const CarryTrackerAppShell = () => {
           </Grid.Col>
         </Grid>
       </AppShell.Header>
-      <AppShell.Navbar p="md" ta="left">
-        {navBarItems}
-      </AppShell.Navbar>
+      <AppShell.Navbar p="md">{navBarItems}</AppShell.Navbar>
       <AppShell.Main>{viewComponents[activeLink]}</AppShell.Main>
     </AppShell>
   );

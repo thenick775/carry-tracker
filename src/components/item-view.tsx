@@ -93,9 +93,7 @@ export const ItemsView = () => {
               animate={{ opacity: 1, filter: 'blur(0px)' }}
               transition={{ duration: 0.3, ease: 'easeOut' }}
             >
-              <Text mb="sm" ta="left">
-                Carry Items:
-              </Text>
+              <Text mb="sm">Carry Items:</Text>
               <Masonry>
                 {imageUrls &&
                   carryItems.map((item, idx) => (
