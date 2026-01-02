@@ -360,7 +360,7 @@ export const shadcnTheme: MantineThemeOverride = createTheme({
     secondary: zincColors,
     dark: zincColors,
 
-    error: redColors as MantineColorsTuple,
+    error: redColors,
     success: greenColors,
     info: blueColors,
     warning: amberColors

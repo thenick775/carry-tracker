@@ -243,7 +243,7 @@ export const LineChart = ({ data }: MultiItemLineChartProps) => {
               : ['auto', 'auto']
           }
           ticks={ticks}
-          tickFormatter={(v) => formatXAxisTick(v, mode)}
+          tickFormatter={(v: number) => formatXAxisTick(v, mode)}
         />
 
         <YAxis
@@ -255,8 +255,8 @@ export const LineChart = ({ data }: MultiItemLineChartProps) => {
 
         <Tooltip
           isAnimationActive={false}
-          labelFormatter={(v) => formatTooltipLabel(v, mode)}
-          itemSorter={({ value }) => -(value ?? 0)}
+          labelFormatter={(v: number) => formatTooltipLabel(v, mode)}
+          itemSorter={({ value }) => -Number(value ?? 0)}
           labelStyle={{ color: 'var(--mantine-color-dimmed)' }}
           wrapperStyle={{ zIndex: 10000 }}
           formatter={(value, name) => {

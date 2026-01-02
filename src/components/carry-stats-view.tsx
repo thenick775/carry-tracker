@@ -36,12 +36,17 @@ export const CarryStatsView = () => {
     >((acc, item) => {
       item.customFields
         ?.filter((c) => c.name === viewKey)
-        ?.forEach((customField) => {
+        .forEach((customField) => {
+          const prev = acc[customField.value] ?? {
+            total: 0,
+            cost: 0,
+            carryCount: 0
+          };
+
           acc[customField.value] = {
-            total: (acc[customField.value]?.total ?? 0) + 1,
-            cost: (acc[customField.value]?.cost ?? 0) + (item?.cost ?? 0),
-            carryCount:
-              (acc[customField.value]?.carryCount ?? 0) + item.carryCount
+            total: prev.total + 1,
+            cost: (prev.cost ?? 0) + (item.cost ?? 0),
+            carryCount: prev.carryCount + item.carryCount
           };
         });
 

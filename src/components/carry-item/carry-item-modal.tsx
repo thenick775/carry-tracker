@@ -141,8 +141,8 @@ const CarryItemForm = ({
       ...values,
       createdAt: dayjs(values.createdAt).toISOString(),
       customFields: values.customFields?.map(({ name, value }) => ({
-        name: name?.trim(),
-        value: value?.trim()
+        name: name.trim(),
+        value: value.trim()
       }))
     }),
     validate: {
