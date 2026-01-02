@@ -59,7 +59,6 @@ const RenderList = ({
         <Group gap="sm">
           <Checkbox
             checked={value.includes(item.value)}
-            onChange={() => {}}
             aria-hidden
             tabIndex={-1}
             style={{ pointerEvents: 'none' }}

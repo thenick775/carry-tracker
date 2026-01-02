@@ -108,7 +108,7 @@ export const TimelineView = () => {
 
   const virtualItems = virtualizer.getVirtualItems();
 
-  const shouldRenderTimeline = !isLoading && virtualItems?.length > 0;
+  const shouldRenderTimeline = !isLoading && virtualItems.length > 0;
 
   useEffect(() => {
     if (shouldRenderTimeline && todayIndex > 4)
@@ -143,7 +143,7 @@ export const TimelineView = () => {
                 if (!date) return null;
 
                 const items = generateTimelineNodesForDay(
-                  activeRotations ?? [],
+                  activeRotations,
                   carryItemIdentifiers,
                   date
                 );

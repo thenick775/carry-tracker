@@ -95,11 +95,10 @@ const RotationForm = ({
 
   const pickedCarryItems = {
     label: 'Rotation',
-    values:
-      orderedCarryItemIds
-        .map((id) => carryItemIdentifiers?.find((c) => c.id === id))
-        .filter((v) => !!v)
-        .map(({ id, name }) => ({ name, value: id })) ?? []
+    values: orderedCarryItemIds
+      .map((id) => carryItemIdentifiers?.find((c) => c.id === id))
+      .filter((v) => !!v)
+      .map(({ id, name }) => ({ name, value: id }))
   };
 
   return (

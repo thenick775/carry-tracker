@@ -1,6 +1,6 @@
 import { ActionIcon, Text, TextInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 import { useMemo, useState } from 'react';
 import { TbPlus, TbX } from 'react-icons/tb';
 
@@ -35,7 +35,7 @@ export const ItemsView = () => {
 
   const isLoading = carryItems === undefined;
   const shouldRenderMasonry = !isLoading && carryItems.length > 0;
-  const hasNoItems = !isLoading && carryItems?.length === 0;
+  const hasNoItems = !isLoading && carryItems.length === 0;
 
   const uniqueCustomFields =
     carryItems
@@ -100,7 +100,7 @@ export const ItemsView = () => {
                     <CarryItemCard
                       key={item.id}
                       item={item}
-                      imageUrl={imageUrls?.[idx]}
+                      imageUrl={imageUrls[idx]}
                       onDelete={() => deleteCarryItem(item.id)}
                       onRequestEdit={() => {
                         setEditCarryItem(item);

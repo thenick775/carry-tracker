@@ -5,12 +5,14 @@ import {
   Text,
   Flex
 } from '@mantine/core';
+import { Fragment } from 'react';
 import {
   Cell,
   Pie,
   ResponsiveContainer,
   PieChart as ReChartsPieChart,
   Tooltip,
+  useActiveTooltipDataPoints,
   type PieLabelRenderProps,
   type TooltipContentProps
 } from 'recharts';
@@ -37,12 +39,11 @@ const renderLabel = ({ x, y, cx, cy, percent = 0 }: PieLabelRenderProps) => (
 );
 
 export const RenderTooltip = ({
-  active,
-  payload
+  active
 }: TooltipContentProps<number | string, string>) => {
-  if (!active || !payload?.length) return null;
+  const points = useActiveTooltipDataPoints<PieChartData>();
 
-  const p: PieChartData = payload[0].payload;
+  if (!active || !points?.length) return null;
 
   return (
     <Flex
@@ -56,10 +57,14 @@ export const RenderTooltip = ({
         maxWidth: 'min(260px, 50dvw)'
       }}
     >
-      <Text size="sm">
-        {p.name}: {p.value}{' '}
-      </Text>
-      <Badge size="xs" circle color={p.color} />
+      {points.map((p, idx) => (
+        <Fragment key={`${p.name}_${idx}`}>
+          <Text size="sm">
+            {p.name}: {p.value}{' '}
+          </Text>
+          <Badge size="xs" circle color={p.color} />
+        </Fragment>
+      ))}
     </Flex>
   );
 };
