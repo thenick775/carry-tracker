@@ -115,8 +115,8 @@ const formatTooltipLabel = (value: number, mode: ChartMode) => {
 
 export const LineChart = ({ data }: MultiItemLineChartProps) => {
   const [mode, setMode] = useState<ChartMode>('week');
-  const carriesOverTime = useCarriesOverTime(mode, PERIOD_LOOK_BACK);
   const [page, setPage] = useState(0);
+  const carriesOverTime = useCarriesOverTime(mode, PERIOD_LOOK_BACK, page);
 
   const points: carryDataPoint[] | undefined = carriesOverTime?.map((cot) => {
     const item = data.find((d) => d.id === cot.carryItemId);
@@ -133,26 +133,13 @@ export const LineChart = ({ data }: MultiItemLineChartProps) => {
 
   const itemColors = extractItemColors(points);
   const itemNames = Array.from(itemColors.keys());
-  const allBuckets = bucketAll(points, mode).map((row) => {
+  const buckets = bucketAll(points, mode).map((row) => {
     const next = { ...row };
     for (const name of itemNames) {
       next[name] ??= 0;
     }
     return next;
   });
-
-  const totalPages = Math.max(
-    1,
-    Math.ceil(allBuckets.length / PERIOD_LOOK_BACK)
-  );
-  const clampedPage = Math.min(page, totalPages - 1);
-
-  const start = Math.max(
-    0,
-    allBuckets.length - PERIOD_LOOK_BACK * (clampedPage + 1)
-  );
-  const end = allBuckets.length - PERIOD_LOOK_BACK * clampedPage;
-  const buckets = allBuckets.slice(start, end);
 
   const ticks = buckets.map((row) => row.date);
 
@@ -165,18 +152,11 @@ export const LineChart = ({ data }: MultiItemLineChartProps) => {
   const digitCount = String(maxYValue || 0).length;
   const yAxisWidth = Math.max(26, digitCount * 15);
 
-  const canGoOlder = clampedPage < totalPages - 1;
-  const canGoNewer = clampedPage > 0;
+  const canGoOlder = buckets.length > 0;
+  const canGoNewer = page >= 1;
 
-  const handleOlder = () => {
-    if (!canGoOlder) return;
-    setPage((p) => Math.min(p + 1, totalPages - 1));
-  };
-
-  const handleNewer = () => {
-    if (!canGoNewer) return;
-    setPage((p) => Math.max(p - 1, 0));
-  };
+  const handleOlder = () => setPage((p) => p + 1);
+  const handleNewer = () => setPage((p) => p - 1);
 
   const rangeLabel = buckets.length
     ? `${dayjs(buckets[0].date).format(
@@ -282,7 +262,10 @@ export const LineChart = ({ data }: MultiItemLineChartProps) => {
       <Group justify="center" mb="sm">
         <SegmentedControl
           value={mode}
-          onChange={(value) => setMode(value as ChartMode)}
+          onChange={(value) => {
+            setMode(value as ChartMode);
+            setPage(0);
+          }}
           data={[
             { label: 'Day', value: 'day' },
             { label: 'Week', value: 'week' },

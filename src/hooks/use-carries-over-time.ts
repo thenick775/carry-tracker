@@ -5,36 +5,32 @@ import { carryDb } from '../db/db.ts';
 
 export type ChartMode = 'day' | 'week' | 'month' | 'year';
 
-const getUtcRangeForMode = (mode: ChartMode, periodLookBack: number) => {
+const getUtcRangeForMode = (
+  mode: ChartMode,
+  periodLookBack: number,
+  page?: number
+) => {
   const now = dayjs.utc();
 
-  const unit =
-    mode === 'day'
-      ? 'day'
-      : mode === 'week'
-      ? 'week'
-      : mode === 'month'
-      ? 'month'
-      : 'year';
-
-  const end = now.startOf(unit);
-  const start = end.subtract(periodLookBack - 1, unit);
+  const end = now.subtract(page ? page * periodLookBack + 1 : 0, mode);
+  const start = end.subtract(periodLookBack, mode);
 
   return {
     min: start.toISOString(),
-    max: now.toISOString()
+    max: end.toISOString()
   };
 };
 
 export const useCarriesOverTime = (
   mode: ChartMode = 'week',
-  periodLookBack = 7
+  periodLookBack = 7,
+  page?: number
 ) =>
   useLiveQuery(() => {
-    const { min, max } = getUtcRangeForMode(mode, periodLookBack);
+    const { min, max } = getUtcRangeForMode(mode, periodLookBack, page);
 
     return carryDb.carriesOverTime
       .where('createdAt')
       .between(min, max, true, true)
       .toArray();
-  }, [mode]);
+  }, [mode, page, periodLookBack]);
