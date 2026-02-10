@@ -235,7 +235,7 @@ export const LineChart = ({ data }: MultiItemLineChartProps) => {
 
         <Tooltip
           isAnimationActive={false}
-          labelFormatter={(v: number) => formatTooltipLabel(v, mode)}
+          labelFormatter={(v) => formatTooltipLabel(Number(v), mode)}
           itemSorter={({ value }) => -Number(value ?? 0)}
           labelStyle={{ color: 'var(--mantine-color-dimmed)' }}
           wrapperStyle={{ zIndex: 10000 }}
