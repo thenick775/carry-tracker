@@ -1,5 +1,7 @@
+// eslint-disable-next-line import/no-unresolved
 import react from '@vitejs/plugin-react';
 import { visualizer } from 'rollup-plugin-visualizer';
+// eslint-disable-next-line import/no-unresolved
 import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
@@ -95,45 +97,34 @@ export default defineConfig({
   ],
   build: {
     sourcemap: true,
-    rollupOptions: {
+    rolldownOptions: {
       output: {
-        manualChunks: {
-          react: [
-            'react',
-            'react-dom',
-            'react-dom/client',
-            'react/jsx-runtime',
-            'react/jsx-dev-runtime',
-            'scheduler'
-          ],
-          recharts: [
-            'recharts',
-            'd3-array',
-            'd3-scale',
-            'd3-shape',
-            'd3-format'
-          ],
-          mantine: [
-            '@mantine/core',
-            '@mantine/hooks',
-            '@mantine/notifications',
-            '@mantine/dropzone',
-            '@mantine/dates',
-            '@mantine/form'
-          ],
-          dexie: ['dexie', 'dexie-export-import', 'dexie-react-hooks'],
-          motion: ['motion', 'motion/react'],
-          ui: [
-            'react-icons',
-            'react-icons/tb',
-            'react-icons/fa',
-            '@tanstack/react-virtual',
-            'dayjs',
-            'dayjs/plugin/utc',
-            'dayjs/plugin/timezone',
-            'dayjs/plugin/isBetween',
-            'react-masonry-css',
-            'randomcolor'
+        codeSplitting: {
+          groups: [
+            {
+              name: 'react',
+              test: /node_modules[\\/](?:react|react-dom|scheduler)([\\/]|$)/
+            },
+            {
+              name: 'recharts',
+              test: /node_modules[\\/](?:recharts|d3-array|d3-scale|d3-shape|d3-format)([\\/]|$)/
+            },
+            {
+              name: 'mantine',
+              test: /node_modules[\\/](?:@mantine[\\/](?:core|hooks|notifications|dropzone|dates|form))([\\/]|$)/
+            },
+            {
+              name: 'dexie',
+              test: /node_modules[\\/](?:dexie|dexie-export-import|dexie-react-hooks)([\\/]|$)/
+            },
+            {
+              name: 'motion',
+              test: /node_modules[\\/](?:motion|framer-motion)([\\/]|$)/
+            },
+            {
+              name: 'ui',
+              test: /node_modules[\\/](?:react-icons|@tanstack|dayjs|react-masonry-css|randomcolor)([\\/]|$)/
+            }
           ]
         }
       },

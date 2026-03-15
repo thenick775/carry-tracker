@@ -38,9 +38,7 @@ const renderLabel = ({ x, y, cx, cy, percent = 0 }: PieLabelRenderProps) => (
   </text>
 );
 
-export const RenderTooltip = ({
-  active
-}: TooltipContentProps<number | string, string>) => {
+export const RenderTooltip = ({ active }: TooltipContentProps) => {
   const points = useActiveTooltipDataPoints<PieChartData>();
 
   if (!active || !points?.length) return null;
