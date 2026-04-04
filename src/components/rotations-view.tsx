@@ -20,7 +20,7 @@ export const RotationsView = () => {
     <>
       <ResponsiveScrollArea>
         <Text mb="sm">Rotations:</Text>
-        <Grid gutter={'8px'}>
+        <Grid gap="8px">
           {rotations?.map((rotation) => (
             <Grid.Col
               key={rotation.id}
