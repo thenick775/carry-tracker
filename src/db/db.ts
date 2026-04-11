@@ -21,6 +21,7 @@ export type CarryItemStorage = {
   carryCount: number;
   createdAt: string;
   color: string;
+  cost?: number;
   image?: {
     name: string;
     mimeType: string;
