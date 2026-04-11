@@ -11,7 +11,7 @@ import isBetween from 'dayjs/plugin/isBetween';
 import utc from 'dayjs/plugin/utc';
 
 import { CarryTrackerAppShell } from './components/app-shell.tsx';
-import { shadcnCssVariableResolver } from './theme/cssVariableResolver.ts';
+import { cssVariableResolver } from './theme/css-variable-resolver.ts';
 import { shadcnTheme } from './theme/theme.ts';
 
 dayjs.extend(isBetween);
@@ -21,7 +21,7 @@ export const App = () => (
   <MantineProvider
     defaultColorScheme="dark"
     theme={shadcnTheme}
-    cssVariablesResolver={shadcnCssVariableResolver}
+    cssVariablesResolver={cssVariableResolver}
   >
     <Notifications />
     <CarryTrackerAppShell />
