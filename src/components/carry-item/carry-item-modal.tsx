@@ -42,7 +42,7 @@ type CarryItemFormProps = {
   customFieldsValueMap: CustomFieldsValueMap;
 };
 
-export const CustomFieldsInput = ({
+const CustomFieldsInput = ({
   form,
   customFieldsValueMap
 }: {

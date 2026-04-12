@@ -17,7 +17,7 @@ import {
   type TooltipContentProps
 } from 'recharts';
 
-export type PieChartData = { name: string; value: number; color: string };
+type PieChartData = { name: string; value: number; color: string };
 
 type RadialBarChartProps = {
   data: PieChartData[];

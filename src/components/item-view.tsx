@@ -59,7 +59,7 @@ export const ItemsView = () => {
             placeholder="Search by name"
             size="md"
             mb="sm"
-            value={nameFilter ?? ''}
+            value={nameFilter}
             onChange={(event) => setNameFilter(event.currentTarget.value)}
             rightSection={
               <AnimatePresence>
