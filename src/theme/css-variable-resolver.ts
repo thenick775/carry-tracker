@@ -3,7 +3,7 @@ import {
   v8CssVariablesResolver
 } from '@mantine/core';
 
-import { shadcnCssVariableResolver } from './cssVariableResolver.ts';
+import { shadcnCssVariableResolver } from './mantine-hub-shadcn/cssVariableResolver.ts';
 
 /**
  * Composes v8CssVariablesResolver with shadcnCssVariableResolver.

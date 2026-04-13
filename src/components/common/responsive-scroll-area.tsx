@@ -1,11 +1,9 @@
 import { ScrollArea, type ScrollAreaProps } from '@mantine/core';
 
-import type { ReactNode } from 'react';
-
 export const ResponsiveScrollArea = ({
   children,
   ...rest
-}: { children: ReactNode } & ScrollAreaProps) => (
+}: ScrollAreaProps) => (
   <ScrollArea
     style={{
       height: 'calc(100dvh - var(--mantine-header-height, 0px) - 60px)'
@@ -16,7 +14,6 @@ export const ResponsiveScrollArea = ({
       }
     }}
     px="md"
-    scrollbarSize={8}
     scrollbars="y"
     {...rest}
   >

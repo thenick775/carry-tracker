@@ -5,7 +5,7 @@ import classes from './masonry.module.css';
 
 import type { ReactNode } from 'react';
 
-export const Masonry = ({ children: items }: { children: ReactNode }) => {
+export const Masonry = ({ children }: { children: ReactNode }) => {
   const theme = useMantineTheme();
 
   const breakpointCols = {
@@ -21,7 +21,7 @@ export const Masonry = ({ children: items }: { children: ReactNode }) => {
       className={classes['masonry-grid']}
       columnClassName={classes['masonry-grid_column']}
     >
-      {items}
+      {children}
     </ReactMasonry>
   );
 };

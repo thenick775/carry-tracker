@@ -12,7 +12,7 @@ import utc from 'dayjs/plugin/utc';
 
 import { CarryTrackerAppShell } from './components/app-shell.tsx';
 import { cssVariableResolver } from './theme/css-variable-resolver.ts';
-import { shadcnTheme } from './theme/theme.ts';
+import { shadcnTheme } from './theme/mantine-hub-shadcn/theme.ts';
 
 dayjs.extend(isBetween);
 dayjs.extend(utc);

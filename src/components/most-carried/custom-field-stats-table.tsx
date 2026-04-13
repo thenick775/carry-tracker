@@ -1,6 +1,13 @@
 import { Table, Badge } from '@mantine/core';
 
-import type { PieChartData } from './pie-chart';
+type CustomFieldStatsData = {
+  name: string;
+  value: number;
+  color: string;
+  id: string;
+  cost?: number;
+  carryCount: number;
+};
 
 const currencyFormatterUSD = new Intl.NumberFormat('en-US', {
   style: 'currency',
@@ -12,11 +19,7 @@ const currencyFormatterUSD = new Intl.NumberFormat('en-US', {
 export const CustomFieldStatsTable = ({
   data
 }: {
-  data: (PieChartData & {
-    id: string;
-    cost?: number;
-    carryCount: number;
-  })[];
+  data: CustomFieldStatsData[];
 }) => {
   const totalCount = data.reduce((acc, chartItem) => acc + chartItem.value, 0);
   const rows = data
