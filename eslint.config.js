@@ -52,8 +52,6 @@ export default defineConfig([
       'react/jsx-key': ['error', { checkFragmentShorthand: true }],
       '@typescript-eslint/consistent-type-imports': 'error',
       'import/no-default-export': 'error',
-      // were not using the react compiler, yet
-      'react-hooks/incompatible-library': 'off',
       '@typescript-eslint/no-deprecated': 'error',
 
       'import/order': [

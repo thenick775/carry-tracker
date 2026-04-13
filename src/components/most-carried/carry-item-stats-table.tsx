@@ -25,7 +25,7 @@ export const CarryItemStatsTable = ({
     0
   );
   const rows = data
-    .sort(({ value: a }, { value: b }) => b - a)
+    .toSorted(({ value: a }, { value: b }) => b - a)
     .map((chartItem) => (
       <Table.Tr key={chartItem.id}>
         <Table.Td>{chartItem.name}</Table.Td>
