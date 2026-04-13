@@ -119,21 +119,19 @@ export const CarryStatsView = () => {
         }}
       >
         {isViewingItemsOverTime ? (
-          <>
-            <LineChart data={itemData} />
-            <CarryItemStatsTable data={itemData} />
-          </>
+          <LineChart data={itemData} />
         ) : (
-          <>
-            <PieChart data={chartData} />
-            {isViewingItems ? (
-              <CarryItemStatsTable data={itemData} />
-            ) : (
-              <CustomFieldStatsTable data={customFieldsData} />
-            )}
-          </>
+          <PieChart data={chartData} />
         )}
       </Box>
+
+      {isViewingItemsOverTime ? (
+        <CarryItemStatsTable data={itemData} />
+      ) : isViewingItems ? (
+        <CarryItemStatsTable data={itemData} />
+      ) : (
+        <CustomFieldStatsTable data={customFieldsData} />
+      )}
     </ResponsiveScrollArea>
   );
 };
