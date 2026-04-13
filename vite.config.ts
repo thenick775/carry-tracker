@@ -1,5 +1,7 @@
 // eslint-disable-next-line import/no-unresolved
-import react from '@vitejs/plugin-react';
+import babel from '@rolldown/plugin-babel';
+// eslint-disable-next-line import/no-unresolved
+import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { visualizer } from 'rollup-plugin-visualizer';
 // eslint-disable-next-line import/no-unresolved
 import { defineConfig } from 'vite';
@@ -10,6 +12,9 @@ export default defineConfig({
   base: './',
   plugins: [
     react(),
+    babel({
+      presets: [reactCompilerPreset()]
+    }),
     visualizer(),
     VitePWA({
       registerType: 'autoUpdate',

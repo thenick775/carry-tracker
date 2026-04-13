@@ -84,6 +84,7 @@ export const TimelineView = () => {
     [startDate]
   );
 
+  // eslint-disable-next-line react-hooks/incompatible-library -- opting out since this will be ignored by react compiler, and seems fine for now
   const virtualizer = useVirtualizer({
     count: todayIndex + 365,
     getScrollElement: () => scrollRef.current,
