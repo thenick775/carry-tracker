@@ -54,6 +54,7 @@ export default defineConfig([
       'import/no-default-export': 'error',
       // were not using the react compiler, yet
       'react-hooks/incompatible-library': 'off',
+      '@typescript-eslint/no-deprecated': 'error',
 
       'import/order': [
         'error',

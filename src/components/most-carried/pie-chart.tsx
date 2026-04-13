@@ -7,7 +7,6 @@ import {
 } from '@mantine/core';
 import { Fragment } from 'react';
 import {
-  Cell,
   Pie,
   ResponsiveContainer,
   PieChart as ReChartsPieChart,
@@ -72,19 +71,12 @@ export const PieChart = ({ data }: RadialBarChartProps) => {
 
   const chartData = data
     .filter(({ value }) => value > 0)
-    .map((data) => ({
-      ...data,
-      fill: getThemeColor(data.color, theme)
+    .map((item) => ({
+      ...item,
+      fill: getThemeColor(item.color, theme),
+      stroke: 'var(--chart-stroke-color, var(--mantine-color-body))',
+      strokeWidth: 1
     }));
-
-  const cells = chartData.map((item, index) => (
-    <Cell
-      key={index}
-      fill={getThemeColor(item.color, theme)}
-      stroke="var(--chart-stroke-color, var(--mantine-color-body))"
-      strokeWidth={1}
-    />
-  ));
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -108,9 +100,7 @@ export const PieChart = ({ data }: RadialBarChartProps) => {
             stroke: 'var(--chart-label-color, var(--mantine-color-dimmed))',
             strokeWidth: 1
           }}
-        >
-          {cells}
-        </Pie>
+        />
         <Tooltip isAnimationActive={false} content={RenderTooltip} />
       </ReChartsPieChart>
     </ResponsiveContainer>
