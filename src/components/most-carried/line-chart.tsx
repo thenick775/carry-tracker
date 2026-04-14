@@ -1,4 +1,11 @@
-import { Group, ActionIcon, Text, SegmentedControl } from '@mantine/core';
+import {
+  Group,
+  ActionIcon,
+  Text,
+  SegmentedControl,
+  Box,
+  Flex
+} from '@mantine/core';
 import dayjs from 'dayjs';
 import { useState } from 'react';
 import {
@@ -167,14 +174,7 @@ export const LineChart = ({ data }: MultiItemLineChartProps) => {
     : '';
 
   return (
-    <div
-      style={{
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        flexDirection: 'column'
-      }}
-    >
+    <Flex direction="column" w="100%" h="100%">
       <Group justify="space-between" align="center" mb={4} gap="xs">
         <ActionIcon
           size="sm"
@@ -201,64 +201,69 @@ export const LineChart = ({ data }: MultiItemLineChartProps) => {
         </ActionIcon>
       </Group>
 
-      <ReLineChart
-        responsive
-        data={buckets}
-        style={{
-          width: '100%',
-          height: '100%',
-          aspectRatio: 1.6
-        }}
-        margin={{ top: 10, right: 20, left: 0, bottom: 5 }}
-      >
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.10)" />
-
-        <XAxis
-          dataKey="date"
-          type="number"
-          scale="time"
-          domain={
-            ticks.length
-              ? [ticks[0], ticks[ticks.length - 1]]
-              : ['auto', 'auto']
-          }
-          ticks={ticks}
-          tickFormatter={(v: number) => formatXAxisTick(v, mode)}
-        />
-
-        <YAxis
-          width={yAxisWidth}
-          axisLine={false}
-          allowDecimals={false}
-          domain={[0, maxYValue]}
-        />
-
-        <Tooltip
-          isAnimationActive={false}
-          labelFormatter={(v) => formatTooltipLabel(Number(v), mode)}
-          itemSorter={({ value }) => -Number(value ?? 0)}
-          labelStyle={{ color: 'var(--mantine-color-dimmed)' }}
-          wrapperStyle={{ zIndex: 10000 }}
-          formatter={(value, name) => {
-            if (value === 0) return null;
-            return [value, name];
+      <Box style={{ flex: 1, minHeight: 0 }}>
+        <ReLineChart
+          responsive
+          data={buckets}
+          style={{
+            width: '100%',
+            height: '100%',
+            aspectRatio: 1.6
           }}
-        />
-
-        {itemNames.map((name) => (
-          <Line
-            connectNulls
-            key={name}
-            type="monotone"
-            dataKey={name}
-            name={name}
-            stroke={itemColors.get(name)}
-            strokeWidth={2.4}
-            dot={{ r: 3 }}
-            activeDot={{ r: 5 }}
+          margin={{ top: 10, right: 20, left: 0, bottom: 5 }}
+        >
+          <CartesianGrid
+            strokeDasharray="3 3"
+            stroke="rgba(255,255,255,0.10)"
           />
-        ))}
-      </ReLineChart>
+
+          <XAxis
+            dataKey="date"
+            type="number"
+            scale="time"
+            domain={
+              ticks.length
+                ? [ticks[0], ticks[ticks.length - 1]]
+                : ['auto', 'auto']
+            }
+            ticks={ticks}
+            tickFormatter={(v: number) => formatXAxisTick(v, mode)}
+          />
+
+          <YAxis
+            width={yAxisWidth}
+            axisLine={false}
+            allowDecimals={false}
+            domain={[0, maxYValue]}
+          />
+
+          <Tooltip
+            isAnimationActive={false}
+            labelFormatter={(v) => formatTooltipLabel(Number(v), mode)}
+            itemSorter={({ value }) => -Number(value ?? 0)}
+            labelStyle={{ color: 'var(--mantine-color-dimmed)' }}
+            wrapperStyle={{ zIndex: 10000 }}
+            formatter={(value, name) => {
+              if (value === 0) return null;
+              return [value, name];
+            }}
+          />
+
+          {itemNames.map((name) => (
+            <Line
+              connectNulls
+              key={name}
+              type="monotone"
+              dataKey={name}
+              name={name}
+              stroke={itemColors.get(name)}
+              strokeWidth={2.4}
+              dot={{ r: 3 }}
+              activeDot={{ r: 5 }}
+            />
+          ))}
+        </ReLineChart>
+      </Box>
       <Group justify="center" mb="sm">
         <SegmentedControl
           value={mode}
@@ -276,6 +281,6 @@ export const LineChart = ({ data }: MultiItemLineChartProps) => {
           color="blue"
         />
       </Group>
-    </div>
+    </Flex>
   );
 };
