@@ -28,6 +28,7 @@ export type CarryItemStorage = {
     data: Uint8Array;
   };
   customFields?: CustomFields;
+  customFieldKeys?: string[];
 };
 
 export type TimeUnit = 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
@@ -71,3 +72,20 @@ carryDb.version(3).stores({
   carriesOverTime:
     'id, carryItemId, createdAt, currentCarryCount, [carryItemId+createdAt]'
 });
+
+carryDb
+  .version(4)
+  .stores({
+    carryItems:
+      'id, createdAt, name, carryCount, cost, *customFields.name, *customFields.value, *customFieldKeys'
+  })
+  .upgrade(async (tx) => {
+    await tx
+      .table('carryItems')
+      .toCollection()
+      .modify((carryItem: CarryItemStorage) => {
+        carryItem.customFieldKeys = (carryItem.customFields ?? []).map(
+          ({ name, value }) => `${name}::${value}`
+        );
+      });
+  });

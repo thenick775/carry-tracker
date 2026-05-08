@@ -1,24 +1,28 @@
-import { ActionIcon, Text, TextInput } from '@mantine/core';
+import { ActionIcon, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { motion, AnimatePresence } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { useMemo, useState } from 'react';
-import { TbPlus, TbX } from 'react-icons/tb';
+import { TbPlus } from 'react-icons/tb';
 
 import { CarryItemCard } from './carry-item/carry-item-card.tsx';
 import { CarryItemModal } from './carry-item/carry-item-modal.tsx';
-import { ResponsiveScrollArea } from './common/responsive-scroll-area.tsx';
-import { Masonry } from './masonry/masonry.tsx';
-import { useCarryItems } from '../hooks/use-carry-items.ts';
-import { useObjectUrls } from '../hooks/use-object-urls.ts';
 import { NoItems } from './carry-item/no-items.tsx';
-
-import type { CustomField } from '../db/db.ts';
-import type { CarryItem } from '../hooks/use-carry-items.ts';
+import { ResponsiveScrollArea } from './common/responsive-scroll-area.tsx';
+import { ItemFilters } from './item-filters/item-filters.tsx';
+import { Masonry } from './masonry/masonry.tsx';
+import { useCarryItemFilterOptions } from '../hooks/use-carry-item-filter-options.ts';
+import {
+  useCarryItems,
+  type CarryItem,
+  type CarryItemFilters
+} from '../hooks/use-carry-items.ts';
+import { useObjectUrls } from '../hooks/use-object-urls.ts';
 
 export const ItemsView = () => {
-  const [nameFilter, setNameFilter] = useState<string>();
+  const [filters, setFilters] = useState<CarryItemFilters>({});
+  const filterOptions = useCarryItemFilterOptions();
   const { carryItems, createCarryItem, updateCarryItem, deleteCarryItem } =
-    useCarryItems(nameFilter);
+    useCarryItems(filters);
   const [editCarryItem, setEditCarryItem] = useState<CarryItem>();
   const images = useMemo(
     () =>
@@ -29,61 +33,28 @@ export const ItemsView = () => {
   const [opened, { open, close }] = useDisclosure(false, {
     onClose: () => setEditCarryItem(undefined)
   });
+  const [openedFilters, { open: openFilters, close: closeFilters }] =
+    useDisclosure(false);
 
   const increaseCarryItemCount = (carryItem: CarryItem) =>
     updateCarryItem(carryItem.id, { carryCount: carryItem.carryCount + 1 });
 
-  const isLoading = carryItems === undefined;
+  const isLoading = carryItems === undefined || filterOptions === undefined;
   const shouldRenderMasonry = !isLoading && carryItems.length > 0;
   const hasNoItems = !isLoading && carryItems.length === 0;
-
-  const uniqueCustomFields =
-    carryItems
-      ?.flatMap((carryItem) => carryItem.customFields)
-      .filter(
-        (obj, index, self) =>
-          index === self.findIndex((t) => t?.value === obj?.value)
-      )
-      .filter((cf): cf is CustomField => !!cf) ?? [];
-
-  const customFieldsValueMap = Object.groupBy(
-    uniqueCustomFields,
-    ({ name }) => name
-  );
 
   return (
     <>
       <ResponsiveScrollArea>
         <AnimatePresence>
-          <TextInput
-            placeholder="Search by name"
-            size="md"
-            mb="sm"
-            value={nameFilter}
-            onChange={(event) => setNameFilter(event.currentTarget.value)}
-            rightSection={
-              <AnimatePresence>
-                {nameFilter && (
-                  <motion.div
-                    key="clear"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.15 }}
-                  >
-                    <ActionIcon
-                      variant="subtle"
-                      color="gray"
-                      size="sm"
-                      onClick={() => setNameFilter('')}
-                      aria-label="Clear search"
-                    >
-                      <TbX size={16} />
-                    </ActionIcon>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            }
+          <ItemFilters
+            closeFilters={closeFilters}
+            filterOptions={filterOptions}
+            filteredItemCount={carryItems?.length ?? 0}
+            filters={filters}
+            openedFilters={openedFilters}
+            openFilters={openFilters}
+            setFilters={setFilters}
           />
           {hasNoItems && <NoItems />}
           {shouldRenderMasonry && (
@@ -116,7 +87,7 @@ export const ItemsView = () => {
 
         <CarryItemModal
           carryItem={editCarryItem}
-          customFieldsValueMap={customFieldsValueMap}
+          customFieldsValueMap={filterOptions?.customFieldsValueMap ?? {}}
           opened={opened}
           close={close}
           onSubmit={(carryItem) =>
