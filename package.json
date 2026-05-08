@@ -51,7 +51,7 @@
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
-    "eslint-plugin-react-you-might-not-need-an-effect": "^0.9.3",
+    "eslint-plugin-react-you-might-not-need-an-effect": "^0.10.1",
     "globals": "^17.4.0",
     "postcss-preset-mantine": "^1.18.0",
     "rollup-plugin-visualizer": "^7.0.1",

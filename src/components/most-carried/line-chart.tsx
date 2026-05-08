@@ -268,7 +268,7 @@ export const LineChart = ({ data }: MultiItemLineChartProps) => {
         <SegmentedControl
           value={mode}
           onChange={(value) => {
-            setMode(value as ChartMode);
+            setMode(value);
             setPage(0);
           }}
           data={[
