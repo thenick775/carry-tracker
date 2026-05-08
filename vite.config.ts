@@ -115,8 +115,12 @@ export default defineConfig({
               test: /node_modules[\\/](?:recharts|d3-array|d3-scale|d3-shape|d3-format)([\\/]|$)/
             },
             {
+              name: 'mantine-core',
+              test: /node_modules[\\/](?:@mantine[\\/](?:core))([\\/]|$)/
+            },
+            {
               name: 'mantine',
-              test: /node_modules[\\/](?:@mantine[\\/](?:core|hooks|notifications|dropzone|dates|form))([\\/]|$)/
+              test: /node_modules[\\/](?:@mantine[\\/](?:hooks|notifications|dropzone|dates|form))([\\/]|$)/
             },
             {
               name: 'dexie',
