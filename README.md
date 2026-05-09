@@ -2,7 +2,11 @@
 
 _A web app that helps you track your every day carry (EDC)_
 
-![Carry Tracker Demo](./readme-images/carry-tracker_min.gif)
+<img alt="Carry Tracker Mobile" src="./readme-images/carry-tracker-mobile_min.gif" width="360px">
+
+---
+
+![Carry Tracker Desktop](./readme-images/carry-tracker-desktop_min.gif)
 
 Privacy first, no ads, free forever 🚀
 
@@ -60,6 +64,7 @@ To install:
   - [x] Usage over time
 - [x] Export/import backup
 - [x] Tags and categories (custom fields)
+- [x] Searching and filtering capabilities
 
 ## Inspired By
 
