@@ -41,7 +41,14 @@ export const CarryItemCard = ({
       </ActionIcon>
     </Group>
 
-    <Image radius="md" src={imageUrl} mb="xs" w="auto" fit="contain" />
+    <Image
+      alt={`${item.name}`}
+      radius="md"
+      src={imageUrl}
+      mb="xs"
+      w="auto"
+      fit="contain"
+    />
 
     <Text size="sm" c="dimmed">
       Added: {dayjs(item.createdAt).format('MMM D, YYYY')}
