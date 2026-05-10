@@ -143,7 +143,8 @@ export const LineChart = ({ data }: MultiItemLineChartProps) => {
   const buckets = bucketAll(points, mode).map((row) => {
     const next = { ...row };
     for (const name of itemNames) {
-      next[name] ??= 0;
+      // use explicit assignment with ?? instead of ??= for react compiler compatibility
+      next[name] = next[name] ?? 0;
     }
     return next;
   });
