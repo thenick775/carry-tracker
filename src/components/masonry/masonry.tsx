@@ -8,11 +8,16 @@ import type { ReactNode } from 'react';
 export const Masonry = ({ children }: { children: ReactNode }) => {
   const theme = useMantineTheme();
 
+  // compute breakpoint keys separately so react compiler can optimize
+  const lgBreakpoint = px(theme.breakpoints.lg);
+  const mdBreakpoint = px(theme.breakpoints.md);
+  const smBreakpoint = px(theme.breakpoints.sm);
+
   const breakpointCols = {
     default: 4,
-    [px(theme.breakpoints.lg)]: 3,
-    [px(theme.breakpoints.md)]: 2,
-    [px(theme.breakpoints.sm)]: 1
+    [lgBreakpoint]: 3,
+    [mdBreakpoint]: 2,
+    [smBreakpoint]: 1
   };
 
   return (
