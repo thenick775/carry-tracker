@@ -15,7 +15,7 @@ import {
 } from '@mantine/core';
 import dayjs from 'dayjs';
 import { AnimatePresence, motion } from 'motion/react';
-import { type Dispatch, type SetStateAction } from 'react';
+import { useState, type Dispatch, type SetStateAction } from 'react';
 import { TbX } from 'react-icons/tb';
 
 import type { CarryItemFilterOptions } from '../../hooks/use-carry-item-filter-options.ts';
@@ -119,19 +119,39 @@ export const ItemFilters = ({
   const carryCountRangeValue = filters.carryCount ?? carryCountRange;
   const costRangeValue = filters.cost ?? costRange;
 
+  const [localCreatedAtSlider, setLocalCreatedAtSlider] = useState<
+    FilterRange | undefined
+  >(createdAtSliderValue);
+  const [localCarryCountSlider, setLocalCarryCountSlider] = useState<
+    FilterRange | undefined
+  >(carryCountRangeValue);
+  const [localCostSlider, setLocalCostSlider] = useState<
+    FilterRange | undefined
+  >(costRangeValue);
+
+  const displayedCreatedAtSlider = localCreatedAtSlider ?? createdAtSliderValue;
+  const displayedCarryCountSlider =
+    localCarryCountSlider ?? carryCountRangeValue;
+  const displayedCostSlider = localCostSlider ?? costRangeValue;
+
   const setSearchFilter = (search: string) =>
     setFilters((current) => ({
       ...current,
       search: search
     }));
 
-  const setCreatedAtFilter = (value: FilterRange) => {
-    if (!dateRange || !dateSliderRange) return;
+  const sliderFilterToDateRange = (value?: FilterRange) => {
+    if (!dateRange || !dateSliderRange || !value) return;
 
-    const nextValue = [
+    return [
       dayjs(dateRange[0]).add(value[0], 'day').startOf('day').valueOf(),
       dayjs(dateRange[0]).add(value[1], 'day').startOf('day').valueOf()
     ] satisfies FilterRange;
+  };
+
+  const setCreatedAtFilter = (value: FilterRange) => {
+    const nextValue = sliderFilterToDateRange(value);
+    if (!dateSliderRange || !nextValue) return;
 
     setFilters((current) => ({
       ...current,
@@ -223,15 +243,21 @@ export const ItemFilters = ({
         <Stack gap="md">
           <FilterSection title="Date added">
             <Text size="sm" c="dimmed">
-              {formatDateRange(createdAtRangeValue)}
+              {formatDateRange(
+                sliderFilterToDateRange(displayedCreatedAtSlider)
+              )}
             </Text>
             <RangeSlider
               min={dateSliderRange?.[0]}
               max={dateSliderRange?.[1]}
               step={1}
               minRange={0}
-              value={createdAtSliderValue}
-              onChange={setCreatedAtFilter}
+              value={displayedCreatedAtSlider}
+              onChange={setLocalCreatedAtSlider}
+              onChangeEnd={(filter) => {
+                setCreatedAtFilter(filter);
+                setLocalCreatedAtSlider(undefined);
+              }}
               disabled={
                 !dateSliderRange || dateSliderRange[0] === dateSliderRange[1]
               }
@@ -240,15 +266,19 @@ export const ItemFilters = ({
           </FilterSection>
           <FilterSection title="Carry count">
             <Text size="sm" c="dimmed">
-              {formatCountRange(carryCountRangeValue)}
+              {formatCountRange(displayedCarryCountSlider)}
             </Text>
             <RangeSlider
               min={carryCountRange?.[0]}
               max={carryCountRange?.[1]}
               step={1}
               minRange={0}
-              value={carryCountRangeValue}
-              onChange={setCarryCountFilter}
+              value={displayedCarryCountSlider}
+              onChange={setLocalCarryCountSlider}
+              onChangeEnd={(filter) => {
+                setCarryCountFilter(filter);
+                setLocalCarryCountSlider(undefined);
+              }}
               disabled={
                 !carryCountRange || carryCountRange[0] === carryCountRange[1]
               }
@@ -257,15 +287,19 @@ export const ItemFilters = ({
           </FilterSection>
           <FilterSection title="Cost">
             <Text size="sm" c="dimmed">
-              {formatCostRange(costRangeValue)}
+              {formatCostRange(displayedCostSlider)}
             </Text>
             <RangeSlider
               min={costRange?.[0]}
               max={costRange?.[1]}
               step={0.01}
               minRange={0}
-              value={costRangeValue}
-              onChange={setCostFilter}
+              value={displayedCostSlider}
+              onChange={setLocalCostSlider}
+              onChangeEnd={(filter) => {
+                setCostFilter(filter);
+                setLocalCostSlider(undefined);
+              }}
               disabled={!costRange || costRange[0] === costRange[1]}
               label={null}
             />
