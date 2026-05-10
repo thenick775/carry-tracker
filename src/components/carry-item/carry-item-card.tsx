@@ -62,7 +62,7 @@ export const CarryItemCard = ({
       <Text size="sm" c="dimmed">
         Color:
       </Text>
-      <Badge size="xs" circle color={item.color}></Badge>
+      <Badge size="xs" circle color={item.color} />
     </Group>
 
     <Button mt="md" fullWidth variant="light" onClick={onRequestEdit}>

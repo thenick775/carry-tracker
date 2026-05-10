@@ -71,8 +71,8 @@ const RotationForm = ({
         active && !activeAt
           ? dayjs().toISOString()
           : active && activeAt
-          ? dayjs(activeAt).toISOString()
-          : undefined
+            ? dayjs(activeAt).toISOString()
+            : undefined
     }),
     validate: {
       name: (value) => (value ? null : 'Invalid name'),
@@ -133,7 +133,7 @@ const RotationForm = ({
         >
           Shuffle
         </Button>
-        <Flex justify={'space-between'} gap="md">
+        <Flex justify="space-between" gap="md">
           <NumberInput
             label="Item Duration"
             size="md"

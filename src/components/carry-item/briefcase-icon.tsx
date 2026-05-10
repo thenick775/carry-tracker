@@ -12,7 +12,7 @@ export const BriefcaseIcon = () => (
         stroke="none"
         fill="#f9f3eb"
         fillRule="evenodd"
-      ></path>
+      />
     </g>
   </svg>
 );

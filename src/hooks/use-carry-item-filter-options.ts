@@ -1,10 +1,9 @@
 import dayjs from 'dayjs';
 import { useLiveQuery } from 'dexie-react-hooks';
 
-import { carryDb } from '../db/db.ts';
+import { carryDb, type CustomField } from '../db/db.ts';
 
 import type { FilterRange } from './use-carry-items.ts';
-import type { CustomField } from '../db/db.ts';
 
 export type CustomFieldsValueMap = Partial<Record<string, CustomField[]>>;
 

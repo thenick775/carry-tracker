@@ -54,7 +54,9 @@ const uint8ArrayToFile = (
 const buildImage = async (
   file?: File
 ): Promise<CarryItemStorage['image'] | undefined> => {
-  if (!file) return undefined;
+  if (!file) {
+    return undefined;
+  }
   const data = await fileToUint8Array(file);
   return {
     name: file.name,
@@ -187,7 +189,9 @@ export const useCarryItems = (filters?: CarryItemFilters) => {
     const { imageData, customFields, ...rest } = updates;
     const partialUpdate: Partial<CarryItemStorage> = { ...rest, id };
 
-    if (imageData) partialUpdate.image = await buildImage(imageData);
+    if (imageData) {
+      partialUpdate.image = await buildImage(imageData);
+    }
     if ('customFields' in updates) {
       partialUpdate.customFields = customFields;
       partialUpdate.customFieldKeys = toCustomFieldKeys(customFields);
@@ -200,11 +204,15 @@ export const useCarryItems = (filters?: CarryItemFilters) => {
     }
 
     const before = await carryDb.carryItems.get(id);
-    if (!before) return;
+    if (!before) {
+      return;
+    }
 
     await carryDb.carryItems.update(id, partialUpdate);
 
-    if (before.carryCount === nextCarryCount) return;
+    if (before.carryCount === nextCarryCount) {
+      return;
+    }
 
     void carryDb.carriesOverTime.add({
       id: crypto.randomUUID(),

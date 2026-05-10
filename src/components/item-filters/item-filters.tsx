@@ -66,19 +66,25 @@ const getDateSliderValue = (
 const formatDate = (value: number) => dayjs(value).format('MMM D, YYYY');
 
 const formatDateRange = (value: FilterRange | undefined) => {
-  if (!value) return 'No dates available';
+  if (!value) {
+    return 'No dates available';
+  }
 
   return `${formatDate(value[0])} - ${formatDate(value[1])}`;
 };
 
 const formatCountRange = (value: FilterRange | undefined) => {
-  if (!value) return 'No counts available';
+  if (!value) {
+    return 'No counts available';
+  }
 
   return `${value[0].toLocaleString('en-US')} - ${value[1].toLocaleString('en-US')}`;
 };
 
 const formatCostRange = (value: FilterRange | undefined) => {
-  if (!value) return 'No costs available';
+  if (!value) {
+    return 'No costs available';
+  }
 
   return `${currencyFormatter.format(value[0])} - ${currencyFormatter.format(value[1])}`;
 };
@@ -137,11 +143,13 @@ export const ItemFilters = ({
   const setSearchFilter = (search: string) =>
     setFilters((current) => ({
       ...current,
-      search: search
+      search
     }));
 
   const sliderFilterToDateRange = (value?: FilterRange) => {
-    if (!dateRange || !dateSliderRange || !value) return;
+    if (!dateRange || !dateSliderRange || !value) {
+      return;
+    }
 
     return [
       dayjs(dateRange[0]).add(value[0], 'day').startOf('day').valueOf(),
@@ -151,7 +159,9 @@ export const ItemFilters = ({
 
   const setCreatedAtFilter = (value: FilterRange) => {
     const nextValue = sliderFilterToDateRange(value);
-    if (!dateSliderRange || !nextValue) return;
+    if (!dateSliderRange || !nextValue) {
+      return;
+    }
 
     setFilters((current) => ({
       ...current,
@@ -163,7 +173,9 @@ export const ItemFilters = ({
   };
 
   const setCarryCountFilter = (value: FilterRange) => {
-    if (!carryCountRange) return;
+    if (!carryCountRange) {
+      return;
+    }
 
     setFilters((current) => ({
       ...current,
@@ -175,7 +187,9 @@ export const ItemFilters = ({
   };
 
   const setCostFilter = (value: FilterRange) => {
-    if (!costRange) return;
+    if (!costRange) {
+      return;
+    }
 
     setFilters((current) => ({
       ...current,
@@ -190,8 +204,11 @@ export const ItemFilters = ({
     setFilters((current) => {
       const customFields = { ...(current.customFields ?? {}) };
 
-      if (values.length === 0) delete customFields[name];
-      else customFields[name] = values;
+      if (values.length === 0) {
+        delete customFields[name];
+      } else {
+        customFields[name] = values;
+      }
 
       return {
         ...current,
