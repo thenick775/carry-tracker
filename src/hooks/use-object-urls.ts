@@ -5,7 +5,9 @@ export const useObjectUrls = (files?: File[]) => {
   const objectUrlsRef = useRef<string[]>([]);
 
   useLayoutEffect(() => {
-    if (!files) return;
+    if (!files) {
+      return;
+    }
 
     objectUrlsRef.current = files.map((file) => URL.createObjectURL(file));
     setObjectUrls(objectUrlsRef.current);

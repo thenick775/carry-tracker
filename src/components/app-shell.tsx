@@ -26,6 +26,7 @@ export const CarryTrackerAppShell = () => {
 
   const navBarItems = menuItems.map((menuItem) => (
     <button
+      type="button"
       className={classes.navButton}
       data-active={activeLink === menuItem || undefined}
       onClick={(event) => {

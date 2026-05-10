@@ -8,9 +8,11 @@ import importPlugin from 'eslint-plugin-import';
 import reactYouMightNotNeedAnEffect from 'eslint-plugin-react-you-might-not-need-an-effect';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import reactPlugin from 'eslint-plugin-react';
+import mantine from 'eslint-config-mantine';
 
 export default defineConfig([
   globalIgnores(['dist']),
+  ...mantine,
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
@@ -34,7 +36,8 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
       parserOptions: {
-        projectService: true
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname
       }
     },
     rules: {

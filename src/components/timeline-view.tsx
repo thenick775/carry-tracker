@@ -33,7 +33,9 @@ const generateTimelineNodesForDay = (
     const end = day.endOf('day');
 
     const rotationStart = dayjs(rotation.activeAt);
-    if (end.isBefore(rotationStart)) continue;
+    if (end.isBefore(rotationStart)) {
+      continue;
+    }
 
     const { duration, unit } = rotation.stepDuration;
     const rotationLength = rotation.orderedCarryItemIds.length;
@@ -47,12 +49,13 @@ const generateTimelineNodesForDay = (
         ({ id }) => id === carryItemId
       );
 
-      if (current.isBetween(start, end, null, '[)'))
+      if (current.isBetween(start, end, null, '[)')) {
         nodes.push({
           rotationName: rotation.name,
           carryItemIdentifier,
           itemStartedAt: current
         });
+      }
 
       idx++;
       current = rotationStart.add(idx * duration, unit);
@@ -96,12 +99,11 @@ export const TimelineView = () => {
       if (direction === 'forward' || direction === null) {
         // Allow remeasuring when scrolling down or direction is null
         return element.getBoundingClientRect().height;
-      } else {
-        // When scrolling up, use cached measurement to prevent stuttering
-        const indexKey = Number(element.getAttribute('data-index'));
-        const cachedMeasurement = instance.measurementsCache[indexKey]?.size;
-        return cachedMeasurement || element.getBoundingClientRect().height;
       }
+      // When scrolling up, use cached measurement to prevent stuttering
+      const indexKey = Number(element.getAttribute('data-index'));
+      const cachedMeasurement = instance.measurementsCache[indexKey]?.size;
+      return cachedMeasurement || element.getBoundingClientRect().height;
     }
   });
 
@@ -112,8 +114,9 @@ export const TimelineView = () => {
   const shouldRenderTimeline = !isLoading && virtualItems.length > 0;
 
   useEffect(() => {
-    if (shouldRenderTimeline && todayIndex > 4)
+    if (shouldRenderTimeline && todayIndex > 4) {
       virtualizer.scrollToIndex(todayIndex, { align: 'start' });
+    }
   }, [shouldRenderTimeline, todayIndex, virtualizer]);
 
   const virtualNumActive =
@@ -141,7 +144,9 @@ export const TimelineView = () => {
                 const date = startDate?.add(v.index, 'day');
                 const dayKey = date?.format('YYYY-MM-DD');
 
-                if (!date) return null;
+                if (!date) {
+                  return null;
+                }
 
                 const items = generateTimelineNodesForDay(
                   activeRotations,

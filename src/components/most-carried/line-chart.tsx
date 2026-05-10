@@ -61,7 +61,9 @@ const getBucketInfo = (date: Date, mode: ChartMode) => {
 };
 
 const bucketAll = (points: carryDataPoint[], mode: ChartMode) => {
-  if (!points.length) return [];
+  if (!points.length) {
+    return [];
+  }
 
   const buckets = new Map<string, Record<string, number>>();
 
@@ -83,7 +85,9 @@ const bucketAll = (points: carryDataPoint[], mode: ChartMode) => {
 const extractItemColors = (points: carryDataPoint[]) => {
   const map = new Map<string, string>();
   for (const p of points) {
-    if (!map.has(p.name)) map.set(p.name, p.color);
+    if (!map.has(p.name)) {
+      map.set(p.name, p.color);
+    }
   }
   return map;
 };
@@ -136,7 +140,9 @@ export const LineChart = ({ data }: MultiItemLineChartProps) => {
     };
   });
 
-  if (!points) return;
+  if (!points) {
+    return;
+  }
 
   const itemColors = extractItemColors(points);
   const itemNames = Array.from(itemColors.keys());
@@ -151,12 +157,14 @@ export const LineChart = ({ data }: MultiItemLineChartProps) => {
 
   const ticks = buckets.map((row) => row.date);
 
-  const maxYValue = buckets.reduce((max, bucket) => {
-    for (const name of itemNames) {
-      max = Math.max(max, bucket[name] ?? 0);
-    }
-    return max;
-  }, 0);
+  const maxYValue = buckets.reduce(
+    (max, bucket) =>
+      itemNames.reduce(
+        (innerMax, name) => Math.max(innerMax, bucket[name] ?? 0),
+        max
+      ),
+    0
+  );
   const digitCount = String(maxYValue || 0).length;
   const yAxisWidth = Math.max(26, digitCount * 15);
 
@@ -245,7 +253,9 @@ export const LineChart = ({ data }: MultiItemLineChartProps) => {
             labelStyle={{ color: 'var(--mantine-color-dimmed)' }}
             wrapperStyle={{ zIndex: 10000 }}
             formatter={(value, name) => {
-              if (value === 0) return null;
+              if (value === 0) {
+                return null;
+              }
               return [value, name];
             }}
           />
