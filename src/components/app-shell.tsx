@@ -74,7 +74,8 @@ export const CarryTrackerAppShell = () => {
               aria-label="GitHub"
               display="flex"
               h="100%"
-              style={{ alignItems: 'center', justifyContent: 'center' }}
+              pr={2}
+              style={{ alignItems: 'center', justifyContent: 'flex-end' }}
             >
               <FaGithub size={28} color="#fff" />
             </Box>
