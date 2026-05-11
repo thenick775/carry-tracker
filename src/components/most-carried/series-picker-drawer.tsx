@@ -57,6 +57,7 @@ export const SeriesPickerDrawer = ({
     >
       <Stack gap="md" h="100%">
         <TextInput
+          size="md"
           placeholder="Search items"
           value={seriesSearch}
           onChange={(event) => setSeriesSearch(event.currentTarget.value)}
