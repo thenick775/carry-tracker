@@ -160,10 +160,9 @@ export const useCarryItems = (filters?: CarryItemFilters) => {
       filters?.customFields
     );
     const createdAtIsoRange = getCreatedAtIsoRange(filters?.createdAt);
-    const query = getBaseQuery(filters, customFieldFilters, createdAtIsoRange);
 
     return (
-      await query
+      await getBaseQuery(filters, customFieldFilters, createdAtIsoRange)
         .and((carryItem) =>
           matchesCarryItemFilters(
             carryItem,

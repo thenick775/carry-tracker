@@ -2,7 +2,7 @@ import { Timeline, Text } from '@mantine/core';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import dayjs from 'dayjs';
 import { AnimatePresence, motion } from 'motion/react';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { ResponsiveScrollArea } from './common/responsive-scroll-area.tsx';
 import { useCarryItems } from '../hooks/use-carry-items.ts';
@@ -71,21 +71,14 @@ export const TimelineView = () => {
   const activeRotations = useActiveRotations();
   const { carryItems } = useCarryItems();
 
-  const startDate = useMemo(
-    () =>
-      activeRotations
-        ?.map((r) => dayjs(r.activeAt))
-        .sort((a, b) => a.diff(b))[0],
-    [activeRotations]
-  );
+  const startDate = activeRotations
+    ?.map((r) => dayjs(r.activeAt))
+    .sort((a, b) => a.diff(b))[0];
 
   const carryItemIdentifiers =
     carryItems?.map(({ id, name }) => ({ id, name })) ?? [];
 
-  const todayIndex = useMemo(
-    () => dayjs().startOf('day').diff(startDate?.startOf('day'), 'day'),
-    [startDate]
-  );
+  const todayIndex = dayjs().startOf('day').diff(startDate?.startOf('day'), 'day');
 
   // eslint-disable-next-line react-hooks/incompatible-library -- opting out since this will be ignored by react compiler, and seems fine for now
   const virtualizer = useVirtualizer({
