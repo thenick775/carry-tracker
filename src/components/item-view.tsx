@@ -6,6 +6,7 @@ import { TbPlus } from 'react-icons/tb';
 
 import { CarryItemCard } from './carry-item/carry-item-card.tsx';
 import { CarryItemModal } from './carry-item/carry-item-modal.tsx';
+import { DeleteCarryItemConfirm } from './carry-item/delete-carry-item-confirm.tsx';
 import { NoItems } from './carry-item/no-items.tsx';
 import { ResponsiveScrollArea } from './common/responsive-scroll-area.tsx';
 import { ItemFilters } from './item-filters/item-filters.tsx';
@@ -24,6 +25,8 @@ export const ItemsView = () => {
   const { carryItems, createCarryItem, updateCarryItem, deleteCarryItem } =
     useCarryItems(filters);
   const [editCarryItem, setEditCarryItem] = useState<CarryItem>();
+  const [deleteCarryItemRequest, setDeleteCarryItemRequest] =
+    useState<CarryItem>();
   const images = useMemo(
     () =>
       carryItems?.map((carryItem) => carryItem.imageData).filter((c) => !!c),
@@ -33,6 +36,10 @@ export const ItemsView = () => {
   const [opened, { open, close }] = useDisclosure(false, {
     onClose: () => setEditCarryItem(undefined)
   });
+  const [deleteOpened, { open: openDelete, close: closeDelete }] =
+    useDisclosure(false, {
+      onClose: () => setDeleteCarryItemRequest(undefined)
+    });
   const [openedFilters, { open: openFilters, close: closeFilters }] =
     useDisclosure(false);
 
@@ -72,7 +79,10 @@ export const ItemsView = () => {
                       key={item.id}
                       item={item}
                       imageUrl={imageUrls[idx]}
-                      onDelete={() => deleteCarryItem(item.id)}
+                      onDelete={() => {
+                        setDeleteCarryItemRequest(item);
+                        openDelete();
+                      }}
                       onRequestEdit={() => {
                         setEditCarryItem(item);
                         open();
@@ -95,6 +105,18 @@ export const ItemsView = () => {
               ? updateCarryItem(editCarryItem.id, carryItem)
               : createCarryItem(carryItem)
           }
+        />
+
+        <DeleteCarryItemConfirm
+          carryItemName={deleteCarryItemRequest?.name}
+          opened={deleteOpened}
+          close={closeDelete}
+          onConfirm={async () => {
+            if (!deleteCarryItemRequest) {
+              return;
+            }
+            await deleteCarryItem(deleteCarryItemRequest.id);
+          }}
         />
       </ResponsiveScrollArea>
 
