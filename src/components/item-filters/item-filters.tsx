@@ -395,7 +395,7 @@ export const ItemFilters = ({
                   <ActionIcon
                     variant="subtle"
                     color="gray"
-                    size="sm"
+                    size="md"
                     onClick={() => setSearchFilter('')}
                     aria-label="Clear search"
                   >

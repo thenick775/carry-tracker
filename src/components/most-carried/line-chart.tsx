@@ -7,7 +7,7 @@ import {
   Flex
 } from '@mantine/core';
 import dayjs from 'dayjs';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import {
   LineChart as ReLineChart,
   Line,
@@ -30,6 +30,8 @@ type ItemData = {
 
 type MultiItemLineChartProps = {
   data: ItemData[];
+  selectedItemIds?: string[];
+  controlsRightSection?: ReactNode;
 };
 
 type carryDataPoint = ItemData & {
@@ -124,21 +126,28 @@ const formatTooltipLabel = (value: number, mode: ChartMode) => {
   return d.format('YYYY');
 };
 
-export const LineChart = ({ data }: MultiItemLineChartProps) => {
+export const LineChart = ({
+  data,
+  selectedItemIds,
+  controlsRightSection
+}: MultiItemLineChartProps) => {
   const [mode, setMode] = useState<ChartMode>('week');
   const [page, setPage] = useState(0);
   const carriesOverTime = useCarriesOverTime(mode, PERIOD_LOOK_BACK, page);
+  const selectedIdSet = new Set(selectedItemIds ?? data.map((item) => item.id));
 
-  const points: carryDataPoint[] | undefined = carriesOverTime?.map((cot) => {
-    const item = data.find((d) => d.id === cot.carryItemId);
-    return {
-      id: cot.carryItemId,
-      name: item ? item.name : 'Unknown Item',
-      date: dayjs(cot.createdAt).toDate(),
-      count: cot.currentCarryCount,
-      color: item ? item.color : '#888888'
-    };
-  });
+  const points: carryDataPoint[] | undefined = carriesOverTime
+    ?.map((cot) => {
+      const item = data.find((d) => d.id === cot.carryItemId);
+      return {
+        id: cot.carryItemId,
+        name: item ? item.name : 'Unknown Item',
+        date: dayjs(cot.createdAt).toDate(),
+        count: cot.currentCarryCount,
+        color: item ? item.color : '#888888'
+      };
+    })
+    .filter((point) => selectedIdSet.has(point.id));
 
   if (!points) {
     return;
@@ -274,8 +283,23 @@ export const LineChart = ({ data }: MultiItemLineChartProps) => {
             />
           ))}
         </ReLineChart>
+        {selectedItemIds?.length === 0 && (
+          <Flex
+            align="center"
+            justify="center"
+            style={{
+              position: 'absolute',
+              inset: 0,
+              pointerEvents: 'none'
+            }}
+          >
+            <Text size="sm" c="dimmed" ta="center">
+              Choose at least one item to plot.
+            </Text>
+          </Flex>
+        )}
       </Box>
-      <Group justify="center" mb="sm">
+      <Group justify="center" align="center" gap="xs" mb="sm" wrap="nowrap">
         <SegmentedControl
           value={mode}
           onChange={(value) => {
@@ -291,6 +315,7 @@ export const LineChart = ({ data }: MultiItemLineChartProps) => {
           size="xs"
           color="blue"
         />
+        {controlsRightSection}
       </Group>
     </Flex>
   );
