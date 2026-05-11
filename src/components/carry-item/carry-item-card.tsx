@@ -50,16 +50,16 @@ export const CarryItemCard = ({
       fit="contain"
     />
 
-    <Text size="sm" c="dimmed">
+    <Text size="sm" c="var(--app-color-card-muted)">
       Added: {dayjs(item.createdAt).format('MMM D, YYYY')}
     </Text>
 
-    <Text size="sm" c="dimmed">
+    <Text size="sm" c="var(--app-color-card-muted)">
       Carry Count: {item.carryCount.toLocaleString('en-US')}
     </Text>
 
     <Group gap="xs">
-      <Text size="sm" c="dimmed">
+      <Text size="sm" c="var(--app-color-card-muted)">
         Color:
       </Text>
       <Badge size="xs" circle color={item.color} />
