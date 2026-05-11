@@ -1,6 +1,8 @@
-import { Box, Chip, Group, Text } from '@mantine/core';
+import { Box, Button, Chip, Group, Text } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
 import randomColor from 'randomcolor';
 import { useState } from 'react';
+import { TbAdjustmentsHorizontal } from 'react-icons/tb';
 
 import { ResponsiveScrollArea } from './common/responsive-scroll-area.tsx';
 import { CarryItemStatsTable } from './most-carried/carry-item-stats-table.tsx';
@@ -9,11 +11,17 @@ import { useCarryItems } from '../hooks/use-carry-items.ts';
 import { useIsLargerThanPhone } from '../hooks/use-is-larger-than-phone.ts';
 import { CustomFieldStatsTable } from './most-carried/custom-field-stats-table.tsx';
 import { LineChart } from './most-carried/line-chart.tsx';
+import { SeriesPickerDrawer } from './most-carried/series-picker-drawer.tsx';
 
 export const CarryStatsView = () => {
   const isLargerThanPhone = useIsLargerThanPhone();
   const { carryItems } = useCarryItems();
   const [viewKey, setViewKey] = useState<string>('items');
+  const [
+    seriesPickerOpened,
+    { open: openSeriesPicker, close: closeSeriesPicker }
+  ] = useDisclosure(false);
+  const [selectedItemIds, setSelectedItemIds] = useState<string[] | null>(null);
 
   const customFieldNames = Array.from(
     new Set(
@@ -29,6 +37,11 @@ export const CarryStatsView = () => {
       cost,
       value: carryCount
     })) ?? [];
+  const sortedItemData = itemData.toSorted(
+    ({ value: a }, { value: b }) => b - a
+  );
+  const topItemIds = sortedItemData.slice(0, 5).map(({ id }) => id);
+  const itemIds = itemData.map(({ id }) => id);
 
   const customFieldsData = Object.entries(
     (carryItems ?? []).reduce<
@@ -64,6 +77,20 @@ export const CarryStatsView = () => {
   const isViewingItems = viewKey === 'items';
   const isViewingItemsOverTime = viewKey === 'items-over-time';
   const chartData = isViewingItems ? itemData : customFieldsData;
+  const visibleItemIdSet = new Set(itemIds);
+  const effectiveSelectedItemIds =
+    selectedItemIds === null
+      ? itemIds
+      : selectedItemIds.filter((id) => visibleItemIdSet.has(id));
+
+  const toggleSelectedItem = (itemId: string) =>
+    setSelectedItemIds((current) => {
+      const base = current ?? itemIds;
+
+      return base.includes(itemId)
+        ? base.filter((id) => id !== itemId)
+        : [...base, itemId];
+    });
 
   return (
     <ResponsiveScrollArea>
@@ -119,7 +146,21 @@ export const CarryStatsView = () => {
         }}
       >
         {isViewingItemsOverTime ? (
-          <LineChart data={itemData} />
+          <LineChart
+            data={itemData}
+            selectedItemIds={effectiveSelectedItemIds}
+            controlsRightSection={
+              <Button
+                size="xs"
+                variant="subtle"
+                color="gray"
+                leftSection={<TbAdjustmentsHorizontal size={14} />}
+                onClick={openSeriesPicker}
+              >
+                Series ({effectiveSelectedItemIds.length})
+              </Button>
+            }
+          />
         ) : (
           <PieChart data={chartData} />
         )}
@@ -132,6 +173,17 @@ export const CarryStatsView = () => {
       ) : (
         <CustomFieldStatsTable data={customFieldsData} />
       )}
+
+      <SeriesPickerDrawer
+        opened={seriesPickerOpened}
+        onClose={closeSeriesPicker}
+        onShowAll={() => setSelectedItemIds(null)}
+        onShowTopFive={() => setSelectedItemIds(topItemIds)}
+        onClearSelection={() => setSelectedItemIds([])}
+        items={sortedItemData}
+        selectedItemIds={effectiveSelectedItemIds}
+        onToggleItem={toggleSelectedItem}
+      />
     </ResponsiveScrollArea>
   );
 };
