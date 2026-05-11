@@ -46,6 +46,19 @@ export const shadcnCssVariableResolver: CSSVariablesResolver = () => ({
     '--mantine-color-secondary-outline-hover':
       'var(--mantine-color-secondary-1)',
 
+    '--app-color-card-bg': 'var(--mantine-color-secondary-filled)',
+    '--app-color-card-border': 'var(--mantine-color-secondary-2)',
+    '--app-color-card-muted': 'var(--mantine-color-secondary-6)',
+    '--app-color-input-bg': 'var(--mantine-color-secondary-filled)',
+    '--app-color-input-border': 'var(--mantine-color-secondary-2)',
+    '--app-color-input-border-hover': 'var(--mantine-color-secondary-3)',
+    '--app-color-input-border-focus': 'var(--mantine-primary-color-filled)',
+    '--app-color-input-placeholder': 'var(--mantine-color-secondary-6)',
+    '--app-color-dropdown-bg': 'var(--mantine-color-secondary-filled)',
+    '--app-color-dropdown-border': 'var(--mantine-color-secondary-2)',
+    '--app-color-dropdown-hover': 'var(--mantine-color-secondary-1)',
+    '--app-color-dropdown-selected': 'var(--mantine-color-secondary-light)',
+
     // all filled colors
     '--mantine-color-zinc-filled': 'var(--mantine-color-zinc-8)',
     '--mantine-color-zinc-filled-hover': alpha(
@@ -470,6 +483,19 @@ export const shadcnCssVariableResolver: CSSVariablesResolver = () => ({
     '--mantine-color-secondary-outline': 'var(--mantine-color-secondary-7)',
     '--mantine-color-secondary-outline-hover':
       'var(--mantine-color-secondary-7)',
+
+    '--app-color-card-bg': 'var(--mantine-color-secondary-8)',
+    '--app-color-card-border': 'var(--mantine-color-secondary-7)',
+    '--app-color-card-muted': 'var(--mantine-color-secondary-3)',
+    '--app-color-input-bg': 'var(--mantine-color-secondary-8)',
+    '--app-color-input-border': 'var(--mantine-color-secondary-7)',
+    '--app-color-input-border-hover': 'var(--mantine-color-secondary-6)',
+    '--app-color-input-border-focus': 'var(--mantine-primary-color-filled)',
+    '--app-color-input-placeholder': 'var(--mantine-color-secondary-4)',
+    '--app-color-dropdown-bg': 'var(--mantine-color-secondary-8)',
+    '--app-color-dropdown-border': 'var(--mantine-color-secondary-7)',
+    '--app-color-dropdown-hover': 'var(--mantine-color-secondary-7)',
+    '--app-color-dropdown-selected': 'var(--mantine-color-secondary-light)',
 
     // all filled colors
     '--mantine-color-zinc-filled': 'var(--mantine-color-zinc-0)',

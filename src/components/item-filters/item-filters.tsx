@@ -369,7 +369,7 @@ export const ItemFilters = ({
             <Button variant="default" onClick={clearAllFilters}>
               Clear all
             </Button>
-            <Button variant="default" onClick={closeFilters}>
+            <Button onClick={closeFilters}>
               See {filteredItemCount} result{filteredItemCount === 1 ? '' : 's'}
             </Button>
           </Group>

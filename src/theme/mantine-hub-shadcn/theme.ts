@@ -9,10 +9,13 @@ import {
   Card,
   Checkbox,
   Chip,
+  Combobox,
   Container,
   createTheme,
   Dialog,
   Indicator,
+  Input,
+  InputWrapper,
   Mark,
   NavLink,
   Pagination,
@@ -456,8 +459,8 @@ export const shadcnTheme: MantineThemeOverride = createTheme({
           '--container-size': fluid
             ? '100%'
             : size !== undefined && size in CONTAINER_SIZES
-            ? CONTAINER_SIZES[size]
-            : rem(size)
+              ? CONTAINER_SIZES[size]
+              : rem(size)
         }
       })
     }),
@@ -552,6 +555,83 @@ export const shadcnTheme: MantineThemeOverride = createTheme({
       defaultProps: {
         checkIconPosition: 'right'
       }
+    }),
+    Input: Input.extend({
+      styles: (_, props) => ({
+        wrapper: {
+          '--input-bg':
+            props.variant === 'filled'
+              ? 'var(--app-color-dropdown-hover)'
+              : 'var(--app-color-input-bg)',
+          '--input-bd':
+            props.variant === 'filled'
+              ? 'transparent'
+              : 'var(--app-color-input-border)',
+          '--input-bd-focus': 'var(--mantine-primary-color-filled)',
+          '--input-color': 'var(--mantine-color-text)',
+          '--input-placeholder-color': 'var(--app-color-input-placeholder)'
+        },
+        input: {
+          transition:
+            'border-color 150ms ease, box-shadow 150ms ease, background-color 150ms ease',
+          ...(props.variant === 'filled'
+            ? {}
+            : {
+                '&:hover': {
+                  borderColor: 'var(--app-color-input-border-hover)'
+                }
+              })
+        },
+        section: {
+          color: 'var(--app-color-card-muted)'
+        }
+      })
+    }),
+    InputWrapper: InputWrapper.extend({
+      styles: () => ({
+        description: {
+          color: 'var(--app-color-card-muted)'
+        },
+        error: {
+          color: 'var(--mantine-color-error-10)'
+        }
+      })
+    }),
+    Combobox: Combobox.extend({
+      styles: () => ({
+        dropdown: {
+          backgroundColor: 'var(--app-color-dropdown-bg)',
+          borderColor: 'var(--app-color-dropdown-border)',
+          boxShadow: 'var(--mantine-shadow-xl)'
+        },
+        option: {
+          color: 'var(--mantine-color-text)',
+          borderRadius: 'var(--mantine-radius-sm)',
+          '&[data-combobox-selected]': {
+            backgroundColor: 'var(--app-color-dropdown-selected)',
+            color: 'var(--mantine-color-text)'
+          },
+          '&[data-combobox-active], &:hover': {
+            backgroundColor: 'var(--app-color-dropdown-hover)'
+          }
+        },
+        empty: {
+          color: 'var(--app-color-card-muted)'
+        },
+        search: {
+          backgroundColor: 'var(--app-color-input-bg)',
+          borderColor: 'var(--app-color-input-border)',
+          color: 'var(--mantine-color-text)'
+        },
+        header: {
+          backgroundColor: 'var(--app-color-dropdown-bg)',
+          borderColor: 'var(--app-color-dropdown-border)'
+        },
+        footer: {
+          backgroundColor: 'var(--app-color-dropdown-bg)',
+          borderColor: 'var(--app-color-dropdown-border)'
+        }
+      })
     }),
     ActionIcon: ActionIcon.extend({
       vars: (theme, props) => {
@@ -704,10 +784,10 @@ export const shadcnTheme: MantineThemeOverride = createTheme({
                   ? `var(--mantine-color-${colorKey}-contrast)`
                   : 'var(--mantine-primary-color-contrast)'
                 : variant === 'white'
-                ? isNeutralColor || isNeutralPrimaryColor
-                  ? `var(--mantine-color-black)`
+                  ? isNeutralColor || isNeutralPrimaryColor
+                    ? `var(--mantine-color-black)`
+                    : undefined
                   : undefined
-                : undefined
           }
         };
       }
@@ -748,10 +828,10 @@ export const shadcnTheme: MantineThemeOverride = createTheme({
                   ? `var(--mantine-color-${colorKey}-filled)`
                   : 'var(--mantine-primary-color-filled)'
                 : variant === 'light'
-                ? colorKey
-                  ? `var(--mantine-color-${colorKey}-light)`
-                  : 'var(--mantine-primary-color-light)'
-                : undefined,
+                  ? colorKey
+                    ? `var(--mantine-color-${colorKey}-light)`
+                    : 'var(--mantine-primary-color-light)'
+                  : undefined,
 
             '--avatar-color':
               variant === 'filled'
@@ -759,20 +839,20 @@ export const shadcnTheme: MantineThemeOverride = createTheme({
                   ? `var(--mantine-color-${colorKey}-contrast)`
                   : 'var(--mantine-primary-color-contrast)'
                 : variant === 'light'
-                ? colorKey
-                  ? `var(--mantine-color-${colorKey}-light-color)`
-                  : 'var(--mantine-primary-color-light-color)'
-                : variant === 'white'
-                ? isNeutralColor || isNeutralPrimaryColor
-                  ? `var(--mantine-color-black)`
-                  : colorKey
-                  ? `var(--mantine-color-${colorKey}-outline)`
-                  : 'var(--mantine-primary-color-filled)'
-                : variant === 'outline' || variant === 'transparent'
-                ? colorKey
-                  ? `var(--mantine-color-${colorKey}-outline)`
-                  : 'var(--mantine-primary-color-filled)'
-                : undefined,
+                  ? colorKey
+                    ? `var(--mantine-color-${colorKey}-light-color)`
+                    : 'var(--mantine-primary-color-light-color)'
+                  : variant === 'white'
+                    ? isNeutralColor || isNeutralPrimaryColor
+                      ? `var(--mantine-color-black)`
+                      : colorKey
+                        ? `var(--mantine-color-${colorKey}-outline)`
+                        : 'var(--mantine-primary-color-filled)'
+                    : variant === 'outline' || variant === 'transparent'
+                      ? colorKey
+                        ? `var(--mantine-color-${colorKey}-outline)`
+                        : 'var(--mantine-primary-color-filled)'
+                      : undefined,
 
             '--avatar-bd':
               variant === 'outline'
@@ -811,10 +891,10 @@ export const shadcnTheme: MantineThemeOverride = createTheme({
                   ? `var(--mantine-color-${colorKey}-contrast)`
                   : 'var(--mantine-primary-color-contrast)'
                 : variant === 'white'
-                ? isNeutralColor || isNeutralPrimaryColor
-                  ? `var(--mantine-color-black)`
+                  ? isNeutralColor || isNeutralPrimaryColor
+                    ? `var(--mantine-color-black)`
+                    : undefined
                   : undefined
-                : undefined
           }
         };
       }
@@ -825,16 +905,13 @@ export const shadcnTheme: MantineThemeOverride = createTheme({
         shadow: 'xl',
         withBorder: true
       },
-      styles: (theme) => {
-        return {
-          root: {
-            backgroundColor:
-              theme.primaryColor === 'rose' || theme.primaryColor === 'green'
-                ? 'var(--mantine-color-secondary-filled)'
-                : undefined
-          }
-        };
-      }
+      styles: () => ({
+        root: {
+          backgroundColor: 'var(--app-color-card-bg)',
+          borderColor: 'var(--app-color-card-border)',
+          '--paper-border-color': 'var(--app-color-card-border)'
+        }
+      })
     }),
     Indicator: Indicator.extend({
       vars: (theme, props) => {
@@ -875,10 +952,10 @@ export const shadcnTheme: MantineThemeOverride = createTheme({
                   ? `var(--mantine-color-${colorKey}-contrast)`
                   : 'var(--mantine-primary-color-contrast)'
                 : variant === 'white'
-                ? isNeutralColor || isNeutralPrimaryColor
-                  ? `var(--mantine-color-black)`
+                  ? isNeutralColor || isNeutralPrimaryColor
+                    ? `var(--mantine-color-black)`
+                    : undefined
                   : undefined
-                : undefined
           }
         };
       }

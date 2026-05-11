@@ -56,15 +56,14 @@ const RenderList = ({
         active={value.includes(item.value)}
         onMouseOver={() => combobox.resetSelectedOption()}
       >
-        <Group gap="sm">
-          <Checkbox
-            checked={value.includes(item.value)}
-            aria-hidden
-            tabIndex={-1}
-            style={{ pointerEvents: 'none' }}
-          />
-          <span>{item.name}</span>
-        </Group>
+        <Checkbox
+          size="md"
+          label={item.name}
+          checked={value.includes(item.value)}
+          aria-hidden
+          tabIndex={-1}
+          style={{ pointerEvents: 'none' }}
+        />
       </Combobox.Option>
     ));
 
