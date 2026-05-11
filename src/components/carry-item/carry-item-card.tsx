@@ -5,7 +5,8 @@ import {
   Button,
   Text,
   Image,
-  Badge
+  Badge,
+  Flex
 } from '@mantine/core';
 import dayjs from 'dayjs';
 import { TbX } from 'react-icons/tb';
@@ -16,6 +17,7 @@ type ItemCardProps = {
   item: CarryItem;
   onDelete: () => void;
   onRequestEdit: () => void;
+  onRequestHistory: () => void;
   onIncreaseCount: () => void;
   imageUrl: string;
 };
@@ -24,6 +26,7 @@ export const CarryItemCard = ({
   item,
   onDelete,
   onRequestEdit,
+  onRequestHistory,
   onIncreaseCount,
   imageUrl
 }: ItemCardProps) => (
@@ -65,9 +68,14 @@ export const CarryItemCard = ({
       <Badge size="xs" circle color={item.color} />
     </Group>
 
-    <Button mt="md" fullWidth variant="light" onClick={onRequestEdit}>
-      Edit
-    </Button>
+    <Flex gap="xs" mt="md">
+      <Button fullWidth variant="light" onClick={onRequestEdit}>
+        Edit
+      </Button>
+      <Button fullWidth variant="light" onClick={onRequestHistory}>
+        History
+      </Button>
+    </Flex>
     <Button mt="md" fullWidth variant="light" onClick={onIncreaseCount}>
       Increase Count
     </Button>

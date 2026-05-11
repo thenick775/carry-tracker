@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useMemo, useState } from 'react';
 import { TbPlus } from 'react-icons/tb';
 
+import { CarryHistoryModal } from './carry-item/carry-history-modal.tsx';
 import { CarryItemCard } from './carry-item/carry-item-card.tsx';
 import { CarryItemModal } from './carry-item/carry-item-modal.tsx';
 import { DeleteCarryItemConfirm } from './carry-item/delete-carry-item-confirm.tsx';
@@ -25,6 +26,7 @@ export const ItemsView = () => {
   const { carryItems, createCarryItem, updateCarryItem, deleteCarryItem } =
     useCarryItems(filters);
   const [editCarryItem, setEditCarryItem] = useState<CarryItem>();
+  const [historyCarryItem, setHistoryCarryItem] = useState<CarryItem>();
   const [deleteCarryItemRequest, setDeleteCarryItemRequest] =
     useState<CarryItem>();
   const images = useMemo(
@@ -33,12 +35,16 @@ export const ItemsView = () => {
     [carryItems]
   );
   const imageUrls = useObjectUrls(images);
-  const [opened, { open, close }] = useDisclosure(false, {
+  const [opened, { open: openEdit, close: closeEdit }] = useDisclosure(false, {
     onClose: () => setEditCarryItem(undefined)
   });
   const [deleteOpened, { open: openDelete, close: closeDelete }] =
     useDisclosure(false, {
       onClose: () => setDeleteCarryItemRequest(undefined)
+    });
+  const [historyOpened, { open: openHistory, close: closeHistory }] =
+    useDisclosure(false, {
+      onClose: () => setHistoryCarryItem(undefined)
     });
   const [openedFilters, { open: openFilters, close: closeFilters }] =
     useDisclosure(false);
@@ -85,7 +91,11 @@ export const ItemsView = () => {
                       }}
                       onRequestEdit={() => {
                         setEditCarryItem(item);
-                        open();
+                        openEdit();
+                      }}
+                      onRequestHistory={() => {
+                        setHistoryCarryItem(item);
+                        openHistory();
                       }}
                       onIncreaseCount={() => increaseCarryItemCount(item)}
                     />
@@ -99,13 +109,21 @@ export const ItemsView = () => {
           carryItem={editCarryItem}
           customFieldsValueMap={filterOptions?.customFieldsValueMap ?? {}}
           opened={opened}
-          close={close}
+          close={closeEdit}
           onSubmit={(carryItem) =>
             editCarryItem
               ? updateCarryItem(editCarryItem.id, carryItem)
               : createCarryItem(carryItem)
           }
         />
+
+        {historyCarryItem && (
+          <CarryHistoryModal
+            carryItem={historyCarryItem}
+            opened={historyOpened}
+            close={closeHistory}
+          />
+        )}
 
         <DeleteCarryItemConfirm
           carryItemName={deleteCarryItemRequest?.name}
@@ -129,7 +147,7 @@ export const ItemsView = () => {
           bottom: 24,
           right: 16
         }}
-        onClick={open}
+        onClick={openEdit}
       >
         <TbPlus size={25} />
       </ActionIcon>
