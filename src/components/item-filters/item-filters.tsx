@@ -259,7 +259,7 @@ export const ItemFilters = ({
       >
         <Stack gap="md">
           <FilterSection title="Date added">
-            <Text size="sm" c="dimmed">
+            <Text c="dimmed">
               {formatDateRange(
                 sliderFilterToDateRange(displayedCreatedAtSlider)
               )}
@@ -282,7 +282,7 @@ export const ItemFilters = ({
             />
           </FilterSection>
           <FilterSection title="Carry count">
-            <Text size="sm" c="dimmed">
+            <Text c="dimmed">
               {formatCountRange(displayedCarryCountSlider)}
             </Text>
             <RangeSlider
@@ -303,9 +303,7 @@ export const ItemFilters = ({
             />
           </FilterSection>
           <FilterSection title="Cost">
-            <Text size="sm" c="dimmed">
-              {formatCostRange(displayedCostSlider)}
-            </Text>
+            <Text c="dimmed">{formatCostRange(displayedCostSlider)}</Text>
             <RangeSlider
               min={costRange?.[0]}
               max={costRange?.[1]}
@@ -349,6 +347,7 @@ export const ItemFilters = ({
                           <Stack gap="xs">
                             {values.map((value) => (
                               <Checkbox
+                                size="md"
                                 key={value}
                                 value={value}
                                 label={value}
@@ -362,9 +361,7 @@ export const ItemFilters = ({
                 })}
               </Accordion>
             ) : (
-              <Text size="sm" c="dimmed">
-                No custom fields available yet.
-              </Text>
+              <Text c="dimmed">No custom fields available yet.</Text>
             )}
           </FilterSection>
           <Divider />
