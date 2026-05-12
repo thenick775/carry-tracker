@@ -1,4 +1,11 @@
-import { Accordion, Button, Group, NumberInput, Stack, Text } from '@mantine/core';
+import {
+  Accordion,
+  Button,
+  Group,
+  NumberInput,
+  Stack,
+  Text
+} from '@mantine/core';
 import { DateTimePicker } from '@mantine/dates';
 import dayjs from 'dayjs';
 import { TbTrash } from 'react-icons/tb';
@@ -45,6 +52,7 @@ export const CarryHistoryEntryAccordionItem = ({
           withSeconds
           label="Recorded at"
           valueFormat="MMM DD YYYY hh:mm:ss A"
+          size="md"
           dropdownType="modal"
           value={entry.createdAt}
           onChange={(value) => onUpdate({ createdAt: value ?? '' })}
@@ -52,11 +60,12 @@ export const CarryHistoryEntryAccordionItem = ({
         />
         <NumberInput
           label="Carry count"
+          size="md"
           min={0}
           allowNegative={false}
           allowDecimal={false}
           clampBehavior="strict"
-          thousandSeparator="," 
+          thousandSeparator=","
           value={entry.currentCarryCount}
           error={error.count}
           onChange={(value) =>
