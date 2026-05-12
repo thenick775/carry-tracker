@@ -1,9 +1,15 @@
 import dayjs from 'dayjs';
+import { Dexie } from 'dexie';
 import { useLiveQuery } from 'dexie-react-hooks';
 
-import { carryDb } from '../db/db.ts';
+import { carryDb, type CarryOverTimeStorage } from '../db/db.ts';
 
 export type ChartMode = 'day' | 'week' | 'month' | 'year';
+
+export type CarryHistoryDraftEntry = Pick<
+  CarryOverTimeStorage,
+  'id' | 'createdAt' | 'currentCarryCount'
+>;
 
 const getUtcRangeForMode = (
   mode: ChartMode,
@@ -34,3 +40,62 @@ export const useCarriesOverTime = (
       .between(min, max, true, true)
       .toArray();
   }, [mode, page, periodLookBack]);
+
+export const useCarryHistory = (carryItemId: string) => {
+  const carryHistory = useLiveQuery(
+    async () =>
+      await carryDb.carriesOverTime
+        .where('[carryItemId+createdAt]')
+        .between(
+          [carryItemId, Dexie.minKey],
+          [carryItemId, Dexie.maxKey],
+          true,
+          true
+        )
+        .sortBy('createdAt'),
+    [carryItemId]
+  );
+
+  const saveCarryHistory = async (entries: CarryHistoryDraftEntry[]) => {
+    const normalizedEntries = entries
+      .map((entry) => ({
+        id: entry.id,
+        carryItemId,
+        createdAt: dayjs(entry.createdAt).toISOString(),
+        currentCarryCount: entry.currentCarryCount
+      }))
+      .toSorted((a, b) => a.createdAt.localeCompare(b.createdAt));
+
+    const existingIds = await carryDb.carriesOverTime
+      .where('carryItemId')
+      .equals(carryItemId)
+      .primaryKeys();
+    const nextIds = new Set(normalizedEntries.map(({ id }) => id));
+    const deletedIds = existingIds.filter((id) => !nextIds.has(id));
+    const latestCarryCount = normalizedEntries.at(-1)?.currentCarryCount ?? 0;
+
+    await carryDb.transaction(
+      'rw',
+      carryDb.carriesOverTime,
+      carryDb.carryItems,
+      async () => {
+        if (deletedIds.length > 0) {
+          await carryDb.carriesOverTime.bulkDelete(deletedIds);
+        }
+
+        await carryDb.carriesOverTime.bulkPut(normalizedEntries);
+        await carryDb.carryItems.update(carryItemId, {
+          carryCount: latestCarryCount
+        });
+      }
+    );
+  };
+
+  return {
+    carryHistory,
+    totalCarryHistoryEntries: carryHistory?.length ?? 0,
+    firstRecordedAt: carryHistory?.[0]?.createdAt,
+    lastRecordedAt: carryHistory?.at(-1)?.createdAt,
+    saveCarryHistory
+  };
+};
