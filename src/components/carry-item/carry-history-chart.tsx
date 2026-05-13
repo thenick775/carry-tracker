@@ -29,7 +29,8 @@ export const CarryHistoryChart = ({
     }))
     .toSorted((a, b) => a.date - b.date);
 
-  const maxYValue = Math.max(...points.map(({ count }) => count), 0);
+  const maxYValue = Math.max(...points.map(({ count }) => count));
+  const minYValue = Math.min(...points.map(({ count }) => count));
   const digitCount = String(maxYValue || 0).length;
   const yAxisWidth = Math.max(26, digitCount * 15);
 
@@ -76,7 +77,7 @@ export const CarryHistoryChart = ({
             width={yAxisWidth}
             allowDecimals={false}
             axisLine={false}
-            domain={[0, maxYValue]}
+            domain={[minYValue, maxYValue]}
           />
 
           <Tooltip
