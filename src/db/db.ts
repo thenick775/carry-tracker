@@ -57,7 +57,10 @@ export const exportDb = async () =>
   await exportDB(carryDb, { numRowsPerChunk: 2 });
 
 export const importDb = async (blob: Blob) =>
-  await importInto(carryDb, blob, { acceptVersionDiff: true });
+  await importInto(carryDb, blob, {
+    acceptVersionDiff: true,
+    clearTablesBeforeImport: true
+  });
 
 carryDb.version(1).stores({
   carryItems: 'id, createdAt, name',
