@@ -7,6 +7,7 @@ import { ResponsiveScrollArea } from './common/responsive-scroll-area.tsx';
 import { RotationCard } from './rotation/rotation-card.tsx';
 import { RotationModal } from './rotation/rotation-modal.tsx';
 import { useRotations, type Rotation } from '../hooks/use-rotations.ts';
+import { NoRotations } from './rotation/no-rotations.tsx';
 
 export const RotationsView = () => {
   const { rotations, createRotation, updateRotation, deleteRotation } =
@@ -15,11 +16,14 @@ export const RotationsView = () => {
   const [opened, { open, close }] = useDisclosure(false, {
     onClose: () => setEditRotation(undefined)
   });
+  const isLoading = rotations === undefined;
+  const hasNoItems = !isLoading && rotations.length === 0;
 
   return (
     <>
       <ResponsiveScrollArea>
         <Text mb="sm">Rotations:</Text>
+        {hasNoItems && <NoRotations />}
         <Grid gap="8px">
           {rotations?.map((rotation) => (
             <Grid.Col
