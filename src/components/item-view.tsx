@@ -1,10 +1,11 @@
 import { ActionIcon, Text } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import { useDisclosure, useTimeout } from '@mantine/hooks';
 import { AnimatePresence, motion } from 'motion/react';
 import { useMemo, useState } from 'react';
 import { TbPlus } from 'react-icons/tb';
 
 import { CarryHistoryModal } from './carry-item/carry-history-modal.tsx';
+import { MasonrySkeleton } from './carry-item/carry-item-card-skeleton.tsx';
 import { CarryItemCard } from './carry-item/carry-item-card.tsx';
 import { CarryItemModal } from './carry-item/carry-item-modal.tsx';
 import { DeleteCarryItemConfirm } from './carry-item/delete-carry-item-confirm.tsx';
@@ -19,6 +20,8 @@ import {
   type CarryItemFilters
 } from '../hooks/use-carry-items.ts';
 import { useObjectUrls } from '../hooks/use-object-urls.ts';
+
+const SKELETON_DELAY_MS = 50;
 
 export const ItemsView = () => {
   const [filters, setFilters] = useState<CarryItemFilters>({});
@@ -53,24 +56,29 @@ export const ItemsView = () => {
     updateCarryItem(carryItem.id, { carryCount: carryItem.carryCount + 1 });
 
   const isLoading = carryItems === undefined || filterOptions === undefined;
+  const [showLoadingSkeleton, setShowLoadingSkeleton] = useState(false);
+  useTimeout(() => setShowLoadingSkeleton(true), SKELETON_DELAY_MS, {
+    autoInvoke: true
+  });
   const shouldRenderMasonry = !isLoading && carryItems.length > 0;
   const hasNoItems = !isLoading && carryItems.length === 0;
 
   return (
     <>
       <ResponsiveScrollArea>
-        <AnimatePresence>
-          <ItemFilters
-            closeFilters={closeFilters}
-            filterOptions={filterOptions}
-            filteredItemCount={carryItems?.length ?? 0}
-            filters={filters}
-            openedFilters={openedFilters}
-            openFilters={openFilters}
-            setFilters={setFilters}
-          />
-          {hasNoItems && <NoItems />}
-          {shouldRenderMasonry && (
+        <ItemFilters
+          closeFilters={closeFilters}
+          filterOptions={filterOptions}
+          filteredItemCount={carryItems?.length ?? 0}
+          filters={filters}
+          openedFilters={openedFilters}
+          openFilters={openFilters}
+          setFilters={setFilters}
+        />
+        {isLoading && showLoadingSkeleton && <MasonrySkeleton />}
+        {hasNoItems && <NoItems />}
+        {shouldRenderMasonry && (
+          <AnimatePresence>
             <motion.div
               key="items"
               initial={{ opacity: 0, filter: 'blur(8px)' }}
@@ -102,8 +110,8 @@ export const ItemsView = () => {
                   ))}
               </Masonry>
             </motion.div>
-          )}
-        </AnimatePresence>
+          </AnimatePresence>
+        )}
 
         <CarryItemModal
           carryItem={editCarryItem}
