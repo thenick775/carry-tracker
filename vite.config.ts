@@ -7,6 +7,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 import {
   coverageConfigDefaults,
   defineConfig as defineVitestConfig
+  // eslint-disable-next-line import/no-unresolved
 } from 'vitest/config';
 
 // eslint-disable-next-line import/no-default-export

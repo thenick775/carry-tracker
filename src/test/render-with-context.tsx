@@ -31,6 +31,7 @@ const Providers = ({ children, withNotifications }: ProvidersProps) => (
     defaultColorScheme="dark"
     theme={shadcnTheme}
     cssVariablesResolver={cssVariableResolver}
+    env="test"
   >
     {withNotifications ? <Notifications /> : null}
     {children}
