@@ -1,4 +1,4 @@
-import { Timeline, Text } from '@mantine/core';
+import { Skeleton, Timeline, Text } from '@mantine/core';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import dayjs from 'dayjs';
 import { AnimatePresence, motion } from 'motion/react';
@@ -103,6 +103,24 @@ const getInitialTimelineOffset = (
     estimateTimelineDaySize(rotations, startDate, index)
   ).reduce((total, size) => total + size, 0);
 };
+
+const TimelineViewSkeleton = () => (
+  <Timeline active={-1} bulletSize={24} lineWidth={2}>
+    {TIMELINE_SKELETON_DAYS.map((day) => (
+      <Timeline.Item
+        key={day}
+        title={<Skeleton height={16} radius="sm" maw={200} />}
+        style={{
+          width: '100%',
+          paddingBottom: 15
+        }}
+        lineVariant="dotted"
+      >
+        <Skeleton height={14} radius="sm" mb="xs" maw={400} />
+      </Timeline.Item>
+    ))}
+  </Timeline>
+);
 
 const generateTimelineNodesForDay = (
   rotations: Rotation[],
@@ -286,6 +304,7 @@ export const TimelineView = () => {
 
   return (
     <>
+      {isLoading && <TimelineViewSkeleton />}
       {hasNoTimeline && <NoTimeline />}
       {!isLoading && hasRotationsAndIdentifiers && (
         <TimelineContent
