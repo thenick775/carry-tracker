@@ -1,5 +1,5 @@
 import { ActionIcon, Text } from '@mantine/core';
-import { useDisclosure, useTimeout } from '@mantine/hooks';
+import { useDisclosure } from '@mantine/hooks';
 import { AnimatePresence, motion } from 'motion/react';
 import { useMemo, useState } from 'react';
 import { TbPlus } from 'react-icons/tb';
@@ -19,9 +19,8 @@ import {
   type CarryItem,
   type CarryItemFilters
 } from '../hooks/use-carry-items.ts';
+import { useDelayedSkeleton } from '../hooks/use-delayed-skeleton.ts';
 import { useObjectUrls } from '../hooks/use-object-urls.ts';
-
-const SKELETON_DELAY_MS = 50;
 
 export const ItemsView = () => {
   const [filters, setFilters] = useState<CarryItemFilters>({});
@@ -56,10 +55,7 @@ export const ItemsView = () => {
     updateCarryItem(carryItem.id, { carryCount: carryItem.carryCount + 1 });
 
   const isLoading = carryItems === undefined || filterOptions === undefined;
-  const [showLoadingSkeleton, setShowLoadingSkeleton] = useState(false);
-  useTimeout(() => setShowLoadingSkeleton(true), SKELETON_DELAY_MS, {
-    autoInvoke: true
-  });
+  const showLoadingSkeleton = useDelayedSkeleton();
   const shouldRenderMasonry = !isLoading && carryItems.length > 0;
   const hasNoItems = !isLoading && carryItems.length === 0;
 
