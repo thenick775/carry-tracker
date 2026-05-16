@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useEffect, useRef } from 'react';
 
 import { ResponsiveScrollArea } from './common/responsive-scroll-area.tsx';
+import { NoTimeline } from './timeline/no-timeline.tsx';
 import { useCarryItems } from '../hooks/use-carry-items.ts';
 import { useActiveRotations, type Rotation } from '../hooks/use-rotations.ts';
 
@@ -78,7 +79,9 @@ export const TimelineView = () => {
   const carryItemIdentifiers =
     carryItems?.map(({ id, name }) => ({ id, name })) ?? [];
 
-  const todayIndex = dayjs().startOf('day').diff(startDate?.startOf('day'), 'day');
+  const todayIndex = dayjs()
+    .startOf('day')
+    .diff(startDate?.startOf('day'), 'day');
 
   // eslint-disable-next-line react-hooks/incompatible-library -- opting out since this will be ignored by react compiler, and seems fine for now
   const virtualizer = useVirtualizer({
@@ -105,6 +108,7 @@ export const TimelineView = () => {
   const virtualItems = virtualizer.getVirtualItems();
 
   const shouldRenderTimeline = !isLoading && virtualItems.length > 0;
+  const hasNoTimeline = !isLoading && !startDate;
 
   useEffect(() => {
     if (shouldRenderTimeline && todayIndex > 4) {
@@ -120,6 +124,7 @@ export const TimelineView = () => {
   return (
     <ResponsiveScrollArea viewportRef={scrollRef}>
       <AnimatePresence>
+        {hasNoTimeline && <NoTimeline />}
         {shouldRenderTimeline && (
           <motion.div
             key="items"
