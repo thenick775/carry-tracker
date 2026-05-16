@@ -5,10 +5,10 @@ import { useMemo, useState } from 'react';
 import { TbPlus } from 'react-icons/tb';
 
 import { CarryHistoryModal } from './carry-item/carry-history-modal.tsx';
-import { MasonrySkeleton } from './carry-item/carry-item-card-skeleton.tsx';
 import { CarryItemCard } from './carry-item/carry-item-card.tsx';
 import { CarryItemModal } from './carry-item/carry-item-modal.tsx';
 import { DeleteCarryItemConfirm } from './carry-item/delete-carry-item-confirm.tsx';
+import { MasonrySkeleton } from './carry-item/masonry-skeleton.tsx';
 import { NoItems } from './carry-item/no-items.tsx';
 import { ResponsiveScrollArea } from './common/responsive-scroll-area.tsx';
 import { ItemFilters } from './item-filters/item-filters.tsx';
