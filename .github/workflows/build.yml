@@ -7,7 +7,9 @@ on:
     branches: ['**']
 
 permissions:
+  actions: read
   contents: read
+  pull-requests: write
 
 jobs:
   change-detect:
@@ -51,3 +53,31 @@ jobs:
       - name: Lint
         run: |
           npm run lint
+
+      - name: Test/Coverage
+        run: |
+          npm run coverage
+
+      - name: Download main baseline coverage artifact
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: dawidd6/action-download-artifact@v8
+        with:
+          branch: main
+          event: push
+          workflow_conclusion: success
+          name: carry-tracker-coverage
+          path: coverage-main
+
+      - name: Upload coverage artifact
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: carry-tracker-coverage
+          path: ./coverage/**
+
+      - name: Generate coverage report
+        if: ${{ hashFiles('coverage/coverage-summary.json') != '' }}
+        uses: davelosert/vitest-coverage-report-action@v2.9.3
+        with:
+          threshold-icons: "{0: '🔴', 70: '🟠', 85: '🟢'}"
+          json-summary-compare-path: ${{ github.event_name == 'pull_request' && './coverage-main/coverage-summary.json' || '' }}
