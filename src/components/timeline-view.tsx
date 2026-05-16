@@ -193,13 +193,7 @@ const TimelineContent = ({
   return (
     <ResponsiveScrollArea viewportRef={scrollRef}>
       <AnimatePresence>
-<<<<<<< HEAD
         {virtualItems.length > 0 && (
-=======
-        {isLoading && <TimelineSkeleton />}
-        {hasNoTimeline && <NoTimeline />}
-        {shouldRenderTimeline && (
->>>>>>> ff91d1a (chore: rename files, split timeline skeleton to new file)
           <motion.div
             key="items"
             initial={{ opacity: 0, filter: 'blur(8px)' }}
@@ -293,7 +287,7 @@ export const TimelineView = () => {
 
   return (
     <>
-      {isLoading && <TimelineViewSkeleton />}
+      {isLoading && <TimelineSkeleton />}
       {hasNoTimeline && <NoTimeline />}
       {!isLoading && hasRotationsAndIdentifiers && (
         <TimelineContent
