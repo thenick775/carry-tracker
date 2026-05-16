@@ -1,4 +1,4 @@
-import { Skeleton, Timeline, Text } from '@mantine/core';
+import { Timeline, Text } from '@mantine/core';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import dayjs from 'dayjs';
 import { AnimatePresence, motion } from 'motion/react';
@@ -8,6 +8,7 @@ import { ResponsiveScrollArea } from './common/responsive-scroll-area.tsx';
 import { NoTimeline } from './timeline/no-timeline.tsx';
 import { useCarryItems } from '../hooks/use-carry-items.ts';
 import { useActiveRotations, type Rotation } from '../hooks/use-rotations.ts';
+import { TimelineSkeleton } from './timeline/timeline-skeleton.tsx';
 
 type TimelineNode = {
   carryItemIdentifier?: {
@@ -19,27 +20,8 @@ type TimelineNode = {
 };
 
 const HEIGHT_ESTIMATE = 50;
-const TIMELINE_SKELETON_DAYS = Array.from({ length: 16 }, (_, index) => index);
 
 const estimateSize = () => HEIGHT_ESTIMATE;
-
-const TimelineViewSkeleton = () => (
-  <Timeline active={-1} bulletSize={24} lineWidth={2}>
-    {TIMELINE_SKELETON_DAYS.map((day) => (
-      <Timeline.Item
-        key={day}
-        title={<Skeleton height={16} radius="sm" maw={200} />}
-        style={{
-          width: '100%',
-          paddingBottom: 15
-        }}
-        lineVariant="dotted"
-      >
-        <Skeleton height={14} radius="sm" mb="xs" maw={400} />
-      </Timeline.Item>
-    ))}
-  </Timeline>
-);
 
 const generateTimelineNodesForDay = (
   rotations: Rotation[],
@@ -144,7 +126,7 @@ export const TimelineView = () => {
   return (
     <ResponsiveScrollArea viewportRef={scrollRef}>
       <AnimatePresence>
-        {isLoading && <TimelineViewSkeleton />}
+        {isLoading && <TimelineSkeleton />}
         {hasNoTimeline && <NoTimeline />}
         {shouldRenderTimeline && (
           <motion.div
