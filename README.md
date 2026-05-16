@@ -9,6 +9,8 @@
   </a>
 </div>
 
+<br/>
+
 _A web app that helps you track your every day carry (EDC)_
 
 <img alt="Carry Tracker Mobile" src="./readme-images/carry-tracker-mobile_min.gif" width="360px">

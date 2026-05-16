@@ -10,6 +10,12 @@ import { afterEach, vi } from 'vitest';
 dayjs.extend(isBetween);
 dayjs.extend(utc);
 
+const getComputedStyle = window.getComputedStyle.bind(window);
+window.getComputedStyle = (elt) => getComputedStyle(elt);
+window.HTMLElement.prototype.scrollIntoView = () => {
+  /* empty */
+};
+
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: vi.fn().mockImplementation((query: string) => ({
@@ -25,28 +31,31 @@ Object.defineProperty(window, 'matchMedia', {
 });
 
 class ResizeObserver {
-  public observe = vi.fn();
+  public observe() {
+    /* empty */
+  }
 
-  public unobserve = vi.fn();
+  public unobserve() {
+    /* empty */
+  }
 
-  public disconnect = vi.fn();
+  public disconnect() {
+    /* empty */
+  }
 }
 
-vi.stubGlobal('ResizeObserver', ResizeObserver);
+window.ResizeObserver = ResizeObserver;
 
-Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', {
-  configurable: true,
-  value: vi.fn()
+Object.defineProperty(document, 'fonts', {
+  value: { addEventListener: vi.fn(), removeEventListener: vi.fn() }
 });
 
 Object.defineProperty(URL, 'createObjectURL', {
-  configurable: true,
   writable: true,
   value: vi.fn(() => 'blob:mock-url')
 });
 
 Object.defineProperty(URL, 'revokeObjectURL', {
-  configurable: true,
   writable: true,
   value: vi.fn()
 });
