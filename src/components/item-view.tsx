@@ -61,6 +61,7 @@ export const ItemsView = () => {
       <ResponsiveScrollArea>
         <AnimatePresence>
           <ItemFilters
+            key="item-filters"
             closeFilters={closeFilters}
             filterOptions={filterOptions}
             filteredItemCount={carryItems?.length ?? 0}
@@ -69,7 +70,7 @@ export const ItemsView = () => {
             openFilters={openFilters}
             setFilters={setFilters}
           />
-          {hasNoItems && <NoItems />}
+          {hasNoItems && <NoItems key="no-items" />}
           {shouldRenderMasonry && (
             <motion.div
               key="items"
@@ -82,7 +83,7 @@ export const ItemsView = () => {
                 {imageUrls &&
                   carryItems.map((item, idx) => (
                     <CarryItemCard
-                      key={item.id}
+                      key={`item-${item.id}-${idx}`}
                       item={item}
                       imageUrl={imageUrls[idx]}
                       onDelete={() => {
