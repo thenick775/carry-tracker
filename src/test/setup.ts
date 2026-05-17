@@ -5,6 +5,8 @@ import utc from 'dayjs/plugin/utc';
 import 'fake-indexeddb/auto';
 import { vi } from 'vitest';
 
+import { resetDb } from './db.ts';
+
 dayjs.extend(isBetween);
 dayjs.extend(utc);
 
@@ -57,3 +59,5 @@ Object.defineProperty(URL, 'revokeObjectURL', {
   writable: true,
   value: vi.fn()
 });
+
+afterEach(resetDb);

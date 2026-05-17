@@ -6,36 +6,13 @@ import { visualizer } from 'rollup-plugin-visualizer';
 import { VitePWA } from 'vite-plugin-pwa';
 import {
   coverageConfigDefaults,
-  defineConfig as defineVitestConfig
+  defineConfig
   // eslint-disable-next-line import/no-unresolved
 } from 'vitest/config';
 
 // eslint-disable-next-line import/no-default-export
-export default defineVitestConfig({
+export default defineConfig({
   base: './',
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    setupFiles: ['./src/test/setup.ts'],
-    css: true,
-    passWithNoTests: true,
-    clearMocks: true,
-    restoreMocks: true,
-    unstubGlobals: true,
-    unstubEnvs: true,
-    coverage: {
-      provider: 'v8',
-      include: ['src/**/*.{ts,tsx}'],
-      reporter: ['text', 'html', 'json-summary', 'json'],
-      reportsDirectory: './coverage',
-      exclude: [
-        ...coverageConfigDefaults.exclude,
-        'src/test/**',
-        '**/*.d.ts',
-        '**/.DS_Store'
-      ]
-    }
-  },
   plugins: [
     react(),
     babel({
@@ -172,6 +149,25 @@ export default defineVitestConfig({
         }
         defaultHandler(warning);
       }
+    }
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
+    passWithNoTests: true,
+    restoreMocks: true,
+    coverage: {
+      provider: 'v8',
+      include: ['src/**/*.{ts,tsx}'],
+      reporter: ['text', 'html', 'json-summary', 'json'],
+      reportsDirectory: './coverage',
+      exclude: [
+        ...coverageConfigDefaults.exclude,
+        'src/test/**',
+        '**/*.d.ts',
+        '**/.DS_Store'
+      ]
     }
   }
 });

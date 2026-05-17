@@ -1,16 +1,14 @@
 import dayjs from 'dayjs';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
-import { useCarriesOverTime, useCarryHistory } from './use-carries-over-time.ts';
+import {
+  useCarriesOverTime,
+  useCarryHistory
+} from './use-carries-over-time.ts';
 import { carryDb } from '../db/db.ts';
-import { resetDb } from '../test/db.ts';
 import { renderHook, waitFor, act } from '../test/render-with-context.tsx';
 
 describe('useCarriesOverTime', () => {
-  beforeEach(async () => {
-    await resetDb();
-  });
-
   it('returns entries in the requested lookback window', async () => {
     const insideDate = dayjs().subtract(2, 'day').toISOString();
     const outsideDate = dayjs().subtract(8, 'week').toISOString();
@@ -41,10 +39,6 @@ describe('useCarriesOverTime', () => {
 });
 
 describe('useCarryHistory', () => {
-  beforeEach(async () => {
-    await resetDb();
-  });
-
   it('returns sorted carry history metadata', async () => {
     await carryDb.carriesOverTime.bulkAdd([
       {
@@ -119,7 +113,9 @@ describe('useCarryHistory', () => {
       ]);
     });
 
-    await expect(carryDb.carriesOverTime.orderBy('createdAt').toArray()).resolves.toEqual([
+    await expect(
+      carryDb.carriesOverTime.orderBy('createdAt').toArray()
+    ).resolves.toEqual([
       expect.objectContaining({
         id: 'keep-me',
         createdAt: '2026-01-03T00:00:00.000Z',

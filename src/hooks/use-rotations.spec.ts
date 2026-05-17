@@ -1,15 +1,10 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { useActiveRotations, useRotations } from './use-rotations.ts';
 import { carryDb } from '../db/db.ts';
-import { resetDb } from '../test/db.ts';
 import { renderHook, waitFor, act } from '../test/render-with-context.tsx';
 
 describe('useRotations', () => {
-  beforeEach(async () => {
-    await resetDb();
-  });
-
   it('creates, reads, and deletes rotations using boolean domain values', async () => {
     const { result } = renderHook(() => useRotations());
 

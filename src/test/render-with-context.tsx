@@ -1,7 +1,7 @@
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import {
-  render as rtlRender,
+  render,
   act,
   cleanup,
   fireEvent,
@@ -9,7 +9,7 @@ import {
   screen,
   waitFor,
   within,
-  type RenderOptions as TestingLibraryRenderOptions
+  type RenderOptions
 } from '@testing-library/react';
 
 import { cssVariableResolver } from '../theme/css-variable-resolver.ts';
@@ -17,35 +17,25 @@ import { shadcnTheme } from '../theme/mantine-hub-shadcn/theme.ts';
 
 import type { ReactNode } from 'react';
 
-type RenderOptions = TestingLibraryRenderOptions & {
-  withNotifications?: boolean;
-};
-
 type ProvidersProps = {
   children: ReactNode;
-  withNotifications: boolean;
 };
 
-const Providers = ({ children, withNotifications }: ProvidersProps) => (
+const Providers = ({ children }: ProvidersProps) => (
   <MantineProvider
     defaultColorScheme="dark"
     theme={shadcnTheme}
     cssVariablesResolver={cssVariableResolver}
     env="test"
   >
-    {withNotifications ? <Notifications /> : null}
+    <Notifications />
     {children}
   </MantineProvider>
 );
 
-export const renderWithContext = (
-  ui: ReactNode,
-  { withNotifications = false, ...options }: RenderOptions = {}
-) =>
-  rtlRender(ui, {
-    wrapper: ({ children }) => (
-      <Providers withNotifications={withNotifications}>{children}</Providers>
-    ),
+export const renderWithContext = (ui: ReactNode, options?: RenderOptions) =>
+  render(ui, {
+    wrapper: ({ children }) => <Providers>{children}</Providers>,
     ...options
   });
 
