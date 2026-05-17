@@ -50,8 +50,10 @@ export const useRotations = () => {
     id: string,
     { active, ...rest }: Partial<Rotation>
   ) => {
-    const isActive = active ? 1 : 0;
-    await carryDb.rotations.update(id, { ...rest, active: isActive });
+    await carryDb.rotations.update(id, {
+      ...rest,
+      ...(active !== undefined ? { active: active ? 1 : 0 } : {})
+    });
   };
 
   const deleteRotation = async (id: string) =>
