@@ -60,4 +60,4 @@ Object.defineProperty(URL, 'revokeObjectURL', {
   value: vi.fn()
 });
 
-afterEach(resetDb);
+beforeEach(resetDb);

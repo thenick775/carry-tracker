@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CarryTrackerAppShell } from './app-shell.tsx';
 import * as carryItemFilterOptionHooks from '../hooks/use-carry-item-filter-options.ts';
 import * as carryItemHooks from '../hooks/use-carry-items.ts';
+import * as rotationHooks from '../hooks/use-rotations.ts';
 import { renderWithContext, screen } from '../test/render-with-context.tsx';
 
 describe('<CarryTrackerAppShell />', () => {
@@ -21,6 +22,7 @@ describe('<CarryTrackerAppShell />', () => {
       updateCarryItem: vi.fn(),
       deleteCarryItem: vi.fn()
     });
+    vi.spyOn(rotationHooks, 'useActiveRotations').mockReturnValue([]);
   });
 
   it('renders the items view by default', () => {
@@ -31,7 +33,7 @@ describe('<CarryTrackerAppShell />', () => {
 
   it.each([
     ['Carry Stats', 'Carry Stats:'],
-    ['Rotations', 'Rotations:'],
+    ['Rotations', 'Your rotation list is empty'],
     ['Rotation Timeline', 'Your rotation timeline is empty'],
     ['Import/Export', 'Import and export your database here!']
   ])(
@@ -48,7 +50,7 @@ describe('<CarryTrackerAppShell />', () => {
       expect(
         screen.queryByText('Your item list is empty')
       ).not.toBeInTheDocument();
-      expect(screen.getByText(`${expectedPageText}`)).toBeVisible();
+      expect(await screen.findByText(`${expectedPageText}`)).toBeVisible();
     }
   );
 
