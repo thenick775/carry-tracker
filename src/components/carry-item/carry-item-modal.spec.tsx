@@ -15,18 +15,18 @@ const customFieldsValueMap: Record<string, CustomFields> = {
   Brand: [{ name: 'Brand', value: 'Benchmade' }]
 };
 
-describe('CarryItemModal', () => {
+describe('<CarryItemModal />', () => {
   it('does not submit create mode without an image', async () => {
     const user = userEvent.setup();
-    const close = vi.fn();
-    const onSubmit = vi.fn();
+    const closeSpy = vi.fn();
+    const onSubmitSpy = vi.fn();
 
     renderWithContext(
       <CarryItemModal
         customFieldsValueMap={customFieldsValueMap}
         opened
         close={close}
-        onSubmit={onSubmit}
+        onSubmit={onSubmitSpy}
       />
     );
 
@@ -40,9 +40,9 @@ describe('CarryItemModal', () => {
     await user.click(screen.getByRole('button', { name: 'Submit' }));
 
     await waitFor(() => {
-      expect(onSubmit).not.toHaveBeenCalled();
+      expect(onSubmitSpy).not.toHaveBeenCalled();
     });
-    expect(close).not.toHaveBeenCalled();
+    expect(closeSpy).not.toHaveBeenCalled();
   });
 
   it('renders update mode title and default values', () => {

@@ -93,7 +93,7 @@ export const CarryHistoryChart = ({
             dataKey="count"
             stroke={color}
             strokeWidth={2}
-            dot={{ r: 3 }}
+            dot={{ r: 3, 'aria-label': 'line-chart-dot' }}
             activeDot={{ r: 5 }}
           />
         </ReLineChart>

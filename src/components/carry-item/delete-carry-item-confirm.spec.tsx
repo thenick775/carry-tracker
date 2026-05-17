@@ -5,11 +5,11 @@ import { DeleteCarryItemConfirm } from './delete-carry-item-confirm.tsx';
 import * as responsiveHooks from '../../hooks/use-is-larger-than-phone.ts';
 import { renderWithContext, screen } from '../../test/render-with-context.tsx';
 
-describe('DeleteCarryItemConfirm', () => {
+describe('<DeleteCarryItemConfirm />', () => {
   it('shows the item name and confirms delete before closing', async () => {
     const user = userEvent.setup();
-    const onConfirm = vi.fn();
-    const close = vi.fn();
+    const onConfirmSpy = vi.fn();
+    const closeSpy = vi.fn();
 
     vi.spyOn(responsiveHooks, 'useIsLargerThanPhone').mockReturnValue(true);
 
@@ -17,8 +17,8 @@ describe('DeleteCarryItemConfirm', () => {
       <DeleteCarryItemConfirm
         carryItemName="Knife"
         opened
-        close={close}
-        onConfirm={onConfirm}
+        close={closeSpy}
+        onConfirm={onConfirmSpy}
       />
     );
 
@@ -31,18 +31,18 @@ describe('DeleteCarryItemConfirm', () => {
 
     await user.click(screen.getByRole('button', { name: 'Delete' }));
 
-    expect(onConfirm).toHaveBeenCalled();
-    expect(close).toHaveBeenCalled();
+    expect(onConfirmSpy).toHaveBeenCalled();
+    expect(closeSpy).toHaveBeenCalled();
   });
 
   it('falls back to generic item text and cancels cleanly', async () => {
     const user = userEvent.setup();
-    const close = vi.fn();
+    const closeSpy = vi.fn();
 
     renderWithContext(
       <DeleteCarryItemConfirm
         opened
-        close={close}
+        close={closeSpy}
         onConfirm={() => undefined}
       />
     );
@@ -55,7 +55,7 @@ describe('DeleteCarryItemConfirm', () => {
       )
     ).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Cancel' }));
-    expect(close).toHaveBeenCalled();
+    expect(closeSpy).toHaveBeenCalled();
   });
 
   it('uses the mobile drawer layout by default', () => {

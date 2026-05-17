@@ -16,9 +16,12 @@ const createCarryItem = vi.fn();
 const updateCarryItem = vi.fn();
 const deleteCarryItem = vi.fn();
 
-describe('ItemsView', () => {
+describe('<ItemsView />', () => {
   beforeEach(() => {
-    vi.spyOn(carryItemFilterOptionHooks, 'useCarryItemFilterOptions').mockReturnValue({
+    vi.spyOn(
+      carryItemFilterOptionHooks,
+      'useCarryItemFilterOptions'
+    ).mockReturnValue({
       customFieldOptions: {},
       customFieldsValueMap: {}
     });

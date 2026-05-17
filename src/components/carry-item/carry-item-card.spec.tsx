@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { CarryItemCard } from './carry-item-card.tsx';
 import { renderWithContext, screen } from '../../test/render-with-context.tsx';
 
-describe('CarryItemCard', () => {
+describe('<CarryItemCard />', () => {
   it('renders formatted item details', () => {
     renderWithContext(
       <CarryItemCard
@@ -26,7 +26,10 @@ describe('CarryItemCard', () => {
     expect(screen.getByText('Knife')).toBeInTheDocument();
     expect(screen.getByText(/^Added:/)).toBeInTheDocument();
     expect(screen.getByText(/^Carry Count:/)).toBeInTheDocument();
-    expect(screen.getByRole('img', { name: 'Knife' })).toHaveAttribute('src', 'blob:knife');
+    expect(screen.getByRole('img', { name: 'Knife' })).toHaveAttribute(
+      'src',
+      'blob:knife'
+    );
   });
 
   it('fires edit, history, delete, and increase callbacks', async () => {

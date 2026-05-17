@@ -9,9 +9,12 @@ import * as objectUrlHooks from '../hooks/use-object-urls.ts';
 import * as rotationHooks from '../hooks/use-rotations.ts';
 import { renderWithContext, screen } from '../test/render-with-context.tsx';
 
-describe('CarryTrackerAppShell', () => {
+describe('<CarryTrackerAppShell />', () => {
   beforeEach(() => {
-    vi.spyOn(carryItemFilterOptionHooks, 'useCarryItemFilterOptions').mockReturnValue({
+    vi.spyOn(
+      carryItemFilterOptionHooks,
+      'useCarryItemFilterOptions'
+    ).mockReturnValue({
       customFieldOptions: {},
       customFieldsValueMap: {}
     });

@@ -1,9 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
 import { CarryItemStatsTable } from './carry-item-stats-table.tsx';
-import { renderWithContext, screen, within } from '../../test/render-with-context.tsx';
+import {
+  renderWithContext,
+  screen,
+  within
+} from '../../test/render-with-context.tsx';
 
-describe('CarryItemStatsTable', () => {
+describe('<CarryItemStatsTable />', () => {
   it('sorts rows by carry count and renders summary totals', () => {
     renderWithContext(
       <CarryItemStatsTable

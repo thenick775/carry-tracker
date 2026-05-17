@@ -12,8 +12,6 @@ import {
 
 import type { CarryOverTimeStorage } from '../../db/db.ts';
 
-const saveCarryHistory = vi.fn();
-
 const entry = (
   overrides: Partial<CarryOverTimeStorage>
 ): CarryOverTimeStorage => ({
@@ -24,16 +22,15 @@ const entry = (
   ...overrides
 });
 
-describe('CarryHistoryModal', () => {
+describe('<CarryHistoryModal />', () => {
   beforeEach(() => {
-    saveCarryHistory.mockReset();
     vi.spyOn(responsiveHooks, 'useIsLargerThanPhone').mockReturnValue(true);
     vi.spyOn(carriesOverTimeHooks, 'useCarryHistory').mockReturnValue({
       carryHistory: [],
       totalCarryHistoryEntries: 0,
       firstRecordedAt: undefined,
       lastRecordedAt: undefined,
-      saveCarryHistory
+      saveCarryHistory: vi.fn()
     });
   });
 
@@ -46,7 +43,7 @@ describe('CarryHistoryModal', () => {
       totalCarryHistoryEntries: 2,
       firstRecordedAt: '2026-01-01T00:00:00.000Z',
       lastRecordedAt: '2026-01-01T00:00:00.000Z',
-      saveCarryHistory
+      saveCarryHistory: vi.fn()
     });
 
     renderWithContext(
@@ -72,7 +69,7 @@ describe('CarryHistoryModal', () => {
       totalCarryHistoryEntries: 1,
       firstRecordedAt: '2026-01-01T00:00:00.000Z',
       lastRecordedAt: '2026-01-01T00:00:00.000Z',
-      saveCarryHistory
+      saveCarryHistory: vi.fn()
     });
 
     renderWithContext(
@@ -106,7 +103,7 @@ describe('CarryHistoryModal', () => {
       totalCarryHistoryEntries: 2,
       firstRecordedAt: '2026-01-01T00:00:00.000Z',
       lastRecordedAt: '2026-01-02T00:00:00.000Z',
-      saveCarryHistory
+      saveCarryHistory: vi.fn()
     });
 
     renderWithContext(
@@ -131,7 +128,8 @@ describe('CarryHistoryModal', () => {
 
   it('saves sorted entries and closes the modal', async () => {
     const user = userEvent.setup();
-    const close = vi.fn();
+    const closeSpy = vi.fn();
+    const saveCarryHistorySpy = vi.fn();
     vi.spyOn(carriesOverTimeHooks, 'useCarryHistory').mockReturnValue({
       carryHistory: [
         entry({
@@ -144,7 +142,7 @@ describe('CarryHistoryModal', () => {
       totalCarryHistoryEntries: 2,
       firstRecordedAt: '2026-01-01T00:00:00.000Z',
       lastRecordedAt: '2026-01-02T00:00:00.000Z',
-      saveCarryHistory
+      saveCarryHistory: saveCarryHistorySpy
     });
 
     renderWithContext(
@@ -156,14 +154,14 @@ describe('CarryHistoryModal', () => {
           color: 'blue'
         }}
         opened
-        close={close}
+        close={closeSpy}
       />
     );
 
     await user.click(screen.getByRole('button', { name: 'Save Changes' }));
 
     await waitFor(() => {
-      expect(saveCarryHistory).toHaveBeenCalledWith([
+      expect(saveCarryHistorySpy).toHaveBeenCalledWith([
         {
           id: 'a',
           createdAt: '2026-01-01T00:00:00.000Z',
@@ -172,6 +170,6 @@ describe('CarryHistoryModal', () => {
         { id: 'b', createdAt: '2026-01-02T00:00:00.000Z', currentCarryCount: 4 }
       ]);
     });
-    expect(close).toHaveBeenCalled();
+    expect(closeSpy).toHaveBeenCalled();
   });
 });
