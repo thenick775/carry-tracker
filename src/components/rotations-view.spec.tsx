@@ -10,11 +10,7 @@ import {
   waitFor
 } from '../test/render-with-context.tsx';
 
-const createRotation = vi.fn();
-const updateRotation = vi.fn();
-const deleteRotation = vi.fn();
-
-describe('RotationsView', () => {
+describe('<RotationsView />', () => {
   beforeEach(() => {
     vi.spyOn(carryItemHooks, 'useCarryItems').mockReturnValue({
       carryItems: [
@@ -42,9 +38,9 @@ describe('RotationsView', () => {
           stepDuration: { duration: 1, unit: 'day' }
         }
       ],
-      createRotation,
-      updateRotation,
-      deleteRotation
+      createRotation: vi.fn(),
+      updateRotation: vi.fn(),
+      deleteRotation: vi.fn()
     });
   });
 
@@ -69,6 +65,24 @@ describe('RotationsView', () => {
 
   it('opens edit flow and deletes an existing rotation', async () => {
     const user = userEvent.setup();
+    const deleteRotationSpy = vi.fn();
+
+    vi.spyOn(rotationHooks, 'useRotations').mockReturnValue({
+      rotations: [
+        {
+          id: 'rotation-1',
+          name: 'Weekday',
+          active: true,
+          createdAt: '2026-01-01T00:00:00.000Z',
+          activeAt: '2026-01-02T00:00:00.000Z',
+          orderedCarryItemIds: ['item-1'],
+          stepDuration: { duration: 1, unit: 'day' }
+        }
+      ],
+      createRotation: vi.fn(),
+      updateRotation: vi.fn(),
+      deleteRotation: deleteRotationSpy
+    });
 
     renderWithContext(<RotationsView />);
 
@@ -80,7 +94,7 @@ describe('RotationsView', () => {
 
     await user.click(screen.getByRole('button', { name: 'Delete tracker' }));
     await waitFor(() => {
-      expect(deleteRotation).toHaveBeenCalledWith('rotation-1');
+      expect(deleteRotationSpy).toHaveBeenCalledWith('rotation-1');
     });
   });
 });

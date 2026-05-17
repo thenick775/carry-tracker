@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { SeriesPickerDrawer } from './series-picker-drawer.tsx';
 import { renderWithContext, screen } from '../../test/render-with-context.tsx';
 
-describe('SeriesPickerDrawer', () => {
+describe('<SeriesPickerDrawer />', () => {
   it('filters visible items by search and clears the search', async () => {
     const user = userEvent.setup();
 

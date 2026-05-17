@@ -5,7 +5,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { CarryHistoryEntryAccordionItem } from './carry-history-entry-accordion-item.tsx';
 import { renderWithContext, screen } from '../../test/render-with-context.tsx';
 
-describe('CarryHistoryEntryAccordionItem', () => {
+describe('<CarryHistoryEntryAccordionItem />', () => {
   it('shows delta text and updates carry count', async () => {
     const user = userEvent.setup();
     const onUpdate = vi.fn();
@@ -26,10 +26,11 @@ describe('CarryHistoryEntryAccordionItem', () => {
       </Accordion>
     );
 
+    expect(screen.getByText('+2 from previous')).toBeInTheDocument();
+
     await user.clear(screen.getByLabelText('Carry count'));
     await user.type(screen.getByLabelText('Carry count'), '7');
 
-    expect(screen.getByText('+2 from previous')).toBeInTheDocument();
     expect(onUpdate).toHaveBeenLastCalledWith({ currentCarryCount: 7 });
   });
 

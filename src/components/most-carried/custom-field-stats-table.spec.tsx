@@ -1,9 +1,13 @@
 import { describe, expect, it } from 'vitest';
 
 import { CustomFieldStatsTable } from './custom-field-stats-table.tsx';
-import { renderWithContext, screen, within } from '../../test/render-with-context.tsx';
+import {
+  renderWithContext,
+  screen,
+  within
+} from '../../test/render-with-context.tsx';
 
-describe('CustomFieldStatsTable', () => {
+describe('<CustomFieldStatsTable />', () => {
   it('sorts rows by total and renders summary totals', () => {
     renderWithContext(
       <CustomFieldStatsTable

@@ -36,7 +36,7 @@ vi.mock('../db/db.ts', () => ({
   importDb
 }));
 
-describe('ImportExportView', () => {
+describe('<ImportExportView />', () => {
   beforeEach(() => {
     vi.spyOn(notificationsModule.notifications, 'show').mockImplementation(
       show
@@ -47,10 +47,6 @@ describe('ImportExportView', () => {
         return undefined;
       }
     );
-    show.mockReset();
-    update.mockReset();
-    exportDb.mockReset();
-    importDb.mockReset();
   });
 
   it('renders the import and export sections', () => {
