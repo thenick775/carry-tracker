@@ -1,9 +1,8 @@
 import dayjs from 'dayjs';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { useCarryItems, type CreateCarryItem } from './use-carry-items.ts';
 import { carryDb } from '../db/db.ts';
-import { resetDb } from '../test/db.ts';
 import { renderHook, waitFor, act } from '../test/render-with-context.tsx';
 
 const baseItem = (
@@ -19,10 +18,6 @@ const baseItem = (
 });
 
 describe('useCarryItems', () => {
-  beforeEach(async () => {
-    await resetDb();
-  });
-
   it('creates an item and returns it from the live query', async () => {
     const file = new File(['blade'], 'knife.png', { type: 'image/png' });
     file.arrayBuffer = vi.fn(() =>

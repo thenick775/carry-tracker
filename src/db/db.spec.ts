@@ -1,14 +1,11 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { carryDb, exportDb, importDb } from './db.ts';
 import { resetDb } from '../test/db.ts';
 
 describe('db', () => {
-  beforeEach(async () => {
-    await resetDb();
-  });
-
   it('exports and imports items, rotations, and carry history', async () => {
+    await resetDb();
     await carryDb.carryItems.add({
       id: 'item-1',
       name: 'Knife',

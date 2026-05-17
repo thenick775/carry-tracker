@@ -1,16 +1,11 @@
 import dayjs from 'dayjs';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { useCarryItemFilterOptions } from './use-carry-item-filter-options.ts';
 import { carryDb } from '../db/db.ts';
-import { resetDb } from '../test/db.ts';
 import { renderHook, waitFor } from '../test/render-with-context.tsx';
 
 describe('useCarryItemFilterOptions', () => {
-  beforeEach(async () => {
-    await resetDb();
-  });
-
   it('derives ranges and grouped custom field options from stored items', async () => {
     await carryDb.carryItems.bulkAdd([
       {
