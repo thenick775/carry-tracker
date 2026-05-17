@@ -1,11 +1,9 @@
 import '@testing-library/jest-dom/vitest';
-
-import { cleanup } from '@testing-library/react';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import utc from 'dayjs/plugin/utc';
 import 'fake-indexeddb/auto';
-import { afterEach, vi } from 'vitest';
+import { vi } from 'vitest';
 
 dayjs.extend(isBetween);
 dayjs.extend(utc);
@@ -58,8 +56,4 @@ Object.defineProperty(URL, 'createObjectURL', {
 Object.defineProperty(URL, 'revokeObjectURL', {
   writable: true,
   value: vi.fn()
-});
-
-afterEach(() => {
-  cleanup();
 });
