@@ -18,11 +18,29 @@ describe('<CarryItemStatsTable />', () => {
       />
     );
 
+    const headers = screen.getAllByRole('columnheader');
+    expect(headers[0]).toHaveTextContent('Name');
+    expect(headers[1]).toHaveTextContent('Carry Count');
+    expect(headers[2]).toHaveTextContent('Cost');
+    expect(headers[3]).toHaveTextContent('%');
+    expect(headers[4]).toHaveTextContent('Color');
+
     const rows = screen.getAllByRole('row');
     expect(within(rows[1]).getByText('Light')).toBeInTheDocument();
     expect(within(rows[2]).getByText('Knife')).toBeInTheDocument();
     expect(within(rows[3]).getByText('Summary')).toBeInTheDocument();
     expect(screen.getAllByText('$100')).toHaveLength(2);
     expect(screen.getByText('?')).toBeInTheDocument();
+  });
+
+  it('renders a summary-only table with empty data', () => {
+    renderWithContext(<CarryItemStatsTable data={[]} />);
+
+    const rows = screen.getAllByRole('row');
+
+    expect(rows).toHaveLength(2);
+    expect(within(rows[1]).getByText('Summary')).toBeInTheDocument();
+    expect(within(rows[1]).getByText('0')).toBeInTheDocument();
+    expect(within(rows[1]).getByText('$0')).toBeInTheDocument();
   });
 });

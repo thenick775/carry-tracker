@@ -18,7 +18,7 @@ vi.mock('@tanstack/react-virtual', () => ({
 }));
 
 describe('<TimelineView />', () => {
-  it('shows the empty timeline state when there is no active timeline start', () => {
+  it('renders the empty state with no data', () => {
     vi.spyOn(rotationHooks, 'useActiveRotations').mockReturnValue([]);
     vi.spyOn(carryItemHooks, 'useCarryItems').mockReturnValue({
       carryItems: [],
