@@ -79,7 +79,7 @@ describe('useRotations', () => {
     });
   });
 
-  it.todo('keeps a rotation active when updating unrelated fields', async () => {
+  it('keeps a rotation active when updating unrelated fields', async () => {
     await carryDb.rotations.add({
       id: 'rotation-1',
       name: 'Weekday',
@@ -93,7 +93,9 @@ describe('useRotations', () => {
     const { result } = renderHook(() => useRotations());
 
     await act(async () => {
-      await result.current.updateRotation('rotation-1', { name: 'Updated Name' });
+      await result.current.updateRotation('rotation-1', {
+        name: 'Updated Name'
+      });
     });
 
     await expect(carryDb.rotations.get('rotation-1')).resolves.toEqual(
