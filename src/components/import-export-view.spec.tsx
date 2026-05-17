@@ -85,7 +85,7 @@ describe('<ImportExportView />', () => {
     });
     show.mockReturnValue('import-id');
 
-    renderWithContext(<ImportExportView />, { withNotifications: true });
+    renderWithContext(<ImportExportView />);
 
     fireEvent.drop(screen.getByLabelText('Upload File'), createDropEvent(file));
 
@@ -117,7 +117,7 @@ describe('<ImportExportView />', () => {
     show.mockReturnValue('import-id');
     importDb.mockRejectedValueOnce(new Error('bad import'));
 
-    renderWithContext(<ImportExportView />, { withNotifications: true });
+    renderWithContext(<ImportExportView />);
 
     fireEvent.drop(screen.getByLabelText('Upload File'), createDropEvent(file));
 
