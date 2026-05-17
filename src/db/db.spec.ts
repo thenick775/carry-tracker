@@ -5,7 +5,6 @@ import { resetDb } from '../test/db.ts';
 
 describe('db', () => {
   it('exports and imports items, rotations, and carry history', async () => {
-    await resetDb();
     await carryDb.carryItems.add({
       id: 'item-1',
       name: 'Knife',
@@ -62,7 +61,6 @@ describe('db', () => {
   });
 
   it('clears existing tables before import', async () => {
-    await resetDb();
     await carryDb.carryItems.put({
       id: 'new-item',
       name: 'New',

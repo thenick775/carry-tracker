@@ -174,7 +174,7 @@ export const LineChart = ({
       ),
     0
   );
-  const digitCount = String(maxYValue || 0).length;
+  const digitCount = String(maxYValue).length;
   const yAxisWidth = Math.max(26, digitCount * 15);
 
   const canGoOlder = buckets.length > 0;

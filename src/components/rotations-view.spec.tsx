@@ -36,6 +36,15 @@ describe('<RotationsView />', () => {
           activeAt: '2026-01-02T00:00:00.000Z',
           orderedCarryItemIds: ['item-1'],
           stepDuration: { duration: 1, unit: 'day' }
+        },
+        {
+          id: 'rotation-2',
+          name: 'Weekday2',
+          active: true,
+          createdAt: '2026-01-01T00:00:00.000Z',
+          activeAt: '2026-01-02T00:00:00.000Z',
+          orderedCarryItemIds: ['item-1'],
+          stepDuration: { duration: 1, unit: 'day' }
         }
       ],
       createRotation: vi.fn(),
@@ -44,11 +53,25 @@ describe('<RotationsView />', () => {
     });
   });
 
+  it('renders the empty state with no data', () => {
+    vi.spyOn(rotationHooks, 'useRotations').mockReturnValue({
+      rotations: [],
+      createRotation: vi.fn(),
+      updateRotation: vi.fn(),
+      deleteRotation: vi.fn()
+    });
+
+    renderWithContext(<RotationsView />);
+
+    expect(screen.getByText('Your rotation list is empty')).toBeInTheDocument();
+  });
+
   it('renders rotation cards', () => {
     renderWithContext(<RotationsView />);
 
-    expect(screen.getByText('Weekday')).toBeInTheDocument();
     expect(screen.getByText('Rotations:')).toBeInTheDocument();
+    expect(screen.getByText('Weekday')).toBeVisible();
+    expect(screen.getByText('Weekday2')).toBeVisible();
   });
 
   it('opens create flow from the add button', async () => {

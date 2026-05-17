@@ -31,7 +31,7 @@ export const CarryHistoryChart = ({
 
   const maxYValue = Math.max(...points.map(({ count }) => count));
   const minYValue = Math.min(...points.map(({ count }) => count));
-  const digitCount = String(maxYValue || 0).length;
+  const digitCount = String(maxYValue).length;
   const yAxisWidth = Math.max(26, digitCount * 15);
 
   return (
