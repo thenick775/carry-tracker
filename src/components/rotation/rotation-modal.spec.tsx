@@ -10,7 +10,7 @@ import {
   waitFor
 } from '../../test/render-with-context.tsx';
 
-describe('RotationModal', () => {
+describe('<RotationModal />', () => {
   beforeEach(() => {
     vi.spyOn(carryItemHooks, 'useCarryItems').mockReturnValue({
       carryItems: [
@@ -83,7 +83,7 @@ describe('RotationModal', () => {
 
   it.todo('shuffles selected item ids when requested', async () => {
     const user = userEvent.setup();
-    const randomSpy = vi.spyOn(Math, 'random').mockReturnValue(0);
+    vi.spyOn(Math, 'random').mockReturnValue(0);
     const onSubmit = vi.fn();
 
     renderWithContext(
@@ -100,7 +100,5 @@ describe('RotationModal', () => {
     await waitFor(() => {
       expect(onSubmit).toHaveBeenCalled();
     });
-
-    randomSpy.mockRestore();
   });
 });

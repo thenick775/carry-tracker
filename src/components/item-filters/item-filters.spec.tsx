@@ -7,7 +7,10 @@ import { renderWithContext, screen } from '../../test/render-with-context.tsx';
 import type { CarryItemFilters } from '../../hooks/use-carry-items.ts';
 
 const filterOptions = {
-  createdAtRange: [new Date(2026, 0, 1).valueOf(), new Date(2026, 0, 10).valueOf()] as [number, number],
+  createdAtRange: [
+    new Date(2026, 0, 1).valueOf(),
+    new Date(2026, 0, 10).valueOf()
+  ] as [number, number],
   carryCountRange: [0, 10] as [number, number],
   costRange: [0, 100] as [number, number],
   customFieldOptions: {
@@ -26,7 +29,9 @@ const renderFilters = ({
   openedFilters?: boolean;
 }) => {
   let nextFilters = initialFilters;
-  const setFilters = (value: CarryItemFilters | ((current: CarryItemFilters) => CarryItemFilters)) => {
+  const setFilters = (
+    value: CarryItemFilters | ((current: CarryItemFilters) => CarryItemFilters)
+  ) => {
     nextFilters = typeof value === 'function' ? value(nextFilters) : value;
   };
 
@@ -47,7 +52,7 @@ const renderFilters = ({
   };
 };
 
-describe('ItemFilters', () => {
+describe('<ItemFilters />', () => {
   it('updates the search filter from user input', async () => {
     const user = userEvent.setup();
     const { getFilters } = renderFilters({ initialFilters: {} });

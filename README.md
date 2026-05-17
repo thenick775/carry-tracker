@@ -54,6 +54,13 @@ npm install && \
 npm run dev
 ```
 
+To run lint and tests:
+
+```bash
+npm run lint && \
+npm run test
+```
+
 ## Installing as a PWA
 
 I recommend installing this app to your home screen as if it were native.

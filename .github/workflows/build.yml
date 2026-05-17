@@ -67,6 +67,7 @@ jobs:
           workflow_conclusion: success
           name: carry-tracker-coverage
           path: coverage-main
+          if_no_artifact_found: warn
 
       - name: Upload coverage artifact
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
@@ -80,4 +81,4 @@ jobs:
         uses: davelosert/vitest-coverage-report-action@v2.9.3
         with:
           threshold-icons: "{0: '🔴', 70: '🟠', 85: '🟢'}"
-          json-summary-compare-path: ${{ github.event_name == 'pull_request' && './coverage-main/coverage-summary.json' || '' }}
+          json-summary-compare-path: ${{ github.event_name == 'pull_request' && hashFiles('./coverage-main/coverage-summary.json') != '' && './coverage-main/coverage-summary.json' || '' }}

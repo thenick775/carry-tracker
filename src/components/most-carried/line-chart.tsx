@@ -303,7 +303,7 @@ export const LineChart = ({
               name={name}
               stroke={seriesColors.get(name)}
               strokeWidth={2.4}
-              dot={{ r: 3 }}
+              dot={{ r: 3, 'aria-label': 'line-chart-dot' }}
               activeDot={{ r: 5 }}
             />
           ))}

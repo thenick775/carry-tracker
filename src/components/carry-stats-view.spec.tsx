@@ -6,7 +6,7 @@ import * as carriesOverTimeHooks from '../hooks/use-carries-over-time.ts';
 import * as carryItemHooks from '../hooks/use-carry-items.ts';
 import { renderWithContext, screen } from '../test/render-with-context.tsx';
 
-describe('CarryStatsView', () => {
+describe('<CarryStatsView/ >', () => {
   beforeEach(() => {
     vi.spyOn(carriesOverTimeHooks, 'useCarriesOverTime').mockReturnValue([]);
     vi.spyOn(carryItemHooks, 'useCarryItems').mockReturnValue({
