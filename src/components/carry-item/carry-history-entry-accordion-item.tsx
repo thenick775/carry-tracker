@@ -23,8 +23,7 @@ type CarryHistoryEntryAccordionItemProps = {
   onDelete: () => void;
 };
 
-const formatRecordedAt = (value?: string) =>
-  value ? dayjs(value).format('MMM DD, YYYY') : 'Not recorded';
+const formatRecordedAt = (value: string) => dayjs(value).format('MMM DD, YYYY');
 
 export const CarryHistoryEntryAccordionItem = ({
   entry,
