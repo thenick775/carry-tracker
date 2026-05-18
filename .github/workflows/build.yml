@@ -56,7 +56,7 @@ jobs:
 
       - name: Test/Coverage
         run: |
-          npm run coverage
+          TZ=America/Los_Angeles npm run coverage
 
       - name: Download main baseline coverage artifact
         if: ${{ github.event_name == 'pull_request' }}
