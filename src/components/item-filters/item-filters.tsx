@@ -452,9 +452,21 @@ export const ItemFilters = ({
               style={{ cursor: 'pointer' }}
             >
               {activeFilter.label}{' '}
-              <TbX size={12} style={{ verticalAlign: 'middle' }} />
+              <TbX size={13} style={{ verticalAlign: 'text-top' }} />
             </Badge>
           ))}
+          {sort && (
+            <Badge
+              variant="light"
+              component="button"
+              type="button"
+              onClick={() => setSort(undefined)}
+              style={{ cursor: 'pointer' }}
+            >
+              Sort by: {sort}{' '}
+              <TbX size={13} style={{ verticalAlign: 'text-top' }} />
+            </Badge>
+          )}
         </Group>
       )}
     </>
