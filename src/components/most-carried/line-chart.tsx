@@ -174,7 +174,7 @@ export const LineChart = ({
       ),
     0
   );
-  const digitCount = String(maxYValue || 0).length;
+  const digitCount = String(maxYValue).length;
   const yAxisWidth = Math.max(26, digitCount * 15);
 
   const canGoOlder = buckets.length > 0;
@@ -278,7 +278,7 @@ export const LineChart = ({
               name={name}
               stroke={itemColors.get(name)}
               strokeWidth={2.4}
-              dot={{ r: 3 }}
+              dot={{ r: 3, 'aria-label': 'line-chart-dot' }}
               activeDot={{ r: 5 }}
             />
           ))}

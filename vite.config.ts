@@ -3,9 +3,12 @@ import babel from '@rolldown/plugin-babel';
 // eslint-disable-next-line import/no-unresolved
 import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { visualizer } from 'rollup-plugin-visualizer';
-// eslint-disable-next-line import/no-unresolved
-import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
+import {
+  coverageConfigDefaults,
+  defineConfig
+  // eslint-disable-next-line import/no-unresolved
+} from 'vitest/config';
 
 // eslint-disable-next-line import/no-default-export
 export default defineConfig({
@@ -146,6 +149,25 @@ export default defineConfig({
         }
         defaultHandler(warning);
       }
+    }
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
+    passWithNoTests: true,
+    restoreMocks: true,
+    coverage: {
+      provider: 'v8',
+      include: ['src/**/*.{ts,tsx}'],
+      reporter: ['text', 'html', 'json-summary', 'json'],
+      reportsDirectory: './coverage',
+      exclude: [
+        ...coverageConfigDefaults.exclude,
+        'src/test/**',
+        '**/*.d.ts',
+        '**/.DS_Store'
+      ]
     }
   }
 });

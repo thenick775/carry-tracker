@@ -88,6 +88,7 @@ export const ImportExportView = () => {
           </Stack>
 
           <Dropzone
+            aria-label="Upload File"
             onDrop={([file]) => setPendingImportFile(file)}
             accept={['application/json']}
             multiple={false}

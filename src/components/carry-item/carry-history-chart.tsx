@@ -31,7 +31,7 @@ export const CarryHistoryChart = ({
 
   const maxYValue = Math.max(...points.map(({ count }) => count));
   const minYValue = Math.min(...points.map(({ count }) => count));
-  const digitCount = String(maxYValue || 0).length;
+  const digitCount = String(maxYValue).length;
   const yAxisWidth = Math.max(26, digitCount * 15);
 
   return (
@@ -93,7 +93,7 @@ export const CarryHistoryChart = ({
             dataKey="count"
             stroke={color}
             strokeWidth={2}
-            dot={{ r: 3 }}
+            dot={{ r: 3, 'aria-label': 'line-chart-dot' }}
             activeDot={{ r: 5 }}
           />
         </ReLineChart>
