@@ -440,7 +440,7 @@ export const ItemFilters = ({
           Filters
         </Button>
       </Flex>
-      {activeFilters.length > 0 && (
+      {(activeFilters.length > 0 || sort) && (
         <Group gap="xs" mb="md">
           {activeFilters.map((activeFilter) => (
             <Badge
