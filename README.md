@@ -73,7 +73,7 @@ To install:
   - [x] Usage over time
 - [x] Export/import backup
 - [x] Tags and categories (custom fields)
-- [x] Searching and filtering capabilities
+- [x] Searching, sorting, and filtering capabilities
 
 ## Inspired By
 

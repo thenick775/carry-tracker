@@ -12,6 +12,7 @@ export type CarryItem = {
   imageData?: File;
   cost?: number;
   customFields?: CustomFields;
+  lastCarriedAt?: string;
 };
 
 export type CreateCarryItem = Omit<CarryItem, 'id'>;
@@ -30,6 +31,7 @@ export const CARRY_ITEM_SORTS = [
   'oldest-added',
   'most-carried',
   'least-carried',
+  'recently-carried',
   'highest-cost',
   'lowest-cost'
 ] as const;
@@ -208,6 +210,16 @@ export const useCarryItems = (
           case 'lowest-cost':
             return (a.cost ?? Infinity) - (b.cost ?? Infinity);
 
+          case 'recently-carried':
+            if (a.lastCarriedAt && b.lastCarriedAt) {
+              return b.lastCarriedAt.localeCompare(a.lastCarriedAt);
+            } else if (a.lastCarriedAt) {
+              return -1;
+            } else if (b.lastCarriedAt) {
+              return 1;
+            }
+            return 0;
+
           default:
             return 0;
         }
@@ -234,28 +246,31 @@ export const useCarryItems = (
     }
 
     const nextCarryCount = partialUpdate.carryCount;
+    // if there is no carry count to update, apply the partial update and return
     if (typeof nextCarryCount !== 'number') {
       await carryDb.carryItems.update(id, partialUpdate);
       return;
     }
 
+    // we have a carry count, compare it to the previous value to see if there is a difference
     const before = await carryDb.carryItems.get(id);
     if (!before) {
       return;
     }
 
-    await carryDb.carryItems.update(id, partialUpdate);
-
-    if (before.carryCount === nextCarryCount) {
-      return;
+    if (before.carryCount !== nextCarryCount) {
+      const now = dayjs().toISOString();
+      // if the carry count has changed, record its history
+      await carryDb.carriesOverTime.add({
+        id: crypto.randomUUID(),
+        carryItemId: id,
+        createdAt: now,
+        currentCarryCount: nextCarryCount
+      });
+      partialUpdate.lastCarriedAt = now;
     }
 
-    void carryDb.carriesOverTime.add({
-      id: crypto.randomUUID(),
-      carryItemId: id,
-      createdAt: dayjs().toISOString(),
-      currentCarryCount: nextCarryCount
-    });
+    await carryDb.carryItems.update(id, partialUpdate);
   };
 
   const deleteCarryItem = async (id: string) =>

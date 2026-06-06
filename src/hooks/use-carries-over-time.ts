@@ -73,6 +73,7 @@ export const useCarryHistory = (carryItemId: string) => {
     const nextIds = new Set(normalizedEntries.map(({ id }) => id));
     const deletedIds = existingIds.filter((id) => !nextIds.has(id));
     const latestCarryCount = normalizedEntries.at(-1)?.currentCarryCount ?? 0;
+    const latestCarriedAt = normalizedEntries.at(-1)?.createdAt;
 
     await carryDb.transaction(
       'rw',
@@ -85,7 +86,8 @@ export const useCarryHistory = (carryItemId: string) => {
 
         await carryDb.carriesOverTime.bulkPut(normalizedEntries);
         await carryDb.carryItems.update(carryItemId, {
-          carryCount: latestCarryCount
+          carryCount: latestCarryCount,
+          lastCarriedAt: latestCarriedAt
         });
       }
     );

@@ -57,6 +57,12 @@ export const CarryItemCard = ({
       Added: {dayjs(item.createdAt).format('MMM D, YYYY')}
     </Text>
 
+    {item.lastCarriedAt && (
+      <Text size="sm" c="var(--app-color-card-muted)">
+        Last Carried: {dayjs(item.lastCarriedAt).format('MMM D, YYYY')}
+      </Text>
+    )}
+
     <Text size="sm" c="var(--app-color-card-muted)">
       Carry Count: {item.carryCount.toLocaleString('en-US')}
     </Text>
