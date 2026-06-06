@@ -1,5 +1,14 @@
 # Carry Tracker
 
+<div>
+  <a href="https://github.com/thenick775/carry-tracker/releases">
+    <img alt="GitHub Release" src="https://img.shields.io/github/v/release/thenick775/carry-tracker">
+  </a>
+  <a href="https://github.com/thenick775/carry-tracker/actions">
+    <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/thenick775/carry-tracker/build.yml">
+  </a>
+</div>
+
 _A web app that helps you track your every day carry (EDC)_
 
 <img alt="Carry Tracker Mobile" src="./readme-images/carry-tracker-mobile_min.gif" width="360px">
