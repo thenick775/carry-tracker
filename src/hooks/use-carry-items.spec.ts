@@ -20,9 +20,6 @@ const baseItem = (
 describe('useCarryItems', () => {
   it('creates an item and returns it from the live query', async () => {
     const file = new File(['blade'], 'knife.png', { type: 'image/png' });
-    file.arrayBuffer = vi.fn(() =>
-      Promise.resolve(new TextEncoder().encode('blade').buffer)
-    );
 
     const { result } = renderHook(() => useCarryItems());
 
@@ -43,6 +40,21 @@ describe('useCarryItems', () => {
       })
     );
     expect(result.current.carryItems?.[0].imageData).toBeInstanceOf(File);
+  });
+
+  it('creates an item without persisting an image when none is provided', async () => {
+    const { result } = renderHook(() => useCarryItems());
+
+    await act(async () => {
+      await result.current.createCarryItem(baseItem({ imageData: undefined }));
+    });
+
+    await waitFor(async () => {
+      const stored = await carryDb.carryItems.toArray();
+
+      expect(stored).toHaveLength(1);
+      expect(stored[0]?.image).toBeUndefined();
+    });
   });
 
   it('filters items by case-insensitive trimmed search', async () => {
@@ -106,12 +118,106 @@ describe('useCarryItems', () => {
     });
   });
 
-  it('filters items by carry count and cost range', async () => {
+  it('returns items in descending created-at order with no filters', async () => {
+    await carryDb.carryItems.bulkAdd([
+      {
+        id: 'old',
+        name: 'Old',
+        carryCount: 1,
+        createdAt: '2026-01-01T00:00:00.000Z',
+        color: 'gray'
+      },
+      {
+        id: 'new',
+        name: 'New',
+        carryCount: 2,
+        createdAt: '2026-01-05T00:00:00.000Z',
+        color: 'gold'
+      }
+    ]);
+
+    const { result } = renderHook(() => useCarryItems());
+
+    await waitFor(() => {
+      expect(result.current.carryItems?.map((item) => item.id)).toEqual([
+        'new',
+        'old'
+      ]);
+    });
+  });
+
+  it('filters items by carry count range', async () => {
+    await carryDb.carryItems.bulkAdd([
+      {
+        id: 'low-count',
+        name: 'Low count',
+        carryCount: 1,
+        createdAt: '2026-01-01T00:00:00.000Z',
+        color: 'gray',
+        cost: 200
+      },
+      {
+        id: 'high-count',
+        name: 'High count',
+        carryCount: 8,
+        createdAt: '2026-01-01T00:00:00.000Z',
+        color: 'gold',
+        cost: 10
+      }
+    ]);
+
+    const { result } = renderHook(() =>
+      useCarryItems({
+        carryCount: [5, 10]
+      })
+    );
+
+    await waitFor(() => {
+      expect(result.current.carryItems).toEqual([
+        expect.objectContaining({ id: 'high-count' })
+      ]);
+    });
+  });
+
+  it('filters items by cost range', async () => {
     await carryDb.carryItems.bulkAdd([
       {
         id: 'cheap',
         name: 'Cheap',
+        carryCount: 8,
+        createdAt: '2026-01-01T00:00:00.000Z',
+        color: 'gray',
+        cost: 10
+      },
+      {
+        id: 'expensive',
+        name: 'Expensive',
         carryCount: 1,
+        createdAt: '2026-01-01T00:00:00.000Z',
+        color: 'gold',
+        cost: 200
+      }
+    ]);
+
+    const { result } = renderHook(() =>
+      useCarryItems({
+        cost: [100, 250]
+      })
+    );
+
+    await waitFor(() => {
+      expect(result.current.carryItems).toEqual([
+        expect.objectContaining({ id: 'expensive' })
+      ]);
+    });
+  });
+
+  it('filters items with multiple filter conditions', async () => {
+    await carryDb.carryItems.bulkAdd([
+      {
+        id: 'cheap',
+        name: 'Cheap',
+        carryCount: 8,
         createdAt: '2026-01-01T00:00:00.000Z',
         color: 'gray',
         cost: 10
@@ -122,6 +228,14 @@ describe('useCarryItems', () => {
         carryCount: 8,
         createdAt: '2026-01-01T00:00:00.000Z',
         color: 'gold',
+        cost: 200
+      },
+      {
+        id: 'wrong-count',
+        name: 'Wrong count',
+        carryCount: 1,
+        createdAt: '2026-01-01T00:00:00.000Z',
+        color: 'blue',
         cost: 200
       }
     ]);
@@ -209,6 +323,53 @@ describe('useCarryItems', () => {
     });
   });
 
+  it('updates regular fields, image data, and custom field keys together', async () => {
+    const imageData = new File(['updated-image'], 'updated.png', {
+      type: 'image/png'
+    });
+
+    await carryDb.carryItems.add({
+      id: 'item-1',
+      name: 'Knife',
+      carryCount: 1,
+      createdAt: '2026-01-01T00:00:00.000Z',
+      color: 'blue',
+      customFields: [{ name: 'Brand', value: 'Benchmade' }],
+      customFieldKeys: ['Brand::Benchmade']
+    });
+
+    const { result } = renderHook(() => useCarryItems());
+
+    await act(async () => {
+      await result.current.updateCarryItem('item-1', {
+        name: 'Updated Knife',
+        imageData,
+        customFields: [
+          { name: 'Brand', value: 'Spyderco' },
+          { name: 'Steel', value: 'Magnacut' }
+        ]
+      });
+    });
+
+    await waitFor(async () => {
+      const stored = await carryDb.carryItems.get('item-1');
+
+      expect(stored).toBeDefined();
+      expect(stored?.id).toBe('item-1');
+      expect(stored?.name).toBe('Updated Knife');
+      expect(stored?.customFields).toEqual([
+        { name: 'Brand', value: 'Spyderco' },
+        { name: 'Steel', value: 'Magnacut' }
+      ]);
+      expect(stored?.customFieldKeys).toEqual([
+        'Brand::Spyderco',
+        'Steel::Magnacut'
+      ]);
+      expect(stored?.image?.name).toBe('updated.png');
+      expect(stored?.image?.mimeType).toBe('image/png');
+    });
+  });
+
   it('does not record history when carry count is unchanged or absent', async () => {
     await carryDb.carryItems.add({
       id: 'item-1',
@@ -226,6 +387,21 @@ describe('useCarryItems', () => {
     });
 
     await waitFor(async () => {
+      await expect(carryDb.carriesOverTime.toArray()).resolves.toEqual([]);
+    });
+  });
+
+  it('ignores carry count updates for missing items', async () => {
+    const { result } = renderHook(() => useCarryItems());
+
+    await act(async () => {
+      await expect(
+        result.current.updateCarryItem('missing-id', { carryCount: 2 })
+      ).resolves.toBeUndefined();
+    });
+
+    await waitFor(async () => {
+      await expect(carryDb.carryItems.get('missing-id')).resolves.toBeUndefined();
       await expect(carryDb.carriesOverTime.toArray()).resolves.toEqual([]);
     });
   });
