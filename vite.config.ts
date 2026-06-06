@@ -10,14 +10,23 @@ import {
   // eslint-disable-next-line import/no-unresolved
 } from 'vitest/config';
 
+const argv =
+  (globalThis as { process?: { argv?: string[] } }).process?.argv ?? [];
+
 // eslint-disable-next-line import/no-default-export
 export default defineConfig({
   base: './',
   plugins: [
     react(),
-    babel({
-      presets: [reactCompilerPreset()]
-    }),
+    // react compiler negatively influences test coverage,
+    // see: https://github.com/facebook/react/issues/32950
+    ...(!argv.includes('--coverage') // mode !== 'test'
+      ? [
+          babel({
+            presets: [reactCompilerPreset()]
+          })
+        ]
+      : []),
     visualizer(),
     VitePWA({
       registerType: 'autoUpdate',
