@@ -99,11 +99,11 @@ const FilterSection = ({
   title,
   children
 }: {
-  title: string;
+  title?: string;
   children: React.ReactNode;
 }) => (
   <Stack gap="xs">
-    <Text fw={600}>{title}</Text>
+    {!!title && <Text fw={600}>{title}</Text>}
     {children}
   </Stack>
 );
@@ -269,12 +269,15 @@ export const ItemFilters = ({
         position="right"
       >
         <Stack gap="md">
-          <FilterSection title="Date added">
-            <Text c="dimmed">
-              {formatDateRange(
-                sliderFilterToDateRange(displayedCreatedAtSlider)
-              )}
-            </Text>
+          <FilterSection>
+            <Group gap="xs">
+              <Text fw={600}>Date Added:</Text>
+              <Text c="dimmed">
+                {formatDateRange(
+                  sliderFilterToDateRange(displayedCreatedAtSlider)
+                )}
+              </Text>
+            </Group>
             <RangeSlider
               min={dateSliderRange?.[0]}
               max={dateSliderRange?.[1]}
@@ -292,10 +295,13 @@ export const ItemFilters = ({
               label={null}
             />
           </FilterSection>
-          <FilterSection title="Carry count">
-            <Text c="dimmed">
-              {formatCountRange(displayedCarryCountSlider)}
-            </Text>
+          <FilterSection>
+            <Group gap="xs">
+              <Text fw={600}>Carry count:</Text>
+              <Text c="dimmed">
+                {formatCountRange(displayedCarryCountSlider)}
+              </Text>
+            </Group>
             <RangeSlider
               min={carryCountRange?.[0]}
               max={carryCountRange?.[1]}
@@ -313,8 +319,11 @@ export const ItemFilters = ({
               label={null}
             />
           </FilterSection>
-          <FilterSection title="Cost">
-            <Text c="dimmed">{formatCostRange(displayedCostSlider)}</Text>
+          <FilterSection>
+            <Group gap="xs">
+              <Text fw={600}>Cost:</Text>
+              <Text c="dimmed">{formatCostRange(displayedCostSlider)}</Text>
+            </Group>
             <RangeSlider
               min={costRange?.[0]}
               max={costRange?.[1]}
