@@ -16,15 +16,17 @@ import { useCarryItemFilterOptions } from '../hooks/use-carry-item-filter-option
 import {
   useCarryItems,
   type CarryItem,
-  type CarryItemFilters
+  type CarryItemFilters,
+  type CarryItemSort
 } from '../hooks/use-carry-items.ts';
 import { useObjectUrls } from '../hooks/use-object-urls.ts';
 
 export const ItemsView = () => {
   const [filters, setFilters] = useState<CarryItemFilters>({});
+  const [sort, setSort] = useState<CarryItemSort | undefined>();
   const filterOptions = useCarryItemFilterOptions();
   const { carryItems, createCarryItem, updateCarryItem, deleteCarryItem } =
-    useCarryItems(filters);
+    useCarryItems(filters, sort);
   const [editCarryItem, setEditCarryItem] = useState<CarryItem>();
   const [historyCarryItem, setHistoryCarryItem] = useState<CarryItem>();
   const [deleteCarryItemRequest, setDeleteCarryItemRequest] =
@@ -66,9 +68,11 @@ export const ItemsView = () => {
             filterOptions={filterOptions}
             filteredItemCount={carryItems?.length ?? 0}
             filters={filters}
+            sort={sort}
             openedFilters={openedFilters}
             openFilters={openFilters}
             setFilters={setFilters}
+            setSort={setSort}
           />
           {hasNoItems && <NoItems key="no-items" />}
           {shouldRenderMasonry && (
