@@ -150,7 +150,5 @@ describe('<ImportExportView />', () => {
 
     expect(exportDb).toHaveBeenCalled();
     expect(click).toHaveBeenCalled();
-
-    click.mockRestore();
   });
 });
