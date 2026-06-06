@@ -25,6 +25,17 @@ export type CarryItemFilters = {
   customFields?: Record<string, string[]>;
 };
 
+export const CARRY_ITEM_SORTS = [
+  'recently-added',
+  'oldest-added',
+  'most-carried',
+  'least-carried',
+  'highest-cost',
+  'lowest-cost'
+] as const;
+
+export type CarryItemSort = (typeof CARRY_ITEM_SORTS)[number];
+
 const toCustomFieldKey = ({ name, value }: { name: string; value: string }) =>
   `${name}::${value}`;
 
@@ -153,7 +164,10 @@ const getBaseQuery = (
   return carryDb.carryItems.orderBy('createdAt').reverse();
 };
 
-export const useCarryItems = (filters?: CarryItemFilters) => {
+export const useCarryItems = (
+  filters?: CarryItemFilters,
+  sort: CarryItemSort = 'recently-added'
+) => {
   const carryItems = useLiveQuery(async () => {
     const search = filters?.search;
     const customFieldFilters = getActiveCustomFieldFilters(
@@ -174,9 +188,32 @@ export const useCarryItems = (filters?: CarryItemFilters) => {
         )
         .toArray()
     )
-      .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+      .sort((a, b) => {
+        switch (sort) {
+          case 'recently-added':
+            return b.createdAt.localeCompare(a.createdAt);
+
+          case 'oldest-added':
+            return a.createdAt.localeCompare(b.createdAt);
+
+          case 'most-carried':
+            return b.carryCount - a.carryCount;
+
+          case 'least-carried':
+            return a.carryCount - b.carryCount;
+
+          case 'highest-cost':
+            return (b.cost ?? -Infinity) - (a.cost ?? -Infinity);
+
+          case 'lowest-cost':
+            return (a.cost ?? Infinity) - (b.cost ?? Infinity);
+
+          default:
+            return 0;
+        }
+      })
       .map(convertFromStorage);
-  }, [filters]);
+  }, [filters, sort]);
 
   const createCarryItem = async (input: CreateCarryItem) => {
     const id = crypto.randomUUID();

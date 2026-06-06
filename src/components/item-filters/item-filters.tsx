@@ -9,6 +9,7 @@ import {
   Flex,
   Group,
   RangeSlider,
+  Select,
   Stack,
   Text,
   TextInput
@@ -18,20 +19,25 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import { TbX } from 'react-icons/tb';
 
-import type { CarryItemFilterOptions } from '../../hooks/use-carry-item-filter-options.ts';
-import type {
-  CarryItemFilters,
-  FilterRange
+import {
+  CARRY_ITEM_SORTS,
+  type CarryItemFilters,
+  type CarryItemSort,
+  type FilterRange
 } from '../../hooks/use-carry-items.ts';
+
+import type { CarryItemFilterOptions } from '../../hooks/use-carry-item-filter-options.ts';
 
 type ItemFiltersProps = {
   closeFilters: () => void;
   filterOptions?: CarryItemFilterOptions;
   filteredItemCount: number;
   filters: CarryItemFilters;
+  sort?: CarryItemSort;
   openedFilters: boolean;
   openFilters: () => void;
   setFilters: Dispatch<SetStateAction<CarryItemFilters>>;
+  setSort: Dispatch<SetStateAction<CarryItemSort | undefined>>;
 };
 
 const currencyFormatter = new Intl.NumberFormat('en-US', {
@@ -107,9 +113,11 @@ export const ItemFilters = ({
   filterOptions,
   filteredItemCount,
   filters,
+  sort,
   openedFilters,
   openFilters,
-  setFilters
+  setFilters,
+  setSort
 }: ItemFiltersProps) => {
   const dateRange = filterOptions?.createdAtRange;
   const dateSliderRange = getDateSliderRange(dateRange);
@@ -217,7 +225,10 @@ export const ItemFilters = ({
       };
     });
 
-  const clearAllFilters = () => setFilters({});
+  const clearAllFiltersAndSort = () => {
+    setFilters({});
+    setSort(undefined);
+  };
 
   const activeFilters = [
     {
@@ -364,9 +375,18 @@ export const ItemFilters = ({
               <Text c="dimmed">No custom fields available yet.</Text>
             )}
           </FilterSection>
+          <FilterSection title="Sort by">
+            <Select
+              value={sort}
+              onChange={(value) => value && setSort(value)}
+              allowDeselect={false}
+              data={CARRY_ITEM_SORTS}
+              defaultValue="recently-added"
+            />
+          </FilterSection>
           <Divider />
           <Group justify="space-between">
-            <Button variant="default" onClick={clearAllFilters}>
+            <Button variant="default" onClick={clearAllFiltersAndSort}>
               Clear all
             </Button>
             <Button onClick={closeFilters}>
