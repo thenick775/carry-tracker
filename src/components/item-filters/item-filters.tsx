@@ -102,7 +102,7 @@ const FilterSection = ({
   title: string;
   children: React.ReactNode;
 }) => (
-  <Stack gap="sm">
+  <Stack gap="xs">
     <Text fw={600}>{title}</Text>
     {children}
   </Stack>
@@ -377,6 +377,7 @@ export const ItemFilters = ({
           </FilterSection>
           <FilterSection title="Sort by">
             <Select
+              size="md"
               value={sort}
               onChange={(value) => value && setSort(value)}
               allowDeselect={false}
