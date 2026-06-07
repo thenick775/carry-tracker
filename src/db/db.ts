@@ -29,6 +29,7 @@ export type CarryItemStorage = {
   };
   customFields?: CustomFields;
   customFieldKeys?: string[];
+  lastCarriedAt?: string;
 };
 
 export type TimeUnit = 'minute' | 'hour' | 'day' | 'week' | 'month' | 'year';
@@ -91,4 +92,42 @@ carryDb
           ({ name, value }) => `${name}::${value}`
         );
       });
+  });
+
+carryDb
+  .version(5)
+  .stores({
+    carryItems:
+      'id, createdAt, name, carryCount, cost, lastCarriedAt, *customFields.name, *customFields.value, *customFieldKeys'
+  })
+  .upgrade(async (tx) => {
+    const carryItems = tx.table<CarryItemStorage, string>('carryItems');
+    const carriesOverTime = tx.table<CarryOverTimeStorage, string>(
+      'carriesOverTime'
+    );
+
+    const items = await carryItems.toArray();
+
+    await Promise.all(
+      items.map(async (carryItem) => {
+        const latestCarry = await carriesOverTime
+          .where('[carryItemId+createdAt]')
+          .between(
+            [carryItem.id, Dexie.minKey],
+            [carryItem.id, Dexie.maxKey],
+            true,
+            true
+          )
+          .reverse()
+          .first();
+
+        if (!latestCarry?.createdAt) {
+          return;
+        }
+
+        await carryItems.update(carryItem.id, {
+          lastCarriedAt: latestCarry.createdAt
+        });
+      })
+    );
   });
