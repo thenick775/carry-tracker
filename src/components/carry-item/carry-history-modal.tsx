@@ -153,9 +153,12 @@ export const CarryHistoryModal = ({
             {latestDraftEntry?.currentCarryCount ?? carryItem.carryCount}
           </Text>
         </Group>
-        <Group gap="xs">
+        <Group gap="xs" justify="space-between">
           <Button leftSection={<TbPlus size={16} />} onClick={addEntry}>
             Add Entry
+          </Button>
+          <Button onClick={handleSave} loading={isSaving} disabled={hasErrors}>
+            Save Changes
           </Button>
         </Group>
         <Paper withBorder radius="md" p="md">
@@ -194,14 +197,6 @@ export const CarryHistoryModal = ({
             );
           })}
         </Accordion>
-        <Group justify="flex-end">
-          <Button variant="default" onClick={close} disabled={isSaving}>
-            Cancel
-          </Button>
-          <Button onClick={handleSave} loading={isSaving} disabled={hasErrors}>
-            Save Changes
-          </Button>
-        </Group>
       </Stack>
     </Modal>
   );
