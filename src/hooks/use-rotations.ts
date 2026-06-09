@@ -65,8 +65,8 @@ export const useRotations = () => {
   };
 };
 
-export const useActiveRotations = () => {
-  return useLiveQuery(async () => {
+export const useActiveRotations = () =>
+  useLiveQuery(async () => {
     const rotations = await carryDb.rotations
       .where('active')
       .equals(1)
@@ -74,4 +74,3 @@ export const useActiveRotations = () => {
 
     return rotations.reverse().map(convertFromStorage);
   }, []);
-};
