@@ -6,8 +6,10 @@ import {
   Text,
   Image,
   Badge,
-  Flex
+  Flex,
+  Grid
 } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import dayjs from 'dayjs';
 import { TbX } from 'react-icons/tb';
 
@@ -29,61 +31,72 @@ export const CarryItemCard = ({
   onRequestHistory,
   onIncreaseCount,
   imageUrl
-}: ItemCardProps) => (
-  <Card shadow="md" padding="lg" radius="md" withBorder mb="md">
-    <Group justify="space-between" mb="xs" style={{ flexWrap: 'nowrap' }}>
-      <Text fw={500}>{item.name}</Text>
-      <ActionIcon
-        size="sm"
-        variant="subtle"
-        color="red"
-        aria-label="Delete tracker"
-        onClick={onDelete}
-      >
-        <TbX size={18} />
-      </ActionIcon>
-    </Group>
+}: ItemCardProps) => {
+  const isNarrowScreen = useMediaQuery('(max-width: 365px)');
 
-    <Image
-      alt={`${item.name}`}
-      radius="md"
-      src={imageUrl}
-      mb="xs"
-      w="auto"
-      fit="contain"
-    />
+  return (
+    <Card shadow="md" padding="lg" radius="md" withBorder mb="md">
+      <Group justify="space-between" mb="xs" style={{ flexWrap: 'nowrap' }}>
+        <Text fw={500}>{item.name}</Text>
+        <ActionIcon
+          size="sm"
+          variant="subtle"
+          color="red"
+          aria-label="Delete tracker"
+          onClick={onDelete}
+        >
+          <TbX size={18} />
+        </ActionIcon>
+      </Group>
 
-    <Text size="sm" c="var(--app-color-card-muted)">
-      Added: {dayjs(item.createdAt).format('MMM D, YYYY')}
-    </Text>
+      <Image
+        alt={`${item.name}`}
+        radius="md"
+        src={imageUrl}
+        mb="xs"
+        w="auto"
+        fit="contain"
+      />
 
-    {item.lastCarriedAt && (
-      <Text size="sm" c="var(--app-color-card-muted)">
-        Last Carried: {dayjs(item.lastCarriedAt).format('MMM D, YYYY')}
-      </Text>
-    )}
+      <Grid gap="sm" rowGap={4}>
+        <Grid.Col span={isNarrowScreen ? 12 : 7}>
+          <Text size="sm" c="var(--app-color-card-muted)">
+            Added: {dayjs(item.createdAt).format('MMM D, YYYY')}
+          </Text>
+        </Grid.Col>
+        <Grid.Col span={isNarrowScreen ? 12 : 5}>
+          <Text size="sm" c="var(--app-color-card-muted)">
+            Carry Count: {item.carryCount.toLocaleString('en-US')}
+          </Text>
+        </Grid.Col>
+        {item.lastCarriedAt && (
+          <Grid.Col span={isNarrowScreen ? 12 : 7}>
+            <Text size="sm" c="var(--app-color-card-muted)">
+              Last Carried: {dayjs(item.lastCarriedAt).format('MMM D, YYYY')}
+            </Text>
+          </Grid.Col>
+        )}
+        <Grid.Col span={isNarrowScreen ? 12 : 5}>
+          <Group gap="xs">
+            <Text size="sm" c="var(--app-color-card-muted)">
+              Color:
+            </Text>
+            <Badge size="xs" circle color={item.color} />
+          </Group>
+        </Grid.Col>
+      </Grid>
 
-    <Text size="sm" c="var(--app-color-card-muted)">
-      Carry Count: {item.carryCount.toLocaleString('en-US')}
-    </Text>
-
-    <Group gap="xs">
-      <Text size="sm" c="var(--app-color-card-muted)">
-        Color:
-      </Text>
-      <Badge size="xs" circle color={item.color} />
-    </Group>
-
-    <Flex gap="xs" mt="md">
-      <Button fullWidth variant="light" onClick={onRequestEdit}>
-        Edit
+      <Flex gap="xs" mt="md">
+        <Button fullWidth variant="light" onClick={onRequestEdit}>
+          Edit
+        </Button>
+        <Button fullWidth variant="light" onClick={onRequestHistory}>
+          History
+        </Button>
+      </Flex>
+      <Button mt="md" fullWidth variant="light" onClick={onIncreaseCount}>
+        Increase Count
       </Button>
-      <Button fullWidth variant="light" onClick={onRequestHistory}>
-        History
-      </Button>
-    </Flex>
-    <Button mt="md" fullWidth variant="light" onClick={onIncreaseCount}>
-      Increase Count
-    </Button>
-  </Card>
-);
+    </Card>
+  );
+};
