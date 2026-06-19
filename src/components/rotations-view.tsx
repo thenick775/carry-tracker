@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { TbPlus } from 'react-icons/tb';
 
 import { ResponsiveScrollArea } from './common/responsive-scroll-area.tsx';
+import { DeleteRotationConfirm } from './rotation/delete-rotation-confirm.tsx';
 import { RotationCard } from './rotation/rotation-card.tsx';
 import { RotationModal } from './rotation/rotation-modal.tsx';
 import { useRotations, type Rotation } from '../hooks/use-rotations.ts';
@@ -13,9 +14,15 @@ export const RotationsView = () => {
   const { rotations, createRotation, updateRotation, deleteRotation } =
     useRotations();
   const [editRotation, setEditRotation] = useState<Rotation>();
+  const [deleteRotationRequest, setDeleteRotationRequest] =
+    useState<Rotation>();
   const [opened, { open, close }] = useDisclosure(false, {
     onClose: () => setEditRotation(undefined)
   });
+  const [deleteOpened, { open: openDelete, close: closeDelete }] =
+    useDisclosure(false, {
+      onClose: () => setDeleteRotationRequest(undefined)
+    });
   const isLoading = rotations === undefined;
   const hasNoItems = !isLoading && rotations.length === 0;
 
@@ -33,7 +40,10 @@ export const RotationsView = () => {
               <RotationCard
                 key={rotation.id}
                 rotation={rotation}
-                onDelete={() => deleteRotation(rotation.id)}
+                onDelete={() => {
+                  setDeleteRotationRequest(rotation);
+                  openDelete();
+                }}
                 onRequestEdit={() => {
                   setEditRotation(rotation);
                   open();
@@ -52,6 +62,19 @@ export const RotationsView = () => {
               ? updateRotation(editRotation.id, rotation)
               : createRotation(rotation)
           }
+        />
+
+        <DeleteRotationConfirm
+          rotationName={deleteRotationRequest?.name}
+          opened={deleteOpened}
+          close={closeDelete}
+          onConfirm={async () => {
+            if (!deleteRotationRequest) {
+              return;
+            }
+
+            await deleteRotation(deleteRotationRequest.id);
+          }}
         />
       </ResponsiveScrollArea>
 
