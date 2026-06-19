@@ -2,12 +2,19 @@ import { Timeline, Text } from '@mantine/core';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import dayjs from 'dayjs';
 import { AnimatePresence, motion } from 'motion/react';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 
 import { ResponsiveScrollArea } from './common/responsive-scroll-area.tsx';
 import { NoTimeline } from './timeline/no-timeline.tsx';
 import { useCarryItems } from '../hooks/use-carry-items.ts';
 import { useActiveRotations, type Rotation } from '../hooks/use-rotations.ts';
+
+type TimelineContentProps = {
+  carryItemIdentifiers: { id: string; name: string }[];
+  startDate: dayjs.Dayjs;
+  timelineRotations: Rotation[];
+  todayIndex: number;
+};
 
 type TimelineNode = {
   carryItemIdentifier?: {
@@ -18,76 +25,149 @@ type TimelineNode = {
   rotationName: string;
 };
 
-const HEIGHT_ESTIMATE = 50;
+const TIMELINE_DAY_BASE_HEIGHT = 56;
+const TIMELINE_DAY_ITEM_HEIGHT = 22;
 
-const estimateSize = () => HEIGHT_ESTIMATE;
+const getFirstTimelineOccurrenceForDay = (
+  rotation: Rotation,
+  day: dayjs.Dayjs
+): { index: number; itemStartedAt: dayjs.Dayjs } | null => {
+  const dayStart = day.startOf('day');
+  const dayEnd = dayStart.add(1, 'day');
+  const rotationStart = dayjs(rotation.activeAt);
+  const { duration, unit } = rotation.stepDuration;
+
+  if (!rotationStart.isBefore(dayEnd)) {
+    return null;
+  }
+
+  const index = Math.max(
+    0,
+    Math.ceil(dayStart.diff(rotationStart, unit, true) / duration)
+  );
+  const itemStartedAt = rotationStart.add(index * duration, unit);
+
+  return itemStartedAt.isBefore(dayEnd) ? { index, itemStartedAt } : null;
+};
+
+const countTimelineNodesForDay = (rotations: Rotation[], day: dayjs.Dayjs) => {
+  const dayEnd = day.startOf('day').add(1, 'day');
+
+  return rotations.reduce((count, rotation) => {
+    const firstOccurrence = getFirstTimelineOccurrenceForDay(rotation, day);
+
+    if (!firstOccurrence) {
+      return count;
+    }
+
+    const { duration, unit } = rotation.stepDuration;
+
+    return (
+      count +
+      Math.max(
+        0,
+        // Partial intervals still occupy a node in the current day.
+        Math.ceil(
+          dayEnd.diff(firstOccurrence.itemStartedAt, unit, true) / duration
+        )
+      )
+    );
+  }, 0);
+};
+
+const estimateTimelineDaySize = (
+  rotations: Rotation[],
+  startDate: dayjs.Dayjs | undefined,
+  index: number
+) => {
+  if (!startDate) {
+    return TIMELINE_DAY_BASE_HEIGHT;
+  }
+
+  const day = startDate.add(index, 'day');
+  const nodeCount = countTimelineNodesForDay(rotations, day);
+
+  return TIMELINE_DAY_BASE_HEIGHT + nodeCount * TIMELINE_DAY_ITEM_HEIGHT;
+};
+
+const getInitialTimelineOffset = (
+  rotations: Rotation[],
+  startDate: dayjs.Dayjs | undefined,
+  todayIndex: number
+) => {
+  if (todayIndex <= 4) {
+    return 0;
+  }
+
+  return Array.from({ length: todayIndex }, (_, index) =>
+    estimateTimelineDaySize(rotations, startDate, index)
+  ).reduce((total, size) => total + size, 0);
+};
 
 const generateTimelineNodesForDay = (
   rotations: Rotation[],
   carryItemIdentifiers: { id: string; name: string }[],
   day: dayjs.Dayjs
 ): TimelineNode[] => {
-  const nodes: TimelineNode[] = [];
+  const dayEnd = day.startOf('day').add(1, 'day');
 
-  for (const rotation of rotations) {
-    const start = day.startOf('day');
-    const end = day.endOf('day');
+  return rotations
+    .flatMap((rotation) => {
+      const firstOccurrence = getFirstTimelineOccurrenceForDay(rotation, day);
 
-    const rotationStart = dayjs(rotation.activeAt);
-    if (end.isBefore(rotationStart)) {
-      continue;
-    }
-
-    const { duration, unit } = rotation.stepDuration;
-    const rotationLength = rotation.orderedCarryItemIds.length;
-
-    let idx = 0;
-    let current = rotationStart;
-
-    while (current.isBefore(end)) {
-      const carryItemId = rotation.orderedCarryItemIds[idx % rotationLength];
-      const carryItemIdentifier = carryItemIdentifiers.find(
-        ({ id }) => id === carryItemId
-      );
-
-      if (current.isBetween(start, end, null, '[)')) {
-        nodes.push({
-          rotationName: rotation.name,
-          carryItemIdentifier,
-          itemStartedAt: current
-        });
+      if (!firstOccurrence) {
+        return [];
       }
 
-      idx++;
-      current = rotationStart.add(idx * duration, unit);
-    }
-  }
+      const { duration, unit } = rotation.stepDuration;
+      const rotationLength = rotation.orderedCarryItemIds.length;
+      const occurrenceCount = Math.max(
+        0,
+        Math.ceil(
+          dayEnd.diff(firstOccurrence.itemStartedAt, unit, true) / duration
+        )
+      );
 
-  return nodes.sort((a, b) => a.itemStartedAt.diff(b.itemStartedAt));
+      return Array.from({ length: occurrenceCount }, (_, offset) => {
+        const occurrenceIndex = firstOccurrence.index + offset;
+        const carryItemId =
+          rotation.orderedCarryItemIds[occurrenceIndex % rotationLength];
+        const carryItemIdentifier = carryItemIdentifiers.find(
+          ({ id }) => id === carryItemId
+        );
+
+        return {
+          rotationName: rotation.name,
+          carryItemIdentifier,
+          itemStartedAt: firstOccurrence.itemStartedAt.add(
+            offset * duration,
+            unit
+          )
+        };
+      });
+    })
+    .sort((a, b) => a.itemStartedAt.diff(b.itemStartedAt));
 };
 
-export const TimelineView = () => {
+const TimelineContent = ({
+  carryItemIdentifiers,
+  startDate,
+  timelineRotations,
+  todayIndex
+}: TimelineContentProps) => {
   const scrollRef = useRef<HTMLDivElement>(null);
-
-  const activeRotations = useActiveRotations();
-  const { carryItems } = useCarryItems();
-
-  const startDate = activeRotations
-    ?.map((r) => dayjs(r.activeAt))
-    .sort((a, b) => a.diff(b))[0];
-
-  const carryItemIdentifiers =
-    carryItems?.map(({ id, name }) => ({ id, name })) ?? [];
-
-  const todayIndex = dayjs()
-    .startOf('day')
-    .diff(startDate?.startOf('day'), 'day');
 
   // eslint-disable-next-line react-hooks/incompatible-library -- opting out since this will be ignored by react compiler, and seems fine for now
   const virtualizer = useVirtualizer({
     count: todayIndex + 365,
     getScrollElement: () => scrollRef.current,
-    estimateSize,
+    initialOffset: getInitialTimelineOffset(
+      timelineRotations,
+      startDate,
+      todayIndex
+    ),
+    estimateSize: (index) =>
+      estimateTimelineDaySize(timelineRotations, startDate, index),
     overscan: 10,
     // see: https://github.com/TanStack/virtual/issues/659
     measureElement: (element, _entry, instance) => {
@@ -103,19 +183,7 @@ export const TimelineView = () => {
     }
   });
 
-  const isLoading = activeRotations === undefined || carryItems === undefined;
-
   const virtualItems = virtualizer.getVirtualItems();
-
-  const shouldRenderTimeline = !isLoading && virtualItems.length > 0;
-  const hasNoTimeline = !isLoading && !startDate;
-
-  useEffect(() => {
-    if (shouldRenderTimeline && todayIndex > 4) {
-      virtualizer.scrollToIndex(todayIndex, { align: 'start' });
-    }
-  }, [shouldRenderTimeline, todayIndex, virtualizer]);
-
   const virtualNumActive =
     virtualItems.reduce((acc, v) => {
       return v.index <= todayIndex ? acc + 1 : acc;
@@ -124,8 +192,7 @@ export const TimelineView = () => {
   return (
     <ResponsiveScrollArea viewportRef={scrollRef}>
       <AnimatePresence>
-        {hasNoTimeline && <NoTimeline />}
-        {shouldRenderTimeline && (
+        {virtualItems.length > 0 && (
           <motion.div
             key="items"
             initial={{ opacity: 0, filter: 'blur(8px)' }}
@@ -139,15 +206,10 @@ export const TimelineView = () => {
           >
             <Timeline active={virtualNumActive} bulletSize={24} lineWidth={2}>
               {virtualItems.map((v) => {
-                const date = startDate?.add(v.index, 'day');
-                const dayKey = date?.format('YYYY-MM-DD');
-
-                if (!date) {
-                  return null;
-                }
-
+                const date = startDate.add(v.index, 'day');
+                const dayKey = date.format('YYYY-MM-DD');
                 const items = generateTimelineNodesForDay(
-                  activeRotations,
+                  timelineRotations,
                   carryItemIdentifiers,
                   date
                 );
@@ -160,9 +222,9 @@ export const TimelineView = () => {
                     data-index={v.index}
                     style={{
                       position: 'absolute',
-                      top: 0,
                       left: '1em',
-                      width: '100%',
+                      marginTop: 0,
+                      right: 0,
                       transform: `translateY(${v.start}px)`,
                       willChange: 'transform',
                       paddingBottom: 35
@@ -172,7 +234,11 @@ export const TimelineView = () => {
                     lineVariant={showDottedLine ? 'dotted' : 'solid'}
                   >
                     {items.map((item) => (
-                      <Text key={item.itemStartedAt.toISOString()}>
+                      <Text
+                        key={item.itemStartedAt.toISOString()}
+                        textWrap="nowrap"
+                        truncate="end"
+                      >
                         <Text span size="sm">
                           {item.itemStartedAt.format('h:mm A')} –{' '}
                         </Text>
@@ -190,5 +256,45 @@ export const TimelineView = () => {
         )}
       </AnimatePresence>
     </ResponsiveScrollArea>
+  );
+};
+
+export const TimelineView = () => {
+  const activeRotations = useActiveRotations();
+  const { carryItems } = useCarryItems();
+
+  const startDate = activeRotations
+    ?.map((r) => dayjs(r.activeAt))
+    .sort((a, b) => a.diff(b))[0];
+
+  const carryItemIdentifiers = carryItems?.map(({ id, name }) => ({
+    id,
+    name
+  }));
+
+  const todayIndex = dayjs()
+    .startOf('day')
+    .diff(startDate?.startOf('day'), 'day');
+
+  const isLoading = activeRotations === undefined || carryItems === undefined;
+  const hasNoTimeline = !isLoading && !startDate;
+  const hasRotationsAndIdentifiers =
+    activeRotations &&
+    activeRotations.length > 0 &&
+    startDate &&
+    carryItemIdentifiers;
+
+  return (
+    <>
+      {hasNoTimeline && <NoTimeline />}
+      {!isLoading && hasRotationsAndIdentifiers && (
+        <TimelineContent
+          carryItemIdentifiers={carryItemIdentifiers}
+          startDate={startDate}
+          timelineRotations={activeRotations}
+          todayIndex={todayIndex}
+        />
+      )}
+    </>
   );
 };
