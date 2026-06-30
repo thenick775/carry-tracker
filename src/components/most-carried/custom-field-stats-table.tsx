@@ -23,7 +23,10 @@ export const CustomFieldStatsTable = ({
 }) => {
   const totalCount = data.reduce((acc, chartItem) => acc + chartItem.value, 0);
   const rows = data
-    .toSorted(({ value: a }, { value: b }) => b - a)
+    .toSorted(
+      ({ value: a, carryCount: ac }, { value: b, carryCount: bc }) =>
+        b - a || bc - ac
+    )
     .map((chartItem) => (
       <Table.Tr key={chartItem.id}>
         <Table.Td>{chartItem.name}</Table.Td>
