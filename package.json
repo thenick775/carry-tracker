@@ -22,7 +22,7 @@
     "dexie": "^4.4.2",
     "dexie-export-import": "^4.4.0",
     "dexie-react-hooks": "^4.4.0",
-    "motion": "^12.38.0",
+    "motion": "^13.1.1",
     "randomcolor": "^0.6.2",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
