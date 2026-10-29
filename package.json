@@ -22,7 +22,7 @@
     "dexie": "^4.4.2",
     "dexie-export-import": "^4.4.0",
     "dexie-react-hooks": "^4.4.0",
-    "motion": "^13.1.1",
+    "motion": "^14.7.1",
     "randomcolor": "^0.6.2",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
@@ -42,7 +42,7 @@
     "@types/randomcolor": "^0.5.9",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
-    "@vite-pwa/assets-generator": "^1.0.2",
+    "@vite-pwa/assets-generator": "^2.0.0",
     "@vitejs/plugin-react": "^6.0.1",
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^9.39.4",
@@ -59,6 +59,6 @@
     "typescript": "^6.0.2",
     "typescript-eslint": "^8.59.2",
     "vite": "^8.0.8",
-    "vite-plugin-pwa": "^1.2.0"
+    "vite-plugin-pwa": "^2.0.0"
   }
 }
