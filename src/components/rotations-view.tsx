@@ -5,10 +5,10 @@ import { TbPlus } from 'react-icons/tb';
 
 import { ResponsiveScrollArea } from './common/responsive-scroll-area.tsx';
 import { DeleteRotationConfirm } from './rotation/delete-rotation-confirm.tsx';
+import { NoRotations } from './rotation/no-rotations.tsx';
 import { RotationCard } from './rotation/rotation-card.tsx';
 import { RotationModal } from './rotation/rotation-modal.tsx';
 import { useRotations, type Rotation } from '../hooks/use-rotations.ts';
-import { NoRotations } from './rotation/no-rotations.tsx';
 
 export const RotationsView = () => {
   const { rotations, createRotation, updateRotation, deleteRotation } =
