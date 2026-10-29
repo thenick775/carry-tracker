@@ -16,39 +16,39 @@ import { SeriesPickerDrawer } from './most-carried/series-picker-drawer.tsx';
 export const CarryStatsView = () => {
   const isLargerThanPhone = useIsLargerThanPhone();
   const { carryItems } = useCarryItems();
-  const [viewKey, setViewKey] = useState<string>('items');
+  const [viewMode, setViewMode] = useState<'items' | 'items-over-time'>(
+    'items'
+  );
+  const [selectedTagField, setSelectedTagField] = useState<string | null>(null);
   const [
     seriesPickerOpened,
     { open: openSeriesPicker, close: closeSeriesPicker }
   ] = useDisclosure(false);
-  const [selectedItemIds, setSelectedItemIds] = useState<string[] | null>(null);
+  const [selectedSeriesIds, setSelectedSeriesIds] = useState<string[] | null>(
+    null
+  );
 
   const customFieldNames = Array.from(
     new Set(
       carryItems?.flatMap((item) => item.customFields?.map((c) => c.name) ?? [])
     )
-  );
+  ).toSorted();
 
   const itemData =
-    carryItems?.map(({ id, name, carryCount, cost, color }) => ({
+    carryItems?.map(({ id, name, carryCount, cost, color, customFields }) => ({
       id,
       name,
       color,
       cost,
+      customFields,
       value: carryCount
     })) ?? [];
-  const sortedItemData = itemData.toSorted(
-    ({ value: a }, { value: b }) => b - a
-  );
-  const topItemIds = sortedItemData.slice(0, 5).map(({ id }) => id);
-  const itemIds = itemData.map(({ id }) => id);
-
   const customFieldsData = Object.entries(
     (carryItems ?? []).reduce<
       Record<string, { total: number; carryCount: number; cost?: number }>
     >((acc, item) => {
       item.customFields
-        ?.filter((c) => c.name === viewKey)
+        ?.filter((c) => c.name === selectedTagField)
         .forEach((customField) => {
           const prev = acc[customField.value] ?? {
             total: 0,
@@ -74,22 +74,28 @@ export const CarryStatsView = () => {
     color: randomColor({ seed: name })
   }));
 
-  const isViewingItems = viewKey === 'items';
-  const isViewingItemsOverTime = viewKey === 'items-over-time';
-  const chartData = isViewingItems ? itemData : customFieldsData;
-  const visibleItemIdSet = new Set(itemIds);
-  const effectiveSelectedItemIds =
-    selectedItemIds === null
-      ? itemIds
-      : selectedItemIds.filter((id) => visibleItemIdSet.has(id));
+  const isViewingItems = viewMode === 'items';
+  const isViewingItemsOverTime = viewMode === 'items-over-time';
+  const isGroupingByItems = selectedTagField === null;
+  const chartData = isGroupingByItems ? itemData : customFieldsData;
+  const sortedSeriesData = chartData.toSorted(
+    ({ value: a }, { value: b }) => b - a
+  );
+  const topSeriesIds = sortedSeriesData.slice(0, 5).map(({ id }) => id);
+  const seriesIds = chartData.map(({ id }) => id);
+  const visibleSeriesIdSet = new Set(seriesIds);
+  const effectiveSelectedSeriesIds =
+    selectedSeriesIds === null
+      ? seriesIds
+      : selectedSeriesIds.filter((id) => visibleSeriesIdSet.has(id));
 
-  const toggleSelectedItem = (itemId: string) =>
-    setSelectedItemIds((current) => {
-      const base = current ?? itemIds;
+  const toggleSelectedSeries = (seriesId: string) =>
+    setSelectedSeriesIds((current) => {
+      const base = current ?? seriesIds;
 
-      return base.includes(itemId)
-        ? base.filter((id) => id !== itemId)
-        : [...base, itemId];
+      return base.includes(seriesId)
+        ? base.filter((id) => id !== seriesId)
+        : [...base, seriesId];
     });
 
   return (
@@ -107,7 +113,7 @@ export const CarryStatsView = () => {
           <Chip
             size="xs"
             checked={isViewingItems}
-            onChange={() => setViewKey('items')}
+            onChange={() => setViewMode('items')}
             variant="light"
           >
             Items
@@ -115,7 +121,7 @@ export const CarryStatsView = () => {
           <Chip
             size="xs"
             checked={isViewingItemsOverTime}
-            onChange={() => setViewKey('items-over-time')}
+            onChange={() => setViewMode('items-over-time')}
             variant="light"
           >
             Items over time
@@ -126,8 +132,8 @@ export const CarryStatsView = () => {
             <Chip
               key={name}
               size="xs"
-              checked={viewKey === name}
-              onChange={() => setViewKey(name)}
+              checked={selectedTagField === name}
+              onChange={(checked) => setSelectedTagField(checked ? name : null)}
               variant="light"
             >
               {name}
@@ -148,7 +154,8 @@ export const CarryStatsView = () => {
         {isViewingItemsOverTime ? (
           <LineChart
             data={itemData}
-            selectedItemIds={effectiveSelectedItemIds}
+            selectedSeriesIds={effectiveSelectedSeriesIds}
+            selectedTagField={selectedTagField}
             controlsRightSection={
               <Button
                 size="xs"
@@ -157,7 +164,7 @@ export const CarryStatsView = () => {
                 leftSection={<TbAdjustmentsHorizontal size={14} />}
                 onClick={openSeriesPicker}
               >
-                Series ({effectiveSelectedItemIds.length})
+                Series ({effectiveSelectedSeriesIds.length})
               </Button>
             }
           />
@@ -166,9 +173,7 @@ export const CarryStatsView = () => {
         )}
       </Box>
 
-      {isViewingItemsOverTime ? (
-        <CarryItemStatsTable data={itemData} />
-      ) : isViewingItems ? (
+      {isGroupingByItems ? (
         <CarryItemStatsTable data={itemData} />
       ) : (
         <CustomFieldStatsTable data={customFieldsData} />
@@ -177,12 +182,12 @@ export const CarryStatsView = () => {
       <SeriesPickerDrawer
         opened={seriesPickerOpened}
         onClose={closeSeriesPicker}
-        onShowAll={() => setSelectedItemIds(null)}
-        onShowTopFive={() => setSelectedItemIds(topItemIds)}
-        onClearSelection={() => setSelectedItemIds([])}
-        items={sortedItemData}
-        selectedItemIds={effectiveSelectedItemIds}
-        onToggleItem={toggleSelectedItem}
+        onShowAll={() => setSelectedSeriesIds(null)}
+        onShowTopFive={() => setSelectedSeriesIds(topSeriesIds)}
+        onClearSelection={() => setSelectedSeriesIds([])}
+        items={sortedSeriesData}
+        selectedItemIds={effectiveSelectedSeriesIds}
+        onToggleItem={toggleSelectedSeries}
       />
     </ResponsiveScrollArea>
   );
