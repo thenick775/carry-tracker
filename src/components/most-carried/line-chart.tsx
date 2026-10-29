@@ -7,6 +7,7 @@ import {
   Flex
 } from '@mantine/core';
 import dayjs from 'dayjs';
+import randomColor from 'randomcolor';
 import { useState, type ReactNode } from 'react';
 import {
   LineChart as ReLineChart,
@@ -22,21 +23,27 @@ import {
   type ChartMode
 } from '../../hooks/use-carries-over-time.ts';
 
+import type { CustomFields } from '../../db/db.ts';
+
 type ItemData = {
   id: string;
   name: string;
   color: string;
+  customFields?: CustomFields;
 };
 
 type MultiItemLineChartProps = {
   data: ItemData[];
-  selectedItemIds?: string[];
+  selectedSeriesIds?: string[];
+  selectedTagField?: string | null;
   controlsRightSection?: ReactNode;
 };
 
-type carryDataPoint = ItemData & {
+type CarryDataPoint = {
+  id: string;
+  name: string;
+  color: string;
   date: Date;
-  count: number;
 };
 
 const PERIOD_LOOK_BACK = 7;
@@ -62,7 +69,7 @@ const getBucketInfo = (date: Date, mode: ChartMode) => {
   return { key, startMs: d.valueOf() };
 };
 
-const bucketAll = (points: carryDataPoint[], mode: ChartMode) => {
+const bucketAll = (points: CarryDataPoint[], mode: ChartMode) => {
   if (!points.length) {
     return [];
   }
@@ -77,14 +84,13 @@ const bucketAll = (points: carryDataPoint[], mode: ChartMode) => {
     }
 
     const row = buckets.get(key)!;
-    // could also use p.count and do some math if we want to sum counts instead of occurrences later
     row[p.name] = (row[p.name] ?? 0) + 1;
   }
 
   return Array.from(buckets.values()).sort((a, b) => a.date - b.date);
 };
 
-const extractItemColors = (points: carryDataPoint[]) => {
+const extractSeriesColors = (points: CarryDataPoint[]) => {
   const map = new Map<string, string>();
   for (const p of points) {
     if (!map.has(p.name)) {
@@ -128,36 +134,55 @@ const formatTooltipLabel = (value: number, mode: ChartMode) => {
 
 export const LineChart = ({
   data,
-  selectedItemIds,
+  selectedSeriesIds,
+  selectedTagField,
   controlsRightSection
 }: MultiItemLineChartProps) => {
   const [mode, setMode] = useState<ChartMode>('week');
   const [page, setPage] = useState(0);
   const carriesOverTime = useCarriesOverTime(mode, PERIOD_LOOK_BACK, page);
-  const selectedIdSet = new Set(selectedItemIds ?? data.map((item) => item.id));
+  const itemById = new Map(data.map((item) => [item.id, item]));
+  const selectedIdSet = new Set(selectedSeriesIds ?? []);
 
-  const points: carryDataPoint[] | undefined = carriesOverTime
-    ?.map((cot) => {
-      const item = data.find((d) => d.id === cot.carryItemId);
-      return {
+  const points: CarryDataPoint[] | undefined = carriesOverTime?.flatMap((cot) => {
+    const item = itemById.get(cot.carryItemId);
+    const date = dayjs(cot.createdAt).toDate();
+
+    if (!selectedTagField) {
+      const point = {
         id: cot.carryItemId,
         name: item ? item.name : 'Unknown Item',
-        date: dayjs(cot.createdAt).toDate(),
-        count: cot.currentCarryCount,
+        date,
         color: item ? item.color : '#888888'
       };
-    })
-    .filter((point) => selectedIdSet.has(point.id));
+
+      return selectedIdSet.has(point.id) ? [point] : [];
+    }
+
+    if (!item?.customFields) {
+      return [];
+    }
+
+    return item.customFields
+      .filter((customField) => customField.name === selectedTagField)
+      .map((customField) => ({
+        id: customField.value,
+        name: customField.value,
+        date,
+        color: randomColor({ seed: `${selectedTagField}::${customField.value}` })
+      }))
+      .filter((point) => selectedIdSet.has(point.id));
+  });
 
   if (!points) {
     return;
   }
 
-  const itemColors = extractItemColors(points);
-  const itemNames = Array.from(itemColors.keys());
+  const seriesColors = extractSeriesColors(points);
+  const seriesNames = Array.from(seriesColors.keys());
   const buckets = bucketAll(points, mode).map((row) => {
     const next = { ...row };
-    for (const name of itemNames) {
+    for (const name of seriesNames) {
       // use explicit assignment with ?? instead of ??= for react compiler compatibility
       next[name] = next[name] ?? 0;
     }
@@ -168,7 +193,7 @@ export const LineChart = ({
 
   const maxYValue = buckets.reduce(
     (max, bucket) =>
-      itemNames.reduce(
+      seriesNames.reduce(
         (innerMax, name) => Math.max(innerMax, bucket[name] ?? 0),
         max
       ),
@@ -269,21 +294,21 @@ export const LineChart = ({
             }}
           />
 
-          {itemNames.map((name) => (
+          {seriesNames.map((name) => (
             <Line
               connectNulls
               key={name}
               type="monotone"
               dataKey={name}
               name={name}
-              stroke={itemColors.get(name)}
+              stroke={seriesColors.get(name)}
               strokeWidth={2.4}
               dot={{ r: 3 }}
               activeDot={{ r: 5 }}
             />
           ))}
         </ReLineChart>
-        {selectedItemIds?.length === 0 && (
+        {selectedSeriesIds?.length === 0 && (
           <Flex
             align="center"
             justify="center"
@@ -294,7 +319,7 @@ export const LineChart = ({
             }}
           >
             <Text size="sm" c="dimmed" ta="center">
-              Choose at least one item to plot.
+              Choose at least one series to plot.
             </Text>
           </Flex>
         )}
