@@ -1,7 +1,12 @@
+import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 
 import { CarryHistoryChart } from './carry-history-chart.tsx';
-import { renderWithContext, screen } from '../../test/render-with-context.tsx';
+import {
+  renderWithContext,
+  screen,
+  waitFor
+} from '../../test/render-with-context.tsx';
 
 describe('<CarryHistoryChart />', () => {
   it('shows an empty-state message when there are no valid entries', () => {
@@ -41,5 +46,31 @@ describe('<CarryHistoryChart />', () => {
       screen.queryByText('At least one history entry is required.')
     ).not.toBeInTheDocument();
     expect(screen.getAllByLabelText('line-chart-dot')).toHaveLength(2);
+  });
+
+  it('formats a non-zero recorded date in the tooltip', async () => {
+    const user = userEvent.setup();
+
+    renderWithContext(
+      <CarryHistoryChart
+        entries={[
+          {
+            id: 'a',
+            createdAt: new Date(2026, 0, 1).toISOString(),
+            currentCarryCount: 1
+          }
+        ]}
+        color="blue"
+      />
+    );
+
+    await user.pointer({
+      target: screen.getByRole('application'),
+      coords: { x: 50, y: 50 }
+    });
+
+    await waitFor(() => {
+      expect(screen.getByText('Jan 01, 2026 12:00:00 AM')).toBeVisible();
+    });
   });
 });
