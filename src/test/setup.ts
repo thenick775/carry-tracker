@@ -15,6 +15,7 @@ window.getComputedStyle = (elt) => getComputedStyle(elt);
 window.HTMLElement.prototype.scrollIntoView = () => {
   /* empty */
 };
+Element.prototype.getBoundingClientRect = () => new DOMRect(0, 0, 100, 100);
 
 Object.defineProperty(window, 'matchMedia', {
   writable: true,

@@ -175,6 +175,7 @@ const CarryItemForm = ({
         <FileInput
           accept="image/png,image/jpeg"
           clearable
+          fileInputProps={{ 'aria-label': 'Image file' }}
           label="Image"
           placeholder="Image"
           {...form.getInputProps('imageData')}
