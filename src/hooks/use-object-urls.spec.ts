@@ -28,6 +28,9 @@ describe('useObjectUrls', () => {
   });
 
   it('revokes object urls on rerender and unmount', () => {
+    vi.spyOn(URL, 'createObjectURL')
+      .mockReturnValueOnce('blob:first')
+      .mockReturnValueOnce('blob:second');
     const revokeObjectURL = vi.spyOn(URL, 'revokeObjectURL');
 
     const firstFiles = [

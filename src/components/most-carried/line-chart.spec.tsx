@@ -28,11 +28,12 @@ describe('<LineChart />', () => {
           { id: 'item-1', name: 'Knife', color: 'blue' },
           { id: 'item-2', name: 'Light', color: 'green' }
         ]}
+        selectedSeriesIds={['item-1', 'item-2']}
       />
     );
 
     expect(
-      screen.queryByText('Choose at least one item to plot.')
+      screen.queryByText('Choose at least one series to plot.')
     ).not.toBeInTheDocument();
     expect(screen.getByText('Dec 28 - Dec 28')).toBeInTheDocument();
     expect(screen.getAllByLabelText('line-chart-dot')).toHaveLength(2);
@@ -45,12 +46,12 @@ describe('<LineChart />', () => {
     renderWithContext(
       <LineChart
         data={[{ id: 'item-1', name: 'Knife', color: 'blue' }]}
-        selectedItemIds={[]}
+        selectedSeriesIds={[]}
       />
     );
 
     expect(
-      screen.getByText('Choose at least one item to plot.')
+      screen.getByText('Choose at least one series to plot.')
     ).toBeInTheDocument();
     expect(screen.queryAllByLabelText('line-chart-dot')).toHaveLength(0);
   });
@@ -77,12 +78,12 @@ describe('<LineChart />', () => {
           { id: 'item-1', name: 'Knife', color: 'blue' },
           { id: 'item-2', name: 'Light', color: 'green' }
         ]}
-        selectedItemIds={['item-1']}
+        selectedSeriesIds={['item-1']}
       />
     );
 
     expect(
-      screen.queryByText('Choose at least one item to plot.')
+      screen.queryByText('Choose at least one series to plot.')
     ).not.toBeInTheDocument();
     expect(screen.getByText('Dec 28 - Dec 28')).toBeInTheDocument();
     expect(screen.getAllByLabelText('line-chart-dot')).toHaveLength(1);
@@ -100,7 +101,10 @@ describe('<LineChart />', () => {
     ]);
 
     renderWithContext(
-      <LineChart data={[{ id: 'item-1', name: 'Knife', color: 'blue' }]} />
+      <LineChart
+        data={[{ id: 'item-1', name: 'Knife', color: 'blue' }]}
+        selectedSeriesIds={['item-1']}
+      />
     );
 
     await user.click(screen.getByRole('button', { name: 'Older period' }));

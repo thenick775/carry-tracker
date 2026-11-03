@@ -26,12 +26,14 @@ const renderFilters = ({
   initialFilters = {},
   openedFilters = false,
   filterOptionsOverride,
-  closeFilters = () => undefined
+  closeFilters = () => undefined,
+  setSort = () => undefined
 }: {
   initialFilters?: CarryItemFilters;
   openedFilters?: boolean;
   filterOptionsOverride?: Partial<CarryItemFilterOptions>;
   closeFilters?: () => void;
+  setSort?: () => void;
 }) => {
   let nextFilters = initialFilters;
   const setFilters = (
@@ -49,6 +51,7 @@ const renderFilters = ({
       openedFilters={openedFilters}
       openFilters={() => undefined}
       setFilters={setFilters}
+      setSort={setSort}
     />
   );
 
