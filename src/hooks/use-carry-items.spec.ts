@@ -31,29 +31,31 @@ describe('useCarryItems', () => {
       expect(result.current.carryItems).toHaveLength(1);
     });
 
-    expect(result.current.carryItems?.[0]).toEqual(
+    expect(result.current.carryItems).toEqual([
       expect.objectContaining({
         name: 'Knife',
         carryCount: 1,
         cost: 50,
         customFields: [{ name: 'Brand', value: 'Benchmade' }]
       })
+    ]);
+    expect(result.current.carryItems?.map((c) => c.imageData)).toEqual(
+      expect.arrayContaining([expect.any(File)])
     );
-    expect(result.current.carryItems?.[0].imageData).toBeInstanceOf(File);
   });
 
   it('creates an item without persisting an image when none is provided', async () => {
     const { result } = renderHook(() => useCarryItems());
 
     await act(async () => {
-      await result.current.createCarryItem(baseItem({ imageData: undefined }));
+      await result.current.createCarryItem(baseItem());
     });
 
     await waitFor(async () => {
       const stored = await carryDb.carryItems.toArray();
 
       expect(stored).toHaveLength(1);
-      expect(stored[0]?.image).toBeUndefined();
+      expect(stored[0].image).toBeUndefined();
     });
   });
 
@@ -142,6 +144,90 @@ describe('useCarryItems', () => {
       expect(result.current.carryItems?.map((item) => item.id)).toEqual([
         'new',
         'old'
+      ]);
+    });
+  });
+
+  it.each([
+    ['oldest-added', ['old', 'middle', 'new']],
+    ['most-carried', ['new', 'old', 'middle']],
+    ['least-carried', ['middle', 'old', 'new']],
+    ['recently-carried', ['old', 'new', 'middle']],
+    ['highest-cost', ['new', 'old', 'middle']],
+    ['lowest-cost', ['old', 'new', 'middle']]
+  ] as const)('sorts items by %s', async (sort, expectedIds) => {
+    await carryDb.carryItems.bulkAdd([
+      {
+        id: 'old',
+        name: 'Old',
+        carryCount: 2,
+        createdAt: '2026-01-01T00:00:00.000Z',
+        color: 'gray',
+        cost: 50,
+        lastCarriedAt: '2026-01-03T00:00:00.000Z'
+      },
+      {
+        id: 'middle',
+        name: 'Middle',
+        carryCount: 1,
+        createdAt: '2026-01-02T00:00:00.000Z',
+        color: 'green'
+      },
+      {
+        id: 'new',
+        name: 'New',
+        carryCount: 3,
+        createdAt: '2026-01-03T00:00:00.000Z',
+        color: 'blue',
+        cost: 100,
+        lastCarriedAt: '2026-01-01T00:00:00.000Z'
+      }
+    ]);
+
+    const { result } = renderHook(() => useCarryItems(undefined, sort));
+
+    await waitFor(() => {
+      expect(result.current.carryItems?.map((item) => item.id)).toEqual(
+        expectedIds
+      );
+    });
+  });
+
+  it('preserves created-at order tiebreaker for recently carried items', async () => {
+    await carryDb.carryItems.bulkAdd([
+      {
+        id: 'older-uncarried',
+        name: 'Older uncarried',
+        carryCount: 1,
+        createdAt: '2026-01-01T00:00:00.000Z',
+        color: 'gray'
+      },
+      {
+        id: 'newer-uncarried',
+        name: 'Newer uncarried',
+        carryCount: 1,
+        createdAt: '2026-01-02T00:00:00.000Z',
+        color: 'green'
+      },
+      {
+        id: 'carried',
+        name: 'Carried',
+        carryCount: 1,
+        createdAt: '2026-01-03T00:00:00.000Z',
+        color: 'blue',
+        lastCarriedAt: '2026-01-03T00:00:00.000Z'
+      }
+    ]);
+
+    const { result } = renderHook(() =>
+      useCarryItems(undefined, 'recently-carried')
+    );
+
+    await waitFor(() => {
+      expect(result.current.carryItems?.map((item) => item.id)).toEqual([
+        'carried',
+        'newer-uncarried',
+        'older-uncarried'
       ]);
     });
   });

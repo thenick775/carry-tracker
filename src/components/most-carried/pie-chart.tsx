@@ -75,6 +75,8 @@ export const PieChart = ({ data }: RadialBarChartProps) => {
     .filter(({ value }) => value > 0)
     .map((item) => ({
       ...item,
+      role: 'img',
+      'aria-label': `${item.name}: ${item.value}`,
       fill: getThemeColor(item.color, theme),
       stroke: 'var(--chart-stroke-color, var(--mantine-color-body))',
       strokeWidth: 1
