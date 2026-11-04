@@ -94,12 +94,10 @@ describe('<ItemsView />', () => {
     await user.type(screen.getByLabelText('Name'), 'Updated Knife');
     await user.click(screen.getByRole('button', { name: 'Submit' }));
 
-    await waitFor(() => {
-      expect(updateCarryItemSpy).toHaveBeenCalledWith(
-        'item-1',
-        expect.objectContaining({ name: 'Updated Knife' })
-      );
-    });
+    expect(updateCarryItemSpy).toHaveBeenCalledExactlyOnceWith(
+      'item-1',
+      expect.objectContaining({ name: 'Updated Knife' })
+    );
     expect(screen.queryByText('Update Carry Item')).not.toBeInTheDocument();
   });
 
@@ -175,11 +173,9 @@ describe('<ItemsView />', () => {
     await user.upload(screen.getByLabelText('Image file'), imageData);
     await user.click(screen.getByRole('button', { name: 'Submit' }));
 
-    await waitFor(() => {
-      expect(createCarryItemSpy).toHaveBeenCalledWith(
-        expect.objectContaining({ name: 'Knife', imageData })
-      );
-    });
+    expect(createCarryItemSpy).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({ name: 'Knife', imageData })
+    );
     expect(screen.queryByText('Create Carry Item')).not.toBeInTheDocument();
   });
 
@@ -229,9 +225,7 @@ describe('<ItemsView />', () => {
     await user.click(screen.getByRole('button', { name: 'Delete tracker' }));
     await user.click(screen.getByRole('button', { name: 'Delete' }));
 
-    await waitFor(() => {
-      expect(deleteCarryItemSpy).toHaveBeenCalledWith('item-1');
-    });
+    expect(deleteCarryItemSpy).toHaveBeenCalledExactlyOnceWith('item-1');
   });
 
   it('cleans up item-specific modal state when flows close', async () => {
@@ -297,7 +291,7 @@ describe('<ItemsView />', () => {
 
     await user.click(screen.getByRole('button', { name: 'Increase Count' }));
 
-    expect(updateCarryItemSpy).toHaveBeenCalledWith('item-1', {
+    expect(updateCarryItemSpy).toHaveBeenCalledExactlyOnceWith('item-1', {
       carryCount: 5
     });
   });

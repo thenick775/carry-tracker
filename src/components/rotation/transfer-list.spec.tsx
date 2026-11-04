@@ -26,7 +26,7 @@ describe('<TransferList />', () => {
     await user.click(screen.getByRole('option', { name: 'Knife' }));
     await user.click(screen.getAllByRole('button')[0]);
 
-    expect(onChange).toHaveBeenCalledWith(
+    expect(onChange).toHaveBeenCalledExactlyOnceWith(
       [{ name: 'Light', value: 'light' }],
       [{ name: 'Knife', value: 'knife' }]
     );
@@ -76,7 +76,7 @@ describe('<TransferList />', () => {
 
     await user.click(screen.getAllByRole('button')[1]);
 
-    expect(onChange).toHaveBeenCalledWith(
+    expect(onChange).toHaveBeenCalledExactlyOnceWith(
       [],
       [
         { name: 'Knife', value: 'knife' },

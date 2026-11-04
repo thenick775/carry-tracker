@@ -55,10 +55,10 @@ describe('<CarryHistoryEntryAccordionItem />', () => {
     await user.click(screen.getByLabelText('Recorded at'));
     await user.click(screen.getByRole('button', { name: '5 December 2025' }));
 
-    expect(onUpdate).toHaveBeenCalledWith({
+    expect(onUpdate).toHaveBeenNthCalledWith(2, {
       currentCarryCount: 7
     });
-    expect(onUpdate).toHaveBeenCalledWith({
+    expect(onUpdate).toHaveBeenNthCalledWith(3, {
       createdAt: '2025-12-05 16:00:00'
     });
   });
