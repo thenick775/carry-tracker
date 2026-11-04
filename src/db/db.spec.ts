@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { carryDb, exportDb, importDb } from './db.ts';
-import { resetDb } from '../test/db.ts';
+import { resetDb } from '../../test/db.ts';
 
 describe('db', () => {
   it('exports and imports items, rotations, and carry history', async () => {

@@ -5,7 +5,7 @@ import {
   renderWithContext,
   screen,
   within
-} from '../../test/render-with-context.tsx';
+} from '../../../test/render-with-context.tsx';
 
 describe('<CustomFieldStatsTable />', () => {
   it('sorts rows by total and renders summary totals', () => {

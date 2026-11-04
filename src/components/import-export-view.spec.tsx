@@ -8,7 +8,7 @@ import {
   renderWithContext,
   screen,
   waitFor
-} from '../test/render-with-context.tsx';
+} from '../../test/render-with-context.tsx';
 
 const { show, update, exportDb, importDb } = vi.hoisted(() => ({
   show: vi.fn<(input: unknown) => string>(),

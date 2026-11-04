@@ -6,7 +6,7 @@ import {
   act,
   renderWithContext,
   screen
-} from '../../test/render-with-context.tsx';
+} from '../../../test/render-with-context.tsx';
 
 describe('<PieChart />', () => {
   beforeEach(() => {

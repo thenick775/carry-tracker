@@ -2,13 +2,13 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { RotationModal } from './rotation-modal.tsx';
-import * as carryItemHooks from '../../hooks/use-carry-items.ts';
-import * as responsiveHooks from '../../hooks/use-is-larger-than-phone.ts';
 import {
   renderWithContext,
   screen,
   waitFor
-} from '../../test/render-with-context.tsx';
+} from '../../../test/render-with-context.tsx';
+import * as carryItemHooks from '../../hooks/use-carry-items.ts';
+import * as responsiveHooks from '../../hooks/use-is-larger-than-phone.ts';
 
 describe('<RotationModal />', () => {
   beforeEach(() => {

@@ -2,7 +2,10 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
 import { TransferList } from './transfer-list.tsx';
-import { renderWithContext, screen } from '../../test/render-with-context.tsx';
+import {
+  renderWithContext,
+  screen
+} from '../../../test/render-with-context.tsx';
 
 describe('<TransferList />', () => {
   it('moves selected items from left to right', async () => {

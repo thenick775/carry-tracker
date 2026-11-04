@@ -2,12 +2,12 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
 import { CarryItemModal } from './carry-item-modal.tsx';
-import * as responsiveHooks from '../../hooks/use-is-larger-than-phone.ts';
 import {
   renderWithContext,
   screen,
   waitFor
-} from '../../test/render-with-context.tsx';
+} from '../../../test/render-with-context.tsx';
+import * as responsiveHooks from '../../hooks/use-is-larger-than-phone.ts';
 
 import type { CustomFields } from '../../db/db.ts';
 

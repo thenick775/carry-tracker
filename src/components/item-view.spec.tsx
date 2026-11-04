@@ -2,13 +2,13 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ItemsView } from './item-view.tsx';
-import * as carryItemFilterOptionHooks from '../hooks/use-carry-item-filter-options.ts';
-import * as carryItemHooks from '../hooks/use-carry-items.ts';
 import {
   renderWithContext,
   screen,
   waitFor
-} from '../test/render-with-context.tsx';
+} from '../../test/render-with-context.tsx';
+import * as carryItemFilterOptionHooks from '../hooks/use-carry-item-filter-options.ts';
+import * as carryItemHooks from '../hooks/use-carry-items.ts';
 
 describe('<ItemsView />', () => {
   beforeEach(() => {

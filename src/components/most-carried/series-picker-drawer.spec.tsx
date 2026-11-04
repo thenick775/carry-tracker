@@ -2,7 +2,10 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
 import { SeriesPickerDrawer } from './series-picker-drawer.tsx';
-import { renderWithContext, screen } from '../../test/render-with-context.tsx';
+import {
+  renderWithContext,
+  screen
+} from '../../../test/render-with-context.tsx';
 
 describe('<SeriesPickerDrawer />', () => {
   it('filters visible items by search and clears the search', async () => {

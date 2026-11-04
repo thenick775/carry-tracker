@@ -7,8 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "lint": "eslint src",
-    "lint:fix": "eslint src --fix",
+    "lint": "eslint src test",
+    "lint:fix": "eslint src test --fix",
     "test": "vitest run",
     "test:watch": "vitest",
     "coverage": "vitest run --coverage"

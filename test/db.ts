@@ -1,4 +1,4 @@
-import { carryDb } from '../db/db.ts';
+import { carryDb } from '../src/db/db.ts';
 
 export const resetDb = async () => {
   if (!carryDb.isOpen()) {

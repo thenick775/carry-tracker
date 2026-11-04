@@ -5,7 +5,7 @@ import {
   renderWithContext,
   screen,
   within
-} from '../../test/render-with-context.tsx';
+} from '../../../test/render-with-context.tsx';
 
 describe('<CarryItemStatsTable />', () => {
   it('sorts rows by carry count and renders summary totals', () => {

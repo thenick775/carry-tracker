@@ -54,7 +54,7 @@ export const CarryHistoryEntryAccordionItem = ({
           size="md"
           dropdownType="modal"
           value={entry.createdAt}
-          onChange={(value) => onUpdate({ createdAt: value ?? '' })}
+          onChange={(value) => onUpdate({ createdAt: value ?? undefined })}
           error={error.date}
         />
         <NumberInput

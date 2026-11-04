@@ -5,8 +5,8 @@ import {
   useCarriesOverTime,
   useCarryHistory
 } from './use-carries-over-time.ts';
+import { renderHook, waitFor, act } from '../../test/render-with-context.tsx';
 import { carryDb } from '../db/db.ts';
-import { renderHook, waitFor, act } from '../test/render-with-context.tsx';
 
 describe('useCarriesOverTime', () => {
   it('returns entries in the requested lookback window', async () => {

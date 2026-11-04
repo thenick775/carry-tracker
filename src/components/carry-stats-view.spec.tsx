@@ -2,9 +2,9 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { CarryStatsView } from './carry-stats-view.tsx';
+import { renderWithContext, screen } from '../../test/render-with-context.tsx';
 import * as carriesOverTimeHooks from '../hooks/use-carries-over-time.ts';
 import * as carryItemHooks from '../hooks/use-carry-items.ts';
-import { renderWithContext, screen } from '../test/render-with-context.tsx';
 
 describe('<CarryStatsView/ >', () => {
   beforeEach(() => {
