@@ -60,6 +60,6 @@ describe('<SeriesPickerDrawer />', () => {
     expect(onShowAll).toHaveBeenCalled();
     expect(onClearSelection).toHaveBeenCalled();
     expect(onShowTopFive).toHaveBeenCalled();
-    expect(onToggleItem).toHaveBeenCalledWith('item-1');
+    expect(onToggleItem).toHaveBeenCalledExactlyOnceWith('item-1');
   });
 });

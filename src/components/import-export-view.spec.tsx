@@ -95,18 +95,16 @@ describe('<ImportExportView />', () => {
 
     await user.click(screen.getByRole('button', { name: 'Import' }));
 
-    expect(importDb).toHaveBeenCalledWith(file);
-    expect(show).toHaveBeenCalledWith(
+    expect(importDb).toHaveBeenCalledExactlyOnceWith(file);
+    expect(show).toHaveBeenCalledExactlyOnceWith(
       expect.objectContaining({ title: 'Importing database' })
     );
-    await waitFor(() => {
-      expect(update).toHaveBeenCalledWith(
-        expect.objectContaining({
-          id: 'import-id',
-          title: 'Database loaded'
-        })
-      );
-    });
+    expect(update).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({
+        id: 'import-id',
+        title: 'Database loaded'
+      })
+    );
   });
 
   it('shows an error notification when import fails', async () => {
@@ -127,14 +125,12 @@ describe('<ImportExportView />', () => {
 
     await user.click(screen.getByRole('button', { name: 'Import' }));
 
-    await waitFor(() => {
-      expect(update).toHaveBeenCalledWith(
-        expect.objectContaining({
-          id: 'import-id',
-          title: 'Database import failed'
-        })
-      );
-    });
+    expect(update).toHaveBeenCalledExactlyOnceWith(
+      expect.objectContaining({
+        id: 'import-id',
+        title: 'Database import failed'
+      })
+    );
   });
 
   it('exports the database through a download link', async () => {

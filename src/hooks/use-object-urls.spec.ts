@@ -48,9 +48,9 @@ describe('useObjectUrls', () => {
     );
 
     rerender({ files: secondFiles });
-    expect(revokeObjectURL).toHaveBeenCalledWith('blob:first');
+    expect(revokeObjectURL).toHaveBeenNthCalledWith(1, 'blob:first');
 
     unmount();
-    expect(revokeObjectURL).toHaveBeenCalledWith('blob:second');
+    expect(revokeObjectURL).toHaveBeenNthCalledWith(2, 'blob:second');
   });
 });

@@ -110,15 +110,12 @@ describe('<RotationsView />', () => {
     renderWithContext(<RotationsView />);
 
     await user.click(screen.getByRole('button', { name: 'Edit' }));
-    await waitFor(() => {
-      expect(screen.getByRole('dialog')).toBeInTheDocument();
-    });
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
     expect(screen.getByLabelText('Name')).toHaveValue('Weekday');
 
     await user.click(screen.getByRole('button', { name: 'Delete tracker' }));
     await user.click(screen.getByRole('button', { name: 'Delete' }));
-    await waitFor(() => {
-      expect(deleteRotationSpy).toHaveBeenCalledWith('rotation-1');
-    });
+    expect(deleteRotationSpy).toHaveBeenCalledExactlyOnceWith('rotation-1');
   });
 });

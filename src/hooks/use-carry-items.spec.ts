@@ -351,23 +351,21 @@ describe('useCarryItems', () => {
       });
     });
 
-    await waitFor(async () => {
-      const stored = await carryDb.carryItems.get('item-1');
+    const stored = await carryDb.carryItems.get('item-1');
 
-      expect(stored).toBeDefined();
-      expect(stored?.id).toBe('item-1');
-      expect(stored?.name).toBe('Updated Knife');
-      expect(stored?.customFields).toEqual([
-        { name: 'Brand', value: 'Spyderco' },
-        { name: 'Steel', value: 'Magnacut' }
-      ]);
-      expect(stored?.customFieldKeys).toEqual([
-        'Brand::Spyderco',
-        'Steel::Magnacut'
-      ]);
-      expect(stored?.image?.name).toBe('updated.png');
-      expect(stored?.image?.mimeType).toBe('image/png');
-    });
+    expect(stored).toBeDefined();
+    expect(stored?.id).toBe('item-1');
+    expect(stored?.name).toBe('Updated Knife');
+    expect(stored?.customFields).toEqual([
+      { name: 'Brand', value: 'Spyderco' },
+      { name: 'Steel', value: 'Magnacut' }
+    ]);
+    expect(stored?.customFieldKeys).toEqual([
+      'Brand::Spyderco',
+      'Steel::Magnacut'
+    ]);
+    expect(stored?.image?.name).toBe('updated.png');
+    expect(stored?.image?.mimeType).toBe('image/png');
   });
 
   it('does not record history when carry count is unchanged or absent', async () => {
@@ -401,7 +399,9 @@ describe('useCarryItems', () => {
     });
 
     await waitFor(async () => {
-      await expect(carryDb.carryItems.get('missing-id')).resolves.toBeUndefined();
+      await expect(
+        carryDb.carryItems.get('missing-id')
+      ).resolves.toBeUndefined();
       await expect(carryDb.carriesOverTime.toArray()).resolves.toEqual([]);
     });
   });
