@@ -2,7 +2,10 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it } from 'vitest';
 
 import { ItemFilters } from './item-filters.tsx';
-import { renderWithContext, screen } from '../../test/render-with-context.tsx';
+import {
+  renderWithContext,
+  screen
+} from '../../../test/render-with-context.tsx';
 
 import type { CarryItemFilterOptions } from '../../hooks/use-carry-item-filter-options.ts';
 import type { CarryItemFilters } from '../../hooks/use-carry-items.ts';

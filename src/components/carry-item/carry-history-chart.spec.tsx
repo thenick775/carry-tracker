@@ -6,7 +6,7 @@ import {
   renderWithContext,
   screen,
   waitFor
-} from '../../test/render-with-context.tsx';
+} from '../../../test/render-with-context.tsx';
 
 describe('<CarryHistoryChart />', () => {
   it('shows an empty-state message when there are no valid entries', () => {

@@ -154,7 +154,7 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    setupFiles: ['./src/test/setup.ts'],
+    setupFiles: ['./test/setup.ts'],
     passWithNoTests: true,
     restoreMocks: true,
     coverage: {
@@ -199,7 +199,7 @@ export default defineConfig({
       reportsDirectory: './coverage',
       exclude: [
         ...coverageConfigDefaults.exclude,
-        'src/test/**',
+        'test/**',
         '**/*.d.ts',
         '**/.DS_Store'
       ]

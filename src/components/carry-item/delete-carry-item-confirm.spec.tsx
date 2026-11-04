@@ -2,8 +2,11 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
 import { DeleteCarryItemConfirm } from './delete-carry-item-confirm.tsx';
+import {
+  renderWithContext,
+  screen
+} from '../../../test/render-with-context.tsx';
 import * as responsiveHooks from '../../hooks/use-is-larger-than-phone.ts';
-import { renderWithContext, screen } from '../../test/render-with-context.tsx';
 
 describe('<DeleteCarryItemConfirm />', () => {
   it('shows the item name and confirms delete before closing', async () => {

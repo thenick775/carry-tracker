@@ -2,7 +2,10 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
 import { CarryItemCard } from './carry-item-card.tsx';
-import { renderWithContext, screen } from '../../test/render-with-context.tsx';
+import {
+  renderWithContext,
+  screen
+} from '../../../test/render-with-context.tsx';
 
 describe('<CarryItemCard />', () => {
   it('renders formatted item details', () => {

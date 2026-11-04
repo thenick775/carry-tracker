@@ -2,9 +2,12 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { CarryHistoryModal } from './carry-history-modal.tsx';
+import {
+  renderWithContext,
+  screen
+} from '../../../test/render-with-context.tsx';
 import * as carriesOverTimeHooks from '../../hooks/use-carries-over-time.ts';
 import * as responsiveHooks from '../../hooks/use-is-larger-than-phone.ts';
-import { renderWithContext, screen } from '../../test/render-with-context.tsx';
 
 import type { CarryOverTimeStorage } from '../../db/db.ts';
 

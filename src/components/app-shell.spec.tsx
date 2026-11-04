@@ -2,10 +2,10 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { CarryTrackerAppShell } from './app-shell.tsx';
+import { renderWithContext, screen } from '../../test/render-with-context.tsx';
 import * as carryItemFilterOptionHooks from '../hooks/use-carry-item-filter-options.ts';
 import * as carryItemHooks from '../hooks/use-carry-items.ts';
 import * as rotationHooks from '../hooks/use-rotations.ts';
-import { renderWithContext, screen } from '../test/render-with-context.tsx';
 
 describe('<CarryTrackerAppShell />', () => {
   beforeEach(() => {

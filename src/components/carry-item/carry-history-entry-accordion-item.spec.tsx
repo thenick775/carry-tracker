@@ -3,7 +3,10 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
 import { CarryHistoryEntryAccordionItem } from './carry-history-entry-accordion-item.tsx';
-import { renderWithContext, screen } from '../../test/render-with-context.tsx';
+import {
+  renderWithContext,
+  screen
+} from '../../../test/render-with-context.tsx';
 
 describe('<CarryHistoryEntryAccordionItem />', () => {
   it('renders carry history entry data', () => {

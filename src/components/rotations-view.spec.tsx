@@ -2,13 +2,13 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { RotationsView } from './rotations-view.tsx';
-import * as carryItemHooks from '../hooks/use-carry-items.ts';
-import * as rotationHooks from '../hooks/use-rotations.ts';
 import {
   renderWithContext,
   screen,
   waitFor
-} from '../test/render-with-context.tsx';
+} from '../../test/render-with-context.tsx';
+import * as carryItemHooks from '../hooks/use-carry-items.ts';
+import * as rotationHooks from '../hooks/use-rotations.ts';
 
 describe('<RotationsView />', () => {
   beforeEach(() => {

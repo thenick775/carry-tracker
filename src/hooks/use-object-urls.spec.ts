@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import { useObjectUrls } from './use-object-urls.ts';
-import { renderHook } from '../test/render-with-context.tsx';
+import { renderHook } from '../../test/render-with-context.tsx';
 
 describe('useObjectUrls', () => {
   it('returns undefined when no files are provided', () => {

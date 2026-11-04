@@ -2,12 +2,12 @@ import userEvent from '@testing-library/user-event';
 import { describe, expect, it, vi } from 'vitest';
 
 import { LineChart } from './line-chart.tsx';
-import * as carriesOverTimeHooks from '../../hooks/use-carries-over-time.ts';
 import {
   renderWithContext,
   screen,
   waitFor
-} from '../../test/render-with-context.tsx';
+} from '../../../test/render-with-context.tsx';
+import * as carriesOverTimeHooks from '../../hooks/use-carries-over-time.ts';
 
 describe('<LineChart />', () => {
   it('renders chart content', () => {

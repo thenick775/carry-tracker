@@ -12,8 +12,8 @@ import {
   type RenderOptions
 } from '@testing-library/react';
 
-import { cssVariableResolver } from '../theme/css-variable-resolver.ts';
-import { shadcnTheme } from '../theme/mantine-hub-shadcn/theme.ts';
+import { cssVariableResolver } from '../src/theme/css-variable-resolver.ts';
+import { shadcnTheme } from '../src/theme/mantine-hub-shadcn/theme.ts';
 
 import type { ReactNode } from 'react';
 
@@ -21,6 +21,7 @@ type ProvidersProps = {
   children: ReactNode;
 };
 
+// eslint-disable-next-line react-refresh/only-export-components -- false positive
 const Providers = ({ children }: ProvidersProps) => (
   <MantineProvider
     defaultColorScheme="dark"

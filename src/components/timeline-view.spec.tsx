@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import { TimelineView } from './timeline-view.tsx';
+import { renderWithContext, screen } from '../../test/render-with-context.tsx';
 import * as carryItemHooks from '../hooks/use-carry-items.ts';
 import * as rotationHooks from '../hooks/use-rotations.ts';
-import { renderWithContext, screen } from '../test/render-with-context.tsx';
 
 vi.mock('@tanstack/react-virtual', () => ({
   useVirtualizer: () => ({

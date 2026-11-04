@@ -2,8 +2,8 @@ import dayjs from 'dayjs';
 import { describe, expect, it } from 'vitest';
 
 import { useCarryItemFilterOptions } from './use-carry-item-filter-options.ts';
+import { renderHook, waitFor } from '../../test/render-with-context.tsx';
 import { carryDb } from '../db/db.ts';
-import { renderHook, waitFor } from '../test/render-with-context.tsx';
 
 describe('useCarryItemFilterOptions', () => {
   it('derives ranges and grouped custom field options from stored items', async () => {
