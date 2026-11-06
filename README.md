@@ -9,6 +9,8 @@
   </a>
 </div>
 
+<br/>
+
 _A web app that helps you track your every day carry (EDC)_
 
 <img alt="Carry Tracker Mobile" src="./readme-images/carry-tracker-mobile_min.gif" width="360px">
@@ -50,6 +52,13 @@ Clone the repo and then run the following from the project root:
 ```bash
 npm install && \
 npm run dev
+```
+
+To run lint and tests:
+
+```bash
+npm run lint && \
+npm run test
 ```
 
 ## Installing as a PWA

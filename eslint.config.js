@@ -5,7 +5,10 @@ import reactRefresh from 'eslint-plugin-react-refresh';
 import jsxA11Y from 'eslint-plugin-jsx-a11y';
 import tseslint from 'typescript-eslint';
 import importPlugin from 'eslint-plugin-import';
+import jestDom from 'eslint-plugin-jest-dom';
 import reactYouMightNotNeedAnEffect from 'eslint-plugin-react-you-might-not-need-an-effect';
+import testingLibrary from 'eslint-plugin-testing-library';
+import vitest from '@vitest/eslint-plugin';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import reactPlugin from 'eslint-plugin-react';
 import mantine from 'eslint-config-mantine';
@@ -79,6 +82,33 @@ export default defineConfig([
           }
         }
       ]
+    }
+  },
+  {
+    files: ['src/test/**/*.{ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off'
+    }
+  },
+  {
+    files: ['src/**/*.{test,spec}.{ts,tsx}'],
+    extends: [
+      vitest.configs.recommended,
+      vitest.configs.env,
+      testingLibrary.configs['flat/react'],
+      jestDom.configs['flat/recommended']
+    ],
+    rules: {
+      'vitest/no-focused-tests': 'error',
+      'vitest/no-disabled-tests': 'warn',
+      'vitest/consistent-test-it': ['error', { fn: 'it', withinDescribe: 'it' }],
+      'testing-library/no-node-access': 'error',
+      'testing-library/no-container': 'error',
+      'testing-library/prefer-screen-queries': 'error',
+      'testing-library/prefer-user-event': 'error',
+      'testing-library/no-debugging-utils': 'warn',
+      'testing-library/no-await-sync-events': 'error',
+      'testing-library/no-wait-for-multiple-assertions': 'error'
     }
   }
 ]);

@@ -127,9 +127,10 @@ const RotationForm = ({
         <Button
           variant="light"
           onClick={() =>
-            form.setValues((prevState) => ({
-              orderedCarryItemIds: shuffle(prevState.orderedCarryItemIds ?? [])
-            }))
+            form.setFieldValue(
+              'orderedCarryItemIds',
+              shuffle(form.getValues().orderedCarryItemIds)
+            )
           }
         >
           Shuffle
