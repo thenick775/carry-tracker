@@ -77,13 +77,9 @@ const countTimelineNodesForDay = (rotations: Rotation[], day: dayjs.Dayjs) => {
 
 const estimateTimelineDaySize = (
   rotations: Rotation[],
-  startDate: dayjs.Dayjs | undefined,
+  startDate: dayjs.Dayjs,
   index: number
 ) => {
-  if (!startDate) {
-    return TIMELINE_DAY_BASE_HEIGHT;
-  }
-
   const day = startDate.add(index, 'day');
   const nodeCount = countTimelineNodesForDay(rotations, day);
 
@@ -92,7 +88,7 @@ const estimateTimelineDaySize = (
 
 const getInitialTimelineOffset = (
   rotations: Rotation[],
-  startDate: dayjs.Dayjs | undefined,
+  startDate: dayjs.Dayjs,
   todayIndex: number
 ) => {
   if (todayIndex <= 4) {

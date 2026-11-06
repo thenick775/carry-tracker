@@ -9,7 +9,7 @@ import { renderHook, waitFor, act } from '../../test/render-with-context.tsx';
 import { carryDb } from '../db/db.ts';
 
 describe('useCarriesOverTime', () => {
-  it('returns entries in the requested lookback window', async () => {
+  it('returns entries in the requested look back window', async () => {
     const insideDate = dayjs().subtract(2, 'day').toISOString();
     const outsideDate = dayjs().subtract(8, 'week').toISOString();
 
@@ -28,11 +28,39 @@ describe('useCarriesOverTime', () => {
       }
     ]);
 
-    const { result } = renderHook(() => useCarriesOverTime('week', 7));
+    const { result } = renderHook(() => useCarriesOverTime());
 
     await waitFor(() => {
       expect(result.current).toEqual([
         expect.objectContaining({ id: 'inside' })
+      ]);
+    });
+  });
+
+  it('returns entries from a prior page', async () => {
+    const insidePreviousPage = dayjs().subtract(10, 'week').toISOString();
+    const outsidePreviousPage = dayjs().subtract(2, 'week').toISOString();
+
+    await carryDb.carriesOverTime.bulkAdd([
+      {
+        id: 'previous-page',
+        carryItemId: 'item-1',
+        currentCarryCount: 2,
+        createdAt: insidePreviousPage
+      },
+      {
+        id: 'current-page',
+        carryItemId: 'item-1',
+        currentCarryCount: 1,
+        createdAt: outsidePreviousPage
+      }
+    ]);
+
+    const { result } = renderHook(() => useCarriesOverTime('week', 7, 1));
+
+    await waitFor(() => {
+      expect(result.current).toEqual([
+        expect.objectContaining({ id: 'previous-page' })
       ]);
     });
   });
@@ -128,7 +156,10 @@ describe('useCarryHistory', () => {
       })
     ]);
     await expect(carryDb.carryItems.get('item-1')).resolves.toEqual(
-      expect.objectContaining({ carryCount: 4 })
+      expect.objectContaining({
+        carryCount: 4,
+        lastCarriedAt: '2026-01-04T17:00:00.000Z'
+      })
     );
   });
 

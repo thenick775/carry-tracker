@@ -14,8 +14,9 @@ describe('<CarryItemCard />', () => {
         item={{
           id: 'item-1',
           name: 'Knife',
-          carryCount: 1234,
+          carryCount: 50,
           createdAt: '2026-01-01T00:00:00.000Z',
+          lastCarriedAt: '2026-01-02T12:00:00.000Z',
           color: 'blue'
         }}
         imageUrl="blob:knife"
@@ -27,20 +28,28 @@ describe('<CarryItemCard />', () => {
     );
 
     expect(screen.getByText('Knife')).toBeInTheDocument();
-    expect(screen.getByText(/^Added:/)).toBeInTheDocument();
-    expect(screen.getByText(/^Carry Count:/)).toBeInTheDocument();
+    expect(screen.getByText('Added: Dec 31, 2025')).toBeInTheDocument();
+    expect(screen.getByText('Last Carried: Jan 2, 2026')).toBeInTheDocument();
+    expect(screen.getByText('Carry Count: 50')).toBeInTheDocument();
     expect(screen.getByRole('img', { name: 'Knife' })).toHaveAttribute(
       'src',
       'blob:knife'
     );
   });
 
-  it('fires edit, history, delete, and increase callbacks', async () => {
+  it.each([
+    ['Delete tracker', 'onDelete'],
+    ['Edit', 'onRequestEdit'],
+    ['History', 'onRequestHistory'],
+    ['Increase Count', 'onIncreaseCount']
+  ] as const)('calls %s when clicked', async (buttonName, callbackName) => {
     const user = userEvent.setup();
-    const onDelete = vi.fn();
-    const onRequestEdit = vi.fn();
-    const onRequestHistory = vi.fn();
-    const onIncreaseCount = vi.fn();
+    const callbacks = {
+      onDelete: vi.fn(),
+      onRequestEdit: vi.fn(),
+      onRequestHistory: vi.fn(),
+      onIncreaseCount: vi.fn()
+    };
 
     renderWithContext(
       <CarryItemCard
@@ -52,21 +61,12 @@ describe('<CarryItemCard />', () => {
           color: 'blue'
         }}
         imageUrl="blob:knife"
-        onDelete={onDelete}
-        onRequestEdit={onRequestEdit}
-        onRequestHistory={onRequestHistory}
-        onIncreaseCount={onIncreaseCount}
+        {...callbacks}
       />
     );
 
-    await user.click(screen.getByRole('button', { name: 'Delete tracker' }));
-    await user.click(screen.getByRole('button', { name: 'Edit' }));
-    await user.click(screen.getByRole('button', { name: 'History' }));
-    await user.click(screen.getByRole('button', { name: 'Increase Count' }));
+    await user.click(screen.getByRole('button', { name: buttonName }));
 
-    expect(onDelete).toHaveBeenCalled();
-    expect(onRequestEdit).toHaveBeenCalled();
-    expect(onRequestHistory).toHaveBeenCalled();
-    expect(onIncreaseCount).toHaveBeenCalled();
+    expect(callbacks[callbackName]).toHaveBeenCalledOnce();
   });
 });

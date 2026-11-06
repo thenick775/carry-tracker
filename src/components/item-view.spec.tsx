@@ -295,4 +295,186 @@ describe('<ItemsView />', () => {
       carryCount: 5
     });
   });
+
+  it('filters and clears items from the search input', async () => {
+    const user = userEvent.setup();
+    const knifeItems = [
+      {
+        id: 'item-1',
+        name: 'Knife',
+        carryCount: 4,
+        createdAt: '2026-01-01T00:00:00.000Z',
+        color: 'blue'
+      }
+    ];
+    const lightItems = [
+      {
+        id: 'item-2',
+        name: 'Light',
+        carryCount: 2,
+        createdAt: '2026-01-02T00:00:00.000Z',
+        color: 'yellow'
+      }
+    ];
+
+    vi.spyOn(carryItemHooks, 'useCarryItems').mockImplementation(
+      (filters = {}) => ({
+        carryItems: filters.search === 'knife' ? knifeItems : lightItems,
+        createCarryItem: vi.fn(),
+        updateCarryItem: vi.fn(),
+        deleteCarryItem: vi.fn()
+      })
+    );
+
+    renderWithContext(<ItemsView />);
+
+    await waitFor(() => expect(screen.getByText('Light')).toBeVisible());
+
+    await user.type(screen.getByPlaceholderText('Search by name'), 'knife');
+
+    await waitFor(() => expect(screen.getByText('Knife')).toBeVisible());
+    expect(screen.queryByText('Light')).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Clear search' }));
+
+    await waitFor(() => expect(screen.getByText('Light')).toBeVisible());
+    expect(screen.queryByText('Knife')).not.toBeInTheDocument();
+  });
+
+  it('filters custom fields and clears all filters', async () => {
+    const user = userEvent.setup();
+    const knifeItems = [
+      {
+        id: 'item-1',
+        name: 'Knife',
+        carryCount: 4,
+        createdAt: '2026-01-01T00:00:00.000Z',
+        color: 'blue'
+      }
+    ];
+    const lightItems = [
+      {
+        id: 'item-2',
+        name: 'Light',
+        carryCount: 2,
+        createdAt: '2026-01-02T00:00:00.000Z',
+        color: 'yellow'
+      }
+    ];
+
+    vi.spyOn(
+      carryItemFilterOptionHooks,
+      'useCarryItemFilterOptions'
+    ).mockReturnValue({
+      customFieldOptions: { Brand: ['Benchmade'] },
+      customFieldsValueMap: { Brand: [{ name: 'Brand', value: 'Benchmade' }] }
+    });
+    vi.spyOn(carryItemHooks, 'useCarryItems').mockImplementation(
+      (filters = {}) => ({
+        carryItems: filters.customFields?.Brand.includes('Benchmade')
+          ? knifeItems
+          : lightItems,
+        createCarryItem: vi.fn(),
+        updateCarryItem: vi.fn(),
+        deleteCarryItem: vi.fn()
+      })
+    );
+
+    renderWithContext(<ItemsView />);
+
+    await user.click(screen.getByRole('button', { name: 'Filters' }));
+    await user.click(screen.getByRole('button', { name: 'Brand' }));
+    await user.click(screen.getByText('Benchmade'));
+
+    await waitFor(() => expect(screen.getByText('Knife')).toBeVisible());
+    expect(screen.getByRole('button', { name: 'Brand: 1' })).toBeVisible();
+
+    await user.click(screen.getByRole('button', { name: 'Brand: 1' }));
+
+    await waitFor(() => expect(screen.getByText('Light')).toBeVisible());
+
+    await user.click(screen.getByRole('button', { name: 'Clear all' }));
+
+    await waitFor(() => expect(screen.getByText('Light')).toBeVisible());
+    expect(
+      screen.queryByRole('button', { name: 'Brand: 1' })
+    ).not.toBeInTheDocument();
+  });
+
+  it('applies range filters and removes their badges', async () => {
+    const user = userEvent.setup();
+    const knifeItems = [
+      {
+        id: 'item-1',
+        name: 'Knife',
+        carryCount: 4,
+        createdAt: '2026-01-01T00:00:00.000Z',
+        color: 'blue'
+      }
+    ];
+    const lightItems = [
+      {
+        id: 'item-2',
+        name: 'Light',
+        carryCount: 2,
+        createdAt: '2026-01-02T00:00:00.000Z',
+        color: 'yellow'
+      }
+    ];
+
+    vi.spyOn(
+      carryItemFilterOptionHooks,
+      'useCarryItemFilterOptions'
+    ).mockReturnValue({
+      createdAtRange: [
+        new Date(2026, 0, 1).valueOf(),
+        new Date(2026, 0, 10).valueOf()
+      ],
+      carryCountRange: [0, 10],
+      costRange: [0, 100],
+      customFieldOptions: {},
+      customFieldsValueMap: {}
+    });
+    vi.spyOn(carryItemHooks, 'useCarryItems').mockImplementation((filters) => ({
+      carryItems:
+        filters?.createdAt || filters?.carryCount || filters?.cost
+          ? knifeItems
+          : lightItems,
+      createCarryItem: vi.fn(),
+      updateCarryItem: vi.fn(),
+      deleteCarryItem: vi.fn()
+    }));
+
+    renderWithContext(<ItemsView />);
+
+    await user.click(screen.getByRole('button', { name: 'Filters' }));
+
+    const [dateThumb] = screen.getAllByRole('slider', {
+      value: { min: 0, max: 9 }
+    });
+    const [carryCountThumb] = screen.getAllByRole('slider', {
+      value: { min: 0, max: 10 }
+    });
+    const [costThumb] = screen.getAllByRole('slider', {
+      value: { min: 0, max: 100 }
+    });
+
+    for (const thumb of [dateThumb, carryCountThumb, costThumb]) {
+      await user.pointer({
+        target: thumb,
+        coords: { x: 20, y: 0 },
+        keys: '[MouseLeft>]'
+      });
+      await waitFor(() => expect(thumb).not.toHaveValue(0));
+      await user.pointer({ keys: '[/MouseLeft]' });
+    }
+
+    await waitFor(() => expect(screen.getByText('Knife')).toBeVisible());
+
+    await user.click(screen.getByRole('button', { name: 'Date added' }));
+    await user.click(screen.getByRole('button', { name: 'Carry count' }));
+    await user.click(screen.getByRole('button', { name: 'Cost' }));
+
+    await waitFor(() => expect(screen.getByText('Light')).toBeVisible());
+  });
 });

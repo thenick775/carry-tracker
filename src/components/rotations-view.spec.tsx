@@ -2,11 +2,7 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { RotationsView } from './rotations-view.tsx';
-import {
-  renderWithContext,
-  screen,
-  waitFor
-} from '../../test/render-with-context.tsx';
+import { renderWithContext, screen } from '../../test/render-with-context.tsx';
 import * as carryItemHooks from '../hooks/use-carry-items.ts';
 import * as rotationHooks from '../hooks/use-rotations.ts';
 
@@ -74,21 +70,77 @@ describe('<RotationsView />', () => {
     expect(screen.getByText('Weekday2')).toBeVisible();
   });
 
-  it('opens create flow from the add button', async () => {
+  it('creates a rotation from the add button', async () => {
     const user = userEvent.setup();
+    const createRotation = vi.fn();
+
+    vi.spyOn(rotationHooks, 'useRotations').mockReturnValue({
+      rotations: [],
+      createRotation,
+      updateRotation: vi.fn(),
+      deleteRotation: vi.fn()
+    });
 
     renderWithContext(<RotationsView />);
 
     await user.click(screen.getByRole('button', { name: 'Add item' }));
+    await user.type(screen.getByLabelText('Name'), 'Weekend');
+    await user.click(screen.getByRole('button', { name: 'Submit' }));
 
-    await waitFor(() => {
-      expect(screen.getByRole('dialog')).toBeInTheDocument();
-    });
+    expect(createRotation).toHaveBeenCalledWith(
+      expect.objectContaining({ name: 'Weekend' })
+    );
   });
 
-  it('opens edit flow and deletes an existing rotation', async () => {
+  it('updates an existing rotation and resets the create form', async () => {
     const user = userEvent.setup();
-    const deleteRotationSpy = vi.fn();
+    const updateRotation = vi.fn();
+
+    vi.spyOn(rotationHooks, 'useRotations').mockReturnValue({
+      rotations: [
+        {
+          id: 'rotation-1',
+          name: 'Weekday',
+          active: true,
+          createdAt: '2026-01-01T00:00:00.000Z',
+          activeAt: '2026-01-02T00:00:00.000Z',
+          orderedCarryItemIds: ['item-1'],
+          stepDuration: { duration: 1, unit: 'day' }
+        }
+      ],
+      createRotation: vi.fn(),
+      updateRotation,
+      deleteRotation: vi.fn()
+    });
+
+    renderWithContext(<RotationsView />);
+
+    await user.click(screen.getByRole('button', { name: 'Edit' }));
+
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.getByLabelText('Name')).toHaveValue('Weekday');
+
+    await user.clear(screen.getByLabelText('Name'));
+    await user.type(screen.getByLabelText('Name'), 'Updated Weekday');
+    await user.click(screen.getByRole('button', { name: 'Submit' }));
+
+    expect(updateRotation).toHaveBeenCalledWith(
+      'rotation-1',
+      expect.objectContaining({ name: 'Updated Weekday' })
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Add item' }));
+
+    expect(screen.getByLabelText('Name')).toHaveValue('');
+
+    await user.keyboard('{Escape}');
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('deletes an existing rotation', async () => {
+    const user = userEvent.setup();
+    const deleteRotation = vi.fn();
 
     vi.spyOn(rotationHooks, 'useRotations').mockReturnValue({
       rotations: [
@@ -104,18 +156,14 @@ describe('<RotationsView />', () => {
       ],
       createRotation: vi.fn(),
       updateRotation: vi.fn(),
-      deleteRotation: deleteRotationSpy
+      deleteRotation
     });
 
     renderWithContext(<RotationsView />);
 
-    await user.click(screen.getByRole('button', { name: 'Edit' }));
-
-    expect(screen.getByRole('dialog')).toBeInTheDocument();
-    expect(screen.getByLabelText('Name')).toHaveValue('Weekday');
-
     await user.click(screen.getByRole('button', { name: 'Delete tracker' }));
     await user.click(screen.getByRole('button', { name: 'Delete' }));
-    expect(deleteRotationSpy).toHaveBeenCalledExactlyOnceWith('rotation-1');
+
+    expect(deleteRotation).toHaveBeenCalledExactlyOnceWith('rotation-1');
   });
 });

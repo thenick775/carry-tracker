@@ -40,7 +40,9 @@ const toCustomFieldsValueMap = (customFields: CustomField[]) =>
       (customField, index) =>
         index ===
         customFields.findIndex(
-          (candidate) => candidate.value === customField.value
+          (candidate) =>
+            candidate.name === customField.name &&
+            candidate.value === customField.value
         )
     ),
     ({ name }) => name

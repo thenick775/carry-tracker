@@ -1,5 +1,5 @@
 import userEvent from '@testing-library/user-event';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { CarryHistoryModal } from './carry-history-modal.tsx';
 import {
@@ -7,30 +7,18 @@ import {
   screen
 } from '../../../test/render-with-context.tsx';
 import * as carriesOverTimeHooks from '../../hooks/use-carries-over-time.ts';
-import * as responsiveHooks from '../../hooks/use-is-larger-than-phone.ts';
 
 import type { CarryOverTimeStorage } from '../../db/db.ts';
 
-const entry = (
-  overrides: Partial<CarryOverTimeStorage>
-): CarryOverTimeStorage => ({
-  id: 'entry-id',
-  carryItemId: 'item-1',
-  createdAt: '2026-01-01T00:00:00.000Z',
-  currentCarryCount: 0,
-  ...overrides
-});
-
 describe('<CarryHistoryModal />', () => {
-  beforeEach(() => {
-    vi.spyOn(responsiveHooks, 'useIsLargerThanPhone').mockReturnValue(true);
-    vi.spyOn(carriesOverTimeHooks, 'useCarryHistory').mockReturnValue({
-      carryHistory: [],
-      totalCarryHistoryEntries: 0,
-      firstRecordedAt: undefined,
-      lastRecordedAt: undefined,
-      saveCarryHistory: vi.fn()
-    });
+  const entry = (
+    overrides: Partial<CarryOverTimeStorage>
+  ): CarryOverTimeStorage => ({
+    id: 'entry-id',
+    carryItemId: 'item-1',
+    createdAt: '2026-01-01T00:00:00.000Z',
+    currentCarryCount: 0,
+    ...overrides
   });
 
   it('disables saving when duplicate timestamps exist', () => {
@@ -119,8 +107,15 @@ describe('<CarryHistoryModal />', () => {
     const user = userEvent.setup();
     const saveCarryHistorySpy = vi.fn();
     vi.spyOn(carriesOverTimeHooks, 'useCarryHistory').mockReturnValue({
-      carryHistory: [entry({ id: 'a', currentCarryCount: 1 })],
-      totalCarryHistoryEntries: 1,
+      carryHistory: [
+        entry({ id: 'a', currentCarryCount: 1 }),
+        entry({
+          id: 'b',
+          createdAt: '2026-01-02T00:00:00.000Z',
+          currentCarryCount: 2
+        })
+      ],
+      totalCarryHistoryEntries: 2,
       firstRecordedAt: '2026-01-01T00:00:00.000Z',
       lastRecordedAt: '2026-01-01T00:00:00.000Z',
       saveCarryHistory: saveCarryHistorySpy
@@ -149,7 +144,7 @@ describe('<CarryHistoryModal />', () => {
     expect(screen.getByRole('textbox', { name: 'Carry count' })).toHaveValue(
       '3'
     );
-    expect(screen.getByText('Current count: 3')).toBeVisible();
+    expect(screen.getByText('Current count: 2')).toBeVisible();
 
     await user.click(screen.getByRole('button', { name: 'Save Changes' }));
 
@@ -158,6 +153,11 @@ describe('<CarryHistoryModal />', () => {
         id: 'a',
         createdAt: '2026-01-01T00:00:00.000Z',
         currentCarryCount: 3
+      },
+      {
+        id: 'b',
+        createdAt: '2026-01-02T00:00:00.000Z',
+        currentCarryCount: 2
       }
     ]);
   });
@@ -232,9 +232,39 @@ describe('<CarryHistoryModal />', () => {
 
     await user.click(screen.getByRole('button', { name: 'Add Entry' }));
 
-    expect(screen.getByText('3 entries')).toBeInTheDocument();
-    expect(screen.getByText('Current count: 4')).toBeInTheDocument();
+    expect(screen.getByText('3 entries')).toBeVisible();
+    expect(screen.getByText('Current count: 4')).toBeVisible();
     expect(screen.getAllByDisplayValue('4')).toHaveLength(2);
+  });
+
+  it('adds the first entry with a zero carry count', async () => {
+    const user = userEvent.setup();
+    vi.spyOn(carriesOverTimeHooks, 'useCarryHistory').mockReturnValue({
+      carryHistory: [],
+      totalCarryHistoryEntries: 0,
+      firstRecordedAt: undefined,
+      lastRecordedAt: undefined,
+      saveCarryHistory: vi.fn()
+    });
+
+    renderWithContext(
+      <CarryHistoryModal
+        carryItem={{
+          id: 'item-1',
+          name: 'Knife',
+          carryCount: 4,
+          color: 'blue'
+        }}
+        opened
+        close={() => undefined}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Add Entry' }));
+
+    expect(screen.getByText('1 entry')).toBeVisible();
+    expect(screen.getByText('Current count: 0')).toBeVisible();
+    expect(screen.getByDisplayValue('0')).toBeInTheDocument();
   });
 
   it('saves sorted entries and closes the modal', async () => {
@@ -279,6 +309,6 @@ describe('<CarryHistoryModal />', () => {
       },
       { id: 'b', createdAt: '2026-01-02T00:00:00.000Z', currentCarryCount: 4 }
     ]);
-    expect(closeSpy).toHaveBeenCalled();
+    expect(closeSpy).toHaveBeenCalledOnce();
   });
 });

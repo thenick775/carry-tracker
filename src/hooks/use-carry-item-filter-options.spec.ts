@@ -64,38 +64,60 @@ describe('useCarryItemFilterOptions', () => {
     });
   });
 
-  it.todo(
-    'keeps duplicate values under different custom field names',
-    async () => {
-      await carryDb.carryItems.bulkAdd([
-        {
-          id: 'item-1',
-          name: 'Knife',
-          carryCount: 1,
-          createdAt: '2026-01-01T00:00:00.000Z',
-          color: 'blue',
-          customFields: [{ name: 'Brand', value: 'USA' }],
-          customFieldKeys: ['Brand::USA']
-        },
-        {
-          id: 'item-2',
-          name: 'Light',
-          carryCount: 1,
-          createdAt: '2026-01-01T00:00:00.000Z',
-          color: 'green',
-          customFields: [{ name: 'Origin', value: 'USA' }],
-          customFieldKeys: ['Origin::USA']
-        }
-      ]);
+  it('returns empty optional-data filters for a sparse item', async () => {
+    await carryDb.carryItems.add({
+      id: 'item-1',
+      name: 'Knife',
+      carryCount: 2,
+      createdAt: '2026-01-01T12:00:00.000Z',
+      color: 'blue'
+    });
 
-      const { result } = renderHook(() => useCarryItemFilterOptions());
+    const { result } = renderHook(() => useCarryItemFilterOptions());
 
-      await waitFor(() => {
-        expect(result.current?.customFieldsValueMap).toEqual({
-          Brand: [{ name: 'Brand', value: 'USA' }],
-          Origin: [{ name: 'Origin', value: 'USA' }]
-        });
+    await waitFor(() => {
+      expect(result.current).toEqual({
+        createdAtRange: [
+          dayjs('2026-01-01T12:00:00.000Z').startOf('day').valueOf(),
+          dayjs('2026-01-01T12:00:00.000Z').startOf('day').valueOf()
+        ],
+        carryCountRange: [2, 2],
+        costRange: undefined,
+        customFieldOptions: {},
+        customFieldsValueMap: {}
       });
-    }
-  );
+    });
+  });
+
+  it('keeps duplicate values under different custom field names', async () => {
+    await carryDb.carryItems.bulkAdd([
+      {
+        id: 'item-1',
+        name: 'Knife',
+        carryCount: 1,
+        createdAt: '2026-01-01T00:00:00.000Z',
+        color: 'blue',
+        customFields: [{ name: 'Brand', value: 'USA' }],
+        customFieldKeys: ['Brand::USA']
+      },
+      {
+        id: 'item-2',
+        name: 'Light',
+        carryCount: 1,
+        createdAt: '2026-01-01T00:00:00.000Z',
+        color: 'green',
+        customFields: [{ name: 'Origin', value: 'USA' }],
+        customFieldKeys: ['Origin::USA']
+      }
+    ]);
+
+    const { result } = renderHook(() => useCarryItemFilterOptions());
+
+    await waitFor(() => {
+      expect(result.current?.customFieldsValueMap).toEqual({
+        Brand: [{ name: 'Brand', value: 'USA' }],
+        Origin: [{ name: 'Origin', value: 'USA' }]
+      });
+    });
+  });
 });
