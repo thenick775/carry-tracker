@@ -83,6 +83,11 @@ const RenderList = ({
               }}
             />
             <ActionIcon
+              aria-label={
+                type === 'forward'
+                  ? 'Move selected to rotation'
+                  : 'Move selected to items'
+              }
               radius={0}
               variant="default"
               size={36}
@@ -95,6 +100,11 @@ const RenderList = ({
               {type === 'forward' ? <TbChevronRight /> : <TbChevronLeft />}
             </ActionIcon>
             <ActionIcon
+              aria-label={
+                type === 'forward'
+                  ? 'Move all to rotation'
+                  : 'Move all to items'
+              }
               radius={0}
               variant="default"
               size={36}

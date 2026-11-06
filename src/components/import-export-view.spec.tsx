@@ -1,6 +1,6 @@
 import * as notificationsModule from '@mantine/notifications';
 import userEvent from '@testing-library/user-event';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import { ImportExportView } from './import-export-view.tsx';
 import {
@@ -9,13 +9,7 @@ import {
   screen,
   waitFor
 } from '../../test/render-with-context.tsx';
-
-const { show, update, exportDb, importDb } = vi.hoisted(() => ({
-  show: vi.fn<(input: unknown) => string>(),
-  update: vi.fn<(...input: unknown[]) => void>(),
-  exportDb: vi.fn<() => Promise<Blob>>(),
-  importDb: vi.fn<(file: File) => Promise<void>>()
-}));
+import * as dbModule from '../db/db.ts';
 
 const createDropEvent = (file: File) => ({
   dataTransfer: {
@@ -31,24 +25,7 @@ const createDropEvent = (file: File) => ({
   }
 });
 
-vi.mock('../db/db.ts', () => ({
-  exportDb,
-  importDb
-}));
-
 describe('<ImportExportView />', () => {
-  beforeEach(() => {
-    vi.spyOn(notificationsModule.notifications, 'show').mockImplementation(
-      show
-    );
-    vi.spyOn(notificationsModule.notifications, 'update').mockImplementation(
-      (...args) => {
-        update(...args);
-        return undefined;
-      }
-    );
-  });
-
   it('renders the import and export sections', () => {
     renderWithContext(<ImportExportView />);
 
@@ -83,7 +60,11 @@ describe('<ImportExportView />', () => {
     const file = new File(['{}'], 'carry-db.json', {
       type: 'application/json'
     });
-    show.mockReturnValue('import-id');
+    const show = vi
+      .spyOn(notificationsModule.notifications, 'show')
+      .mockReturnValue('import-id');
+    const update = vi.spyOn(notificationsModule.notifications, 'update');
+    const importDb = vi.spyOn(dbModule, 'importDb').mockResolvedValue();
 
     renderWithContext(<ImportExportView />);
 
@@ -112,8 +93,13 @@ describe('<ImportExportView />', () => {
     const file = new File(['{}'], 'carry-db.json', {
       type: 'application/json'
     });
-    show.mockReturnValue('import-id');
-    importDb.mockRejectedValueOnce(new Error('bad import'));
+    vi.spyOn(notificationsModule.notifications, 'show').mockReturnValue(
+      'import-id'
+    );
+    const update = vi.spyOn(notificationsModule.notifications, 'update');
+    vi.spyOn(dbModule, 'importDb').mockRejectedValueOnce(
+      new Error('bad import')
+    );
 
     renderWithContext(<ImportExportView />);
 
@@ -138,7 +124,9 @@ describe('<ImportExportView />', () => {
     const click = vi
       .spyOn(HTMLAnchorElement.prototype, 'click')
       .mockImplementation(() => undefined);
-    exportDb.mockResolvedValue(new Blob(['{}'], { type: 'application/json' }));
+    const exportDb = vi
+      .spyOn(dbModule, 'exportDb')
+      .mockResolvedValue(new Blob(['{}'], { type: 'application/json' }));
 
     renderWithContext(<ImportExportView />);
 

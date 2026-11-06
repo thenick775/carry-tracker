@@ -245,6 +245,7 @@ describe('<CarryStatsView/ >', () => {
 
     const brandChip = screen.getByRole('checkbox', { name: 'Brand' });
     await user.click(brandChip);
+
     expect(brandChip).toBeChecked();
 
     await user.click(brandChip);

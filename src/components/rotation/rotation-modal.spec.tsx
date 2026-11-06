@@ -48,7 +48,9 @@ describe('<RotationModal />', () => {
 
     await user.click(screen.getByRole('option', { name: 'Knife' }));
     await user.click(screen.getByRole('option', { name: 'Light' }));
-    await user.click(screen.getAllByRole('button')[1]);
+    await user.click(
+      screen.getByRole('button', { name: 'Move selected to rotation' })
+    );
 
     await user.click(screen.getByRole('button', { name: 'Submit' }));
 
@@ -92,7 +94,9 @@ describe('<RotationModal />', () => {
 
     await user.click(screen.getByRole('option', { name: 'Knife' }));
     await user.click(screen.getByRole('option', { name: 'Light' }));
-    await user.click(screen.getAllByRole('button')[0]);
+    await user.click(
+      screen.getByRole('button', { name: 'Move selected to rotation' })
+    );
     await user.click(screen.getByRole('button', { name: 'Shuffle' }));
     await user.type(screen.getByLabelText('Name'), 'Weekday Rotation');
     await user.click(screen.getByRole('button', { name: 'Submit' }));

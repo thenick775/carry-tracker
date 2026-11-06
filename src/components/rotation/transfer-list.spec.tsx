@@ -27,11 +27,40 @@ describe('<TransferList />', () => {
     );
 
     await user.click(screen.getByRole('option', { name: 'Knife' }));
-    await user.click(screen.getAllByRole('button')[0]);
+    await user.click(
+      screen.getByRole('button', { name: 'Move selected to rotation' })
+    );
 
     expect(onChange).toHaveBeenCalledExactlyOnceWith(
       [{ name: 'Light', value: 'light' }],
       [{ name: 'Knife', value: 'knife' }]
+    );
+  });
+
+  it('deselects an item before transferring', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+
+    renderWithContext(
+      <TransferList
+        left={{
+          label: 'Items',
+          values: [{ name: 'Knife', value: 'knife' }]
+        }}
+        right={{ label: 'Rotation', values: [] }}
+        onChange={onChange}
+      />
+    );
+
+    await user.click(screen.getByRole('option', { name: 'Knife' }));
+    await user.click(screen.getByRole('option', { name: 'Knife' }));
+    await user.click(
+      screen.getByRole('button', { name: 'Move selected to rotation' })
+    );
+
+    expect(onChange).toHaveBeenCalledExactlyOnceWith(
+      [{ name: 'Knife', value: 'knife' }],
+      []
     );
   });
 
@@ -53,7 +82,7 @@ describe('<TransferList />', () => {
 
     await user.type(screen.getByPlaceholderText('Items'), 'lig');
 
-    expect(screen.getByRole('option', { name: 'Light' })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'Light' })).toBeVisible();
     expect(
       screen.queryByRole('option', { name: 'Knife' })
     ).not.toBeInTheDocument();
@@ -77,7 +106,9 @@ describe('<TransferList />', () => {
       />
     );
 
-    await user.click(screen.getAllByRole('button')[1]);
+    await user.click(
+      screen.getByRole('button', { name: 'Move all to rotation' })
+    );
 
     expect(onChange).toHaveBeenCalledExactlyOnceWith(
       [],
@@ -85,6 +116,64 @@ describe('<TransferList />', () => {
         { name: 'Knife', value: 'knife' },
         { name: 'Light', value: 'light' }
       ]
+    );
+  });
+
+  it('moves selected items from right to left', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+
+    renderWithContext(
+      <TransferList
+        left={{ label: 'Items', values: [] }}
+        right={{
+          label: 'Rotation',
+          values: [
+            { name: 'Knife', value: 'knife' },
+            { name: 'Light', value: 'light' }
+          ]
+        }}
+        onChange={onChange}
+      />
+    );
+
+    await user.click(screen.getByRole('option', { name: 'Knife' }));
+    await user.click(
+      screen.getByRole('button', { name: 'Move selected to items' })
+    );
+
+    expect(onChange).toHaveBeenCalledExactlyOnceWith(
+      [{ name: 'Knife', value: 'knife' }],
+      [{ name: 'Light', value: 'light' }]
+    );
+  });
+
+  it('moves all items from right to left', async () => {
+    const user = userEvent.setup();
+    const onChange = vi.fn();
+
+    renderWithContext(
+      <TransferList
+        left={{ label: 'Items', values: [] }}
+        right={{
+          label: 'Rotation',
+          values: [
+            { name: 'Knife', value: 'knife' },
+            { name: 'Light', value: 'light' }
+          ]
+        }}
+        onChange={onChange}
+      />
+    );
+
+    await user.click(screen.getByRole('button', { name: 'Move all to items' }));
+
+    expect(onChange).toHaveBeenCalledExactlyOnceWith(
+      [
+        { name: 'Knife', value: 'knife' },
+        { name: 'Light', value: 'light' }
+      ],
+      []
     );
   });
 });
