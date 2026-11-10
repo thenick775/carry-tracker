@@ -200,6 +200,7 @@ export default defineConfig({
       exclude: [
         ...coverageConfigDefaults.exclude,
         'test/**',
+        'src/theme/mantine-hub-shadcn/theme.ts',
         '**/*.d.ts',
         '**/.DS_Store'
       ]
