@@ -6,13 +6,14 @@ import {
   LineChart as ReLineChart,
   Tooltip,
   XAxis,
-  YAxis
+  YAxis,
+  type TooltipProps
 } from 'recharts';
 
 import type { CarryHistoryDraftEntry } from '../../hooks/use-carries-over-time';
 
-const formatRecordedAt = (value?: string) =>
-  value ? dayjs(value).format('MMM DD, YYYY hh:mm:ss A') : 'Not recorded';
+const formatRecordedAt: TooltipProps['labelFormatter'] = (value) =>
+  dayjs(Number(value)).format('MMM DD, YYYY hh:mm:ss A');
 
 export const CarryHistoryChart = ({
   entries,
@@ -31,7 +32,7 @@ export const CarryHistoryChart = ({
 
   const maxYValue = Math.max(...points.map(({ count }) => count));
   const minYValue = Math.min(...points.map(({ count }) => count));
-  const digitCount = String(maxYValue || 0).length;
+  const digitCount = String(maxYValue).length;
   const yAxisWidth = Math.max(26, digitCount * 15);
 
   return (
@@ -82,9 +83,7 @@ export const CarryHistoryChart = ({
 
           <Tooltip
             isAnimationActive={false}
-            labelFormatter={(value) =>
-              formatRecordedAt(dayjs(Number(value)).toISOString())
-            }
+            labelFormatter={formatRecordedAt}
             labelStyle={{ color: 'black' }}
           />
 
@@ -93,7 +92,7 @@ export const CarryHistoryChart = ({
             dataKey="count"
             stroke={color}
             strokeWidth={2}
-            dot={{ r: 3 }}
+            dot={{ r: 3, 'aria-label': 'line-chart-dot' }}
             activeDot={{ r: 5 }}
           />
         </ReLineChart>

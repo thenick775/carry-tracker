@@ -409,7 +409,7 @@ export const ItemFilters = ({
         <TextInput
           placeholder="Search by name"
           size="md"
-          value={filters.search}
+          value={filters.search ?? ''}
           onChange={(event) => setSearchFilter(event.currentTarget.value)}
           style={{ flex: 1 }}
           rightSection={

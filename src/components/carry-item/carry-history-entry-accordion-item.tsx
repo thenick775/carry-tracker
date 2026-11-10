@@ -23,8 +23,7 @@ type CarryHistoryEntryAccordionItemProps = {
   onDelete: () => void;
 };
 
-const formatRecordedAt = (value?: string) =>
-  value ? dayjs(value).format('MMM DD, YYYY') : 'Not recorded';
+const formatRecordedAt = (value: string) => dayjs(value).format('MMM DD, YYYY');
 
 export const CarryHistoryEntryAccordionItem = ({
   entry,
@@ -55,7 +54,7 @@ export const CarryHistoryEntryAccordionItem = ({
           size="md"
           dropdownType="modal"
           value={entry.createdAt}
-          onChange={(value) => onUpdate({ createdAt: value ?? '' })}
+          onChange={(value) => onUpdate({ createdAt: value ?? undefined })}
           error={error.date}
         />
         <NumberInput

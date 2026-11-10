@@ -3,9 +3,12 @@ import babel from '@rolldown/plugin-babel';
 // eslint-disable-next-line import/no-unresolved
 import react, { reactCompilerPreset } from '@vitejs/plugin-react';
 import { visualizer } from 'rollup-plugin-visualizer';
-// eslint-disable-next-line import/no-unresolved
-import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
+import {
+  coverageConfigDefaults,
+  defineConfig
+  // eslint-disable-next-line import/no-unresolved
+} from 'vitest/config';
 
 // eslint-disable-next-line import/no-default-export
 export default defineConfig({
@@ -146,6 +149,61 @@ export default defineConfig({
         }
         defaultHandler(warning);
       }
+    }
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./test/setup.ts'],
+    passWithNoTests: true,
+    restoreMocks: true,
+    coverage: {
+      provider: 'v8',
+      // react compilers cache bookkeeping is not application branching
+      // see: https://github.com/facebook/react/issues/32950
+      ignoreNode: (node, type) => {
+        const isCacheSlot = (value: typeof node) =>
+          value.type === 'MemberExpression' &&
+          value.computed &&
+          value.object.type === 'Identifier' &&
+          value.object.name === '$';
+        const isCacheTest = (value: typeof node): boolean =>
+          value.type === 'LogicalExpression'
+            ? isCacheTest(value.left) && isCacheTest(value.right)
+            : value.type === 'BinaryExpression' && isCacheSlot(value.left);
+
+        if (node.type === 'IfStatement') {
+          return isCacheTest(node.test);
+        }
+        if (type === 'branch' && node.type === 'LogicalExpression') {
+          return isCacheTest(node);
+        }
+        if (node.type === 'VariableDeclarator') {
+          return (
+            node.id.type === 'Identifier' &&
+            node.id.name === '$' &&
+            node.init?.type === 'CallExpression' &&
+            node.init.callee.type === 'Identifier' &&
+            node.init.callee.name === '_c'
+          );
+        }
+        return (
+          node.type === 'ExpressionStatement' &&
+          node.expression.type === 'AssignmentExpression' &&
+          (isCacheSlot(node.expression.left) ||
+            isCacheSlot(node.expression.right))
+        );
+      },
+      include: ['src/**/*.{ts,tsx}'],
+      reporter: ['text', 'html', 'json-summary', 'json'],
+      reportsDirectory: './coverage',
+      exclude: [
+        ...coverageConfigDefaults.exclude,
+        'test/**',
+        'src/theme/mantine-hub-shadcn/theme.ts',
+        '**/*.d.ts',
+        '**/.DS_Store'
+      ]
     }
   }
 });
