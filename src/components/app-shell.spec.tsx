@@ -33,6 +33,7 @@ describe('<CarryTrackerAppShell />', () => {
 
   it.each([
     ['Carry Stats', 'Carry Stats:'],
+    ['Cost Breakdown', 'Total Cost'],
     ['Rotations', 'Your rotation list is empty'],
     ['Rotation Timeline', 'Your rotation timeline is empty'],
     ['Import/Export', 'Import and export your database here!']
