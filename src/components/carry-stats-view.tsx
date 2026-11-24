@@ -35,41 +35,37 @@ export const CarryStatsView = () => {
   ).toSorted();
 
   const itemData =
-    carryItems?.map(({ id, name, carryCount, cost, color, customFields }) => ({
+    carryItems?.map(({ id, name, carryCount, color, customFields }) => ({
       id,
       name,
       color,
-      cost,
       customFields,
       value: carryCount
     })) ?? [];
   const customFieldsData = Object.entries(
     (carryItems ?? []).reduce<
-      Record<string, { total: number; carryCount: number; cost?: number }>
+      Record<string, { total: number; carryCount: number }>
     >((acc, item) => {
       item.customFields
         ?.filter((c) => c.name === selectedTagField)
         .forEach((customField) => {
           const prev = acc[customField.value] ?? {
             total: 0,
-            cost: 0,
             carryCount: 0
           };
 
           acc[customField.value] = {
             total: prev.total + 1,
-            cost: (prev.cost ?? 0) + (item.cost ?? 0),
             carryCount: prev.carryCount + item.carryCount
           };
         });
 
       return acc;
     }, {})
-  ).map(([name, { total, cost, carryCount }]) => ({
+  ).map(([name, { total, carryCount }]) => ({
     id: name,
     name,
     carryCount,
-    cost,
     value: total,
     color: randomColor({ seed: name })
   }));

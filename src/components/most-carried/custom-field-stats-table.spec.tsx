@@ -8,7 +8,7 @@ import {
 } from '../../../test/render-with-context.tsx';
 
 describe('<CustomFieldStatsTable />', () => {
-  it('sorts rows by total and renders summary totals', () => {
+  it('sorts rows by total and renders the summary', () => {
     renderWithContext(
       <CustomFieldStatsTable
         data={[
@@ -17,8 +17,7 @@ describe('<CustomFieldStatsTable />', () => {
             name: 'Benchmade',
             value: 2,
             carryCount: 7,
-            color: 'blue',
-            cost: 100
+            color: 'blue'
           },
           {
             id: 'brand-2',
@@ -35,16 +34,13 @@ describe('<CustomFieldStatsTable />', () => {
     expect(headers[0]).toHaveTextContent('Name');
     expect(headers[1]).toHaveTextContent('Total');
     expect(headers[2]).toHaveTextContent('Carry Count');
-    expect(headers[3]).toHaveTextContent('Cost');
-    expect(headers[4]).toHaveTextContent('%');
-    expect(headers[5]).toHaveTextContent('Color');
+    expect(headers[3]).toHaveTextContent('%');
+    expect(headers[4]).toHaveTextContent('Color');
 
     const rows = screen.getAllByRole('row');
     expect(within(rows[1]).getByText('Surefire')).toBeInTheDocument();
     expect(within(rows[2]).getByText('Benchmade')).toBeInTheDocument();
     expect(within(rows[3]).getByText('Summary')).toBeInTheDocument();
-    expect(screen.getAllByText('$100')).toHaveLength(2);
-    expect(screen.getByText('?')).toBeInTheDocument();
   });
 
   it('renders a summary-only table with empty data', () => {
@@ -55,6 +51,5 @@ describe('<CustomFieldStatsTable />', () => {
     expect(rows).toHaveLength(2);
     expect(within(rows[1]).getByText('Summary')).toBeInTheDocument();
     expect(within(rows[1]).getAllByText('0')).toHaveLength(2);
-    expect(within(rows[1]).getByText('$0')).toBeInTheDocument();
   });
 });

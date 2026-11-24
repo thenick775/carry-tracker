@@ -20,6 +20,7 @@ type PieChartData = { name: string; value: number; color: string };
 
 type RadialBarChartProps = {
   data: PieChartData[];
+  valueFormatter?: (value: number) => string;
 };
 
 const renderLabel = ({ x, y, cx, cy, percent = 0 }: PieLabelRenderProps) => (
@@ -37,7 +38,10 @@ const renderLabel = ({ x, y, cx, cy, percent = 0 }: PieLabelRenderProps) => (
   </text>
 );
 
-export const RenderTooltip = ({ active }: TooltipContentProps) => {
+export const RenderTooltip = ({
+  active,
+  valueFormatter = String
+}: TooltipContentProps & { valueFormatter?: (value: number) => string }) => {
   const points = useActiveTooltipDataPoints<PieChartData>();
 
   if (!active || !points?.length) {
@@ -59,7 +63,7 @@ export const RenderTooltip = ({ active }: TooltipContentProps) => {
       {points.map((p, idx) => (
         <Fragment key={`${p.name}_${idx}`}>
           <Text size="sm">
-            {p.name}: {p.value}{' '}
+            {p.name}: {valueFormatter(Number(p.value))}{' '}
           </Text>
           <Badge size="xs" circle color={p.color} />
         </Fragment>
@@ -68,7 +72,7 @@ export const RenderTooltip = ({ active }: TooltipContentProps) => {
   );
 };
 
-export const PieChart = ({ data }: RadialBarChartProps) => {
+export const PieChart = ({ data, valueFormatter }: RadialBarChartProps) => {
   const theme = useMantineTheme();
 
   const chartData = data
@@ -105,7 +109,12 @@ export const PieChart = ({ data }: RadialBarChartProps) => {
             strokeWidth: 1
           }}
         />
-        <Tooltip isAnimationActive={false} content={RenderTooltip} />
+        <Tooltip
+          isAnimationActive={false}
+          content={(props) => (
+            <RenderTooltip {...props} valueFormatter={valueFormatter} />
+          )}
+        />
       </ReChartsPieChart>
     </ResponsiveContainer>
   );

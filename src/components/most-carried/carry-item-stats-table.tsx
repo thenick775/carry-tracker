@@ -5,15 +5,7 @@ type CarryItemStatsData = {
   value: number;
   color: string;
   id: string;
-  cost?: number;
 };
-
-const currencyFormatterUSD = new Intl.NumberFormat('en-US', {
-  style: 'currency',
-  currency: 'USD',
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 0
-});
 
 export const CarryItemStatsTable = ({
   data
@@ -31,9 +23,6 @@ export const CarryItemStatsTable = ({
         <Table.Td>{chartItem.name}</Table.Td>
         <Table.Td>{chartItem.value.toLocaleString('en-US')}</Table.Td>
         <Table.Td>
-          {chartItem.cost ? currencyFormatterUSD.format(chartItem.cost) : '?'}
-        </Table.Td>
-        <Table.Td>
           {((chartItem.value / totalCarryCount) * 100).toFixed(0)}
         </Table.Td>
         <Table.Td>
@@ -42,18 +31,12 @@ export const CarryItemStatsTable = ({
       </Table.Tr>
     ));
 
-  const totalCost = data.reduce(
-    (acc, chartItem) => acc + (chartItem.cost ?? 0),
-    0
-  );
-
   return (
     <Table>
       <Table.Thead>
         <Table.Tr>
           <Table.Th>Name</Table.Th>
           <Table.Th>Carry Count</Table.Th>
-          <Table.Th>Cost</Table.Th>
           <Table.Th>%</Table.Th>
           <Table.Th>Color</Table.Th>
         </Table.Tr>
@@ -64,7 +47,6 @@ export const CarryItemStatsTable = ({
         <Table.Tr>
           <Table.Td>Summary</Table.Td>
           <Table.Td>{totalCarryCount}</Table.Td>
-          <Table.Td>{currencyFormatterUSD.format(totalCost)}</Table.Td>
           <Table.Td />
           <Table.Td />
         </Table.Tr>

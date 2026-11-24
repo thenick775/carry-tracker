@@ -5,6 +5,7 @@ import { FaGithub } from 'react-icons/fa';
 
 import classes from './app-shell.module.css';
 import { CarryStatsView } from './carry-stats-view.tsx';
+import { CostBreakdownView } from './cost-breakdown-view.tsx';
 import { ImportExportView } from './import-export-view.tsx';
 import { ItemsView } from './item-view.tsx';
 import { RotationsView } from './rotations-view.tsx';
@@ -13,6 +14,7 @@ import { TimelineView } from './timeline-view.tsx';
 const viewComponents: Record<string, React.ReactNode> = {
   Items: <ItemsView />,
   'Carry Stats': <CarryStatsView />,
+  'Cost Breakdown': <CostBreakdownView />,
   Rotations: <RotationsView />,
   'Rotation Timeline': <TimelineView />,
   'Import/Export': <ImportExportView />
